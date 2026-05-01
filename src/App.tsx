@@ -333,9 +333,25 @@ function LandingView({ navigateTo, beritaList }: any) {
               <a href="#profil" className="text-gray-600 hover:text-emerald-600 font-medium transition-colors flex items-center">
                 <UserCheck className="w-4 h-4 mr-1" /> Profil
               </a>
-              <a href="#layanan" className="text-gray-600 hover:text-emerald-600 font-medium transition-colors flex items-center">
-                <Briefcase className="w-4 h-4 mr-1" /> Layanan
-              </a>
+              <div className="relative group">
+                <button className="text-gray-600 hover:text-emerald-600 font-medium transition-colors flex items-center py-5">
+                  <Briefcase className="w-4 h-4 mr-1" /> Layanan <ChevronDown className="w-4 h-4 ml-1" />
+                </button>
+                <div className="absolute top-[80%] left-0 w-80 bg-white border border-gray-100 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 overflow-hidden">
+                  <a href="#pendaftaran" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                    <FileSignature className="w-4 h-4 mr-2" /> Pendaftaran Sertifikasi Halal
+                  </a>
+                  <a href="#ruang-lingkup" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                    <Search className="w-4 h-4 mr-2" /> Ruang Lingkup dan Layanan Pemeriksaan Halal
+                  </a>
+                  <a href="#pencarian" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                    <CheckCircle className="w-4 h-4 mr-2" /> Pencarian Sertifikasi Halal
+                  </a>
+                  <a href="#daftar-audit" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center">
+                    <FileText className="w-4 h-4 mr-2" /> Daftar Audit
+                  </a>
+                </div>
+              </div>
               <div className="relative group">
                 <button className="text-gray-600 hover:text-emerald-600 font-medium transition-colors flex items-center py-5">
                   <FileSignature className="w-4 h-4 mr-1" /> Proses <ChevronDown className="w-4 h-4 ml-1" />
@@ -488,6 +504,94 @@ function LandingView({ navigateTo, beritaList }: any) {
                     <h3 className="text-xl font-bold text-gray-900 mb-3">Auditor Berpengalaman</h3>
                     <p className="text-gray-600">Memiliki ratusan Auditor Halal bersertifikasi BNSP yang tersebar di seluruh Indonesia dengan latar belakang keilmuan relevan.</p>
                 </div>
+            </div>
+        </div>
+      </section>
+
+      {/* Pendaftaran Sertifikasi Halal Section */}
+      <section id="pendaftaran" className="py-20 bg-emerald-50">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                <div className="bg-emerald-600 p-6 md:p-8 text-white text-center">
+                    <h2 className="text-2xl md:text-3xl font-bold mb-2">Buat Akun SiHalal</h2>
+                    <p className="text-emerald-100">Silahkan buat akun menggunakan fitur web SiHalal</p>
+                </div>
+                <div className="p-6 md:p-8">
+                    <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); alert('Ini adalah simulasi form pendaftaran akun SiHalal.'); }}>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Tipe Pengguna</label>
+                            <select required className="w-full border-gray-300 rounded-lg border p-3 bg-white focus:ring-emerald-500 focus:border-emerald-500 text-gray-700">
+                                <option value="">Pilih Tipe Pengguna</option>
+                                <option value="pelaku_usaha">Pelaku Usaha</option>
+                                <option value="penyelia_halal">Penyelia Halal</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Nama</label>
+                            <input required type="text" placeholder="Masukan Nama" className="w-full border-gray-300 rounded-lg border p-3 bg-white focus:ring-emerald-500 focus:border-emerald-500 text-gray-700" />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <input required type="email" placeholder="Masukan Email" className="w-full border-gray-300 rounded-lg border p-3 bg-white focus:ring-emerald-500 focus:border-emerald-500 text-gray-700" />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Nomor Handphone</label>
+                            <div className="flex">
+                                <span className="inline-flex items-center px-4 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
+                                    +62
+                                </span>
+                                <input required type="tel" placeholder="Masukan Nomor Handphone" className="flex-1 min-w-0 block w-full px-3 py-3 rounded-none rounded-r-md border border-gray-300 bg-white focus:ring-emerald-500 focus:border-emerald-500 text-gray-700" />
+                            </div>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Kata Sandi</label>
+                            <input required type="password" placeholder="Masukan kata sandi" className="w-full border-gray-300 rounded-lg border p-3 bg-white focus:ring-emerald-500 focus:border-emerald-500 text-gray-700" />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Konfirmasi Kata Sandi</label>
+                            <input required type="password" placeholder="Masukan konfirmasi kata sandi" className="w-full border-gray-300 rounded-lg border p-3 bg-white focus:ring-emerald-500 focus:border-emerald-500 text-gray-700" />
+                        </div>
+                        <div className="pt-2">
+                            <button type="submit" className="w-full bg-emerald-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-colors">
+                                Daftar
+                            </button>
+                        </div>
+                        <div className="text-center mt-4">
+                            <p className="text-sm text-gray-600">
+                                Sudah punya akun? <a href="#" className="font-medium text-emerald-600 hover:text-emerald-500">Masuk di sini</a>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+      </section>
+
+      {/* Ruang Lingkup Section */}
+      <section id="ruang-lingkup" className="py-20 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Ruang Lingkup & Layanan Pemeriksaan Halal</h2>
+                <h3 className="text-xl md:text-2xl font-semibold text-emerald-600">LPH Al ghazali Halal Indonesia</h3>
+            </div>
+            <div className="prose prose-lg max-w-none text-gray-700 bg-gray-50 p-8 rounded-2xl border border-gray-100 shadow-sm leading-relaxed">
+                <p className="mb-6 text-justify">
+                    Lembaga Pemeriksa Halal (LPH) Edukasi Halal Indonesia saat ini tengah menjalani proses Akreditasi Pratama yang diajukan kepada Badan Penyelenggara Jaminan Produk Halal (BPJPH) Republik Indonesia. Setelah memperoleh Sertifikat Akreditasi Pratama, LPH Al ghazali Halal Indonesia akan memiliki wewenang untuk melaksanakan pemeriksaan kehalalan produk untuk 3 (dua) ruang lingkup, yaitu:
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div className="bg-white p-4 rounded-xl border border-emerald-100 flex items-center justify-center text-emerald-700 font-medium shadow-sm">
+                       <CheckCircle className="w-5 h-5 mr-2 text-emerald-500" /> 1. Makanan
+                    </div>
+                    <div className="bg-white p-4 rounded-xl border border-emerald-100 flex items-center justify-center text-emerald-700 font-medium shadow-sm">
+                       <CheckCircle className="w-5 h-5 mr-2 text-emerald-500" /> 2. Minuman
+                    </div>
+                    <div className="bg-white p-4 rounded-xl border border-emerald-100 flex items-center justify-center text-emerald-700 font-medium shadow-sm">
+                       <CheckCircle className="w-5 h-5 mr-2 text-emerald-500" /> 3. Jasa Penyembelihan
+                    </div>
+                </div>
+                <p className="text-justify">
+                    LPH Al ghazali Halal Indonesia menyediakan layanan pemeriksaan halal sebagai bagian dari proses pengajuan Sertifikasi Halal, yang ditujukan khusus untuk pelaku usaha mikro dan kecil di wilayah Provinsi Cilacap.
+                </p>
             </div>
         </div>
       </section>
