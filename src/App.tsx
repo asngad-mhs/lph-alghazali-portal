@@ -253,6 +253,12 @@ export default function LPHApp() {
           <AdminBerita data={beritaList} addData={handleAddBerita} updateData={handleUpdateBerita} deleteData={handleDeleteBerita} />
         </DashboardLayout>
       )}
+
+      {currentView === 'admin-auditor' && (
+        <DashboardLayout role="admin" navigateTo={navigateTo} logout={handleLogout} currentView={currentView}>
+          <AdminAuditor data={pengajuanList} />
+        </DashboardLayout>
+      )}
     </div>
   );
 }
@@ -1476,7 +1482,7 @@ function DashboardLayout({ children, role, navigateTo, logout, currentView }: an
               <button onClick={() => { navigateTo('admin-berita'); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'admin-berita' ? 'bg-emerald-600 text-white font-medium' : 'hover:bg-slate-800 hover:text-white'}`}>
                 <Newspaper className="w-5 h-5 mr-3" /> Publikasi & Berita
               </button>
-              <button className="w-full flex items-center px-4 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white transition-colors">
+              <button onClick={() => { navigateTo('admin-auditor'); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'admin-auditor' ? 'bg-emerald-600 text-white font-medium' : 'hover:bg-slate-800 hover:text-white'}`}>
                 <Briefcase className="w-5 h-5 mr-3" /> Data Auditor
               </button>
             </>
@@ -1967,6 +1973,116 @@ function AdminBerita({ data, addData, updateData, deleteData }: any) {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function AdminAuditor({ data }: any) {
+  const [searchName, setSearchName] = useState('');
+  const [searchProduct, setSearchProduct] = useState('');
+  const [searchCert, setSearchCert] = useState('');
+
+  // Gabungkan dummy "ARTHAGUNA LESTARI" dengan auto-data (data pengajuanList)
+  const baseData = [
+    {
+      id: 'mock-1',
+      companyName: 'ARTHAGUNA LESTARI',
+      productName: 'Serealia dan produk serealia yang merupakan produk turunan dari biji serealia, akar dan umbi, kacang-kacangan dan empulur dengan pengolahan dan penambahan bahan tambahan pangan',
+      nomorSertifikat: 'ID18110033288141125'
+    },
+    ...(data || []).map((item: any, index: number) => ({
+      id: item.id || `auto-${index}`,
+      companyName: item.companyName,
+      productName: item.productName || item.jenisPengajuan || '-',
+      nomorSertifikat: item.nomorRegistrasi || `ID18110000000${index + 1}`
+    }))
+  ];
+
+  const filteredData = baseData.filter(item => {
+    const matchName = item.companyName?.toLowerCase().includes(searchName.toLowerCase());
+    const matchProduct = item.productName?.toLowerCase().includes(searchProduct.toLowerCase());
+    const matchCert = item.nomorSertifikat?.toLowerCase().includes(searchCert.toLowerCase());
+    return matchName && matchProduct && matchCert;
+  });
+
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-800">Daftar Audit</h2>
+          <p className="text-sm text-gray-500 mt-1">Data auditor dan daftar audit pelaku usaha yang telah mendaftar.</p>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="p-6 border-b border-gray-200 bg-gray-50 flex flex-col md:flex-row gap-4">
+          <input 
+            type="text" 
+            placeholder="Cari Nama PU..." 
+            value={searchName} 
+            onChange={e => setSearchName(e.target.value)}
+            className="flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500" 
+          />
+          <input 
+            type="text" 
+            placeholder="Cari Jenis Produk..." 
+            value={searchProduct} 
+            onChange={e => setSearchProduct(e.target.value)}
+            className="flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500" 
+          />
+          <input 
+            type="text" 
+            placeholder="Cari No Sertifikat..." 
+            value={searchCert} 
+            onChange={e => setSearchCert(e.target.value)}
+            className="flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500" 
+          />
+        </div>
+        
+        <div className="px-6 py-3 border-b border-gray-200 bg-emerald-50 text-emerald-800 font-medium text-sm">
+          Jumlah data: {filteredData.length}
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                  Nama PU
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                  Jenis Produk
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                  No Sertifikat
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {filteredData.map((item, idx) => (
+                <tr key={item.id || idx} className="hover:bg-gray-50 transition-colors">
+                  <td className="px-6 py-4 text-sm font-medium text-gray-900 border-r border-gray-100">
+                    {item.companyName}
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-600 border-r border-gray-100 max-w-md" title={item.productName}>
+                    {item.productName}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-emerald-600 font-mono">
+                    {item.nomorSertifikat}
+                  </td>
+                </tr>
+              ))}
+              {filteredData.length === 0 && (
+                <tr>
+                  <td colSpan={3} className="px-6 py-8 text-center text-gray-500 text-sm">
+                    Tidak ada data yang ditemukan.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 }
