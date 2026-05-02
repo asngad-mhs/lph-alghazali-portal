@@ -474,7 +474,7 @@ function LandingView({ navigateTo, beritaList }: any) {
               <a href="#faq" className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center">
                 <Search className="w-4 h-4 mr-1" /> FAQ
               </a>
-              <a href="https://wa.me/6285802494252" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center">
+              <a href="#kontak" className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center">
                 <Phone className="w-4 h-4 mr-1" /> Kontak
               </a>
             </div>
@@ -562,7 +562,7 @@ function LandingView({ navigateTo, beritaList }: any) {
               <div className="flex items-center"><Search className="w-4 h-4 mr-2" /> FAQ</div>
             </a>
             
-            <a href="https://wa.me/6285802494252" target="_blank" rel="noopener noreferrer" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-md">
+            <a href="#kontak" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-md">
               <div className="flex items-center"><Phone className="w-4 h-4 mr-2" /> Kontak</div>
             </a>
             
@@ -1158,6 +1158,113 @@ function LandingView({ navigateTo, beritaList }: any) {
                     </h3>
                     <p className="text-gray-600">Pelaku usaha dapat masuk (login) ke Portal Cloud menggunakan akun yang terdaftar untuk melihat perkembangan dan status pengajuan secara real-time pada Dashboard.</p>
                 </div>
+            </div>
+        </div>
+      </section>
+
+      {/* Kontak Section */}
+      <section id="kontak" className="py-20 bg-emerald-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Hubungi Kami</h2>
+                <p className="text-emerald-700 font-medium text-lg">LPH Al Ghazali Halal Indonesia</p>
+            </div>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                {/* Contact Info */}
+                <div>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-6">Informasi Kontak</h3>
+                    
+                    <div className="space-y-6 mb-10">
+                        <div className="flex items-start">
+                            <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-emerald-600 shadow-sm shrink-0 mr-4">
+                                <Phone className="w-5 h-5" />
+                            </div>
+                            <div>
+                                <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-1">Call Us</h4>
+                                <p className="text-lg font-medium text-gray-900">085802494252</p>
+                            </div>
+                        </div>
+                        
+                        <div className="flex items-start">
+                            <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-emerald-600 shadow-sm shrink-0 mr-4">
+                                <Mail className="w-5 h-5" />
+                            </div>
+                            <div>
+                                <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-1">E-mail</h4>
+                                <p className="text-lg font-medium text-gray-900">lphalghazali@gmail.com</p>
+                            </div>
+                        </div>
+
+                        <div className="flex items-start">
+                            <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-emerald-600 shadow-sm shrink-0 mr-4">
+                                <MapPin className="w-5 h-5" />
+                            </div>
+                            <div>
+                                <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-1">Address</h4>
+                                <p className="text-base text-gray-900 leading-relaxed">
+                                    Jl. Kemerdekaan Barat No.12, Kesugihan, Cilacap, Jawa Tengah 53274
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="pt-8 border-t border-emerald-200/50">
+                        <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Temukan Kami di</h4>
+                        <div className="flex flex-wrap gap-3">
+                            <a href="#" className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-gray-500 hover:text-emerald-600 hover:shadow-md transition-all"><Facebook className="w-5 h-5" /></a>
+                            <a href="#" className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-gray-500 hover:text-emerald-600 hover:shadow-md transition-all"><Twitter className="w-5 h-5" /></a>
+                            <a href="#" className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-gray-500 hover:text-emerald-600 hover:shadow-md transition-all"><Linkedin className="w-5 h-5" /></a>
+                            <a href="#" className="w-10 h-10 bg-white rounded-full flex flex-col pt-0 items-center justify-center text-gray-500 hover:text-emerald-600 hover:shadow-md transition-all font-bold text-[10px] leading-tight"><span>Sky</span><span>pe</span></a>
+                            <a href="#" className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-gray-500 hover:text-emerald-600 hover:shadow-md transition-all font-bold text-[10px]">Pin</a>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Contact Form */}
+                <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">INFO LANJUT</h3>
+                    <p className="text-gray-500 mb-6">Isi data berikut, kami akan segera menghubungi Anda.</p>
+                    
+                    <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Nama</label>
+                            <input type="text" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-shadow" placeholder="Masukkan nama Anda" />
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                                <input type="tel" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-shadow" placeholder="Nomor Telepon" />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                <input type="email" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-shadow" placeholder="Alamat Email" />
+                            </div>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                            <input type="text" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-shadow" placeholder="Subjek Pesan" />
+                        </div>
+                        <button type="submit" className="w-full bg-emerald-600 text-white font-bold py-3.5 px-6 rounded-xl hover:bg-emerald-700 transition-colors shadow-md mt-4">
+                            Kirim Pesan
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            {/* Map */}
+            <div className="mt-16 bg-gray-200 rounded-2xl overflow-hidden shadow-sm h-80 border border-emerald-100/50 flex items-center justify-center relative">
+                <iframe 
+                    src="https://maps.google.com/maps?q=Jl.%20Kemerdekaan%20Barat%20No.12,%20Kesugihan,%20Cilacap,%20Jawa%20Tengah%2053274&t=&z=13&ie=UTF8&iwloc=&output=embed" 
+                    width="100%" 
+                    height="100%" 
+                    style={{ border: 0 }} 
+                    allowFullScreen={false} 
+                    loading="lazy" 
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="Map Location"
+                    className="absolute inset-0"
+                ></iframe>
             </div>
         </div>
       </section>
