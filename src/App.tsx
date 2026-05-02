@@ -1240,16 +1240,31 @@ function AuthView({ navigateTo, setRole, roleType = 'pu' }: any) {
 }
 
 function DashboardLayout({ children, role, navigateTo, logout, currentView }: any) {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50">
+      {/* Mobile Sidebar Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 md:hidden" 
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className={`w-64 ${role === 'admin' ? 'bg-slate-900 text-slate-300' : 'bg-white text-gray-600 shadow-md'} flex-col hidden md:flex z-20`}>
-        <div className={`h-16 flex items-center px-6 border-b ${role === 'admin' ? 'border-slate-800 bg-slate-950 text-white' : 'border-gray-200 text-emerald-600'}`}>
-          <Logo className={`h-8 w-8 mr-2 ${role === 'admin' ? 'bg-white p-0.5 rounded' : ''}`} />
-          <span className="font-bold text-xl">LPH {role === 'admin' ? 'Admin' : 'Portal'}</span>
+      <aside className={`fixed md:static inset-y-0 left-0 w-64 ${role === 'admin' ? 'bg-slate-900 text-slate-300' : 'bg-white text-gray-600 shadow-md'} flex flex-col z-50 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 transition-transform duration-300 ease-in-out`}>
+        <div className={`h-16 flex items-center justify-between px-6 border-b shrink-0 ${role === 'admin' ? 'border-slate-800 bg-slate-950 text-white' : 'border-gray-200 text-emerald-600'}`}>
+          <div className="flex items-center">
+            <Logo className={`h-8 w-8 mr-2 ${role === 'admin' ? 'bg-white p-0.5 rounded' : ''}`} />
+            <span className="font-bold text-xl">LPH {role === 'admin' ? 'Admin' : 'Portal'}</span>
+          </div>
+          <button onClick={() => setIsSidebarOpen(false)} className="md:hidden">
+            <X className="w-6 h-6" />
+          </button>
         </div>
         
-        <div className={`p-4 text-center border-b ${role === 'admin' ? 'border-slate-800' : 'border-gray-200'}`}>
+        <div className={`p-4 text-center border-b shrink-0 ${role === 'admin' ? 'border-slate-800' : 'border-gray-200'}`}>
             <div className={`w-12 h-12 rounded-full mx-auto flex items-center justify-center text-xl font-bold mb-2 ${role === 'admin' ? 'bg-emerald-600 text-white' : 'bg-emerald-100 text-emerald-600'}`}>
                 {role === 'admin' ? 'AD' : 'PU'}
             </div>
@@ -1257,19 +1272,19 @@ function DashboardLayout({ children, role, navigateTo, logout, currentView }: an
         </div>
 
         <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
-          <button onClick={() => navigateTo(role === 'admin' ? 'admin-dashboard' : 'pu-dashboard')} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView.includes('dashboard') ? (role === 'admin' ? 'bg-emerald-600 text-white' : 'bg-emerald-100 text-emerald-700 font-medium') : (role === 'admin' ? 'hover:bg-slate-800' : 'hover:bg-emerald-50')}`}>
+          <button onClick={() => { navigateTo(role === 'admin' ? 'admin-dashboard' : 'pu-dashboard'); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView.includes('dashboard') ? (role === 'admin' ? 'bg-emerald-600 text-white' : 'bg-emerald-100 text-emerald-700 font-medium') : (role === 'admin' ? 'hover:bg-slate-800' : 'hover:bg-emerald-50')}`}>
             <Home className="w-5 h-5 mr-3" /> Dashboard
           </button>
           
           {role === 'pu' && (
-            <button onClick={() => navigateTo('pu-pengajuan')} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'pu-pengajuan' ? 'bg-emerald-100 text-emerald-700 font-medium' : 'hover:bg-emerald-50 hover:text-emerald-600'}`}>
+            <button onClick={() => { navigateTo('pu-pengajuan'); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'pu-pengajuan' ? 'bg-emerald-100 text-emerald-700 font-medium' : 'hover:bg-emerald-50 hover:text-emerald-600'}`}>
               <PlusCircle className="w-5 h-5 mr-3" /> Buat Pengajuan
             </button>
           )}
           
           {role === 'admin' && (
             <>
-              <button onClick={() => navigateTo('admin-berita')} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'admin-berita' ? 'bg-emerald-600 text-white font-medium' : 'hover:bg-slate-800 hover:text-white'}`}>
+              <button onClick={() => { navigateTo('admin-berita'); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'admin-berita' ? 'bg-emerald-600 text-white font-medium' : 'hover:bg-slate-800 hover:text-white'}`}>
                 <Newspaper className="w-5 h-5 mr-3" /> Publikasi & Berita
               </button>
               <button className="w-full flex items-center px-4 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white transition-colors">
@@ -1283,7 +1298,7 @@ function DashboardLayout({ children, role, navigateTo, logout, currentView }: an
           </button>
         </nav>
         
-        <div className={`p-4 border-t ${role === 'admin' ? 'border-slate-800' : 'border-gray-200'}`}>
+        <div className={`p-4 border-t shrink-0 ${role === 'admin' ? 'border-slate-800' : 'border-gray-200'}`}>
           <button onClick={logout} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${role === 'admin' ? 'text-red-400 hover:bg-red-500/10' : 'text-red-500 hover:bg-red-50'}`}>
             <LogOut className="w-5 h-5 mr-3" /> Keluar
           </button>
@@ -1291,17 +1306,25 @@ function DashboardLayout({ children, role, navigateTo, logout, currentView }: an
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col h-screen overflow-hidden">
-        <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 z-10 shadow-sm shrink-0">
-          <h2 className="text-lg font-bold text-gray-800 hidden sm:block">
-            {role === 'admin' ? 'Sistem Manajemen LPH' : 'Portal Pelaku Usaha'}
-          </h2>
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center text-sm font-medium text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100">
-              <Zap className="w-4 h-4 mr-1 text-emerald-500" /> Cloud Sync Active
+      <main className="flex-1 flex flex-col h-screen overflow-hidden w-full relative">
+        <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 sm:px-6 z-10 shadow-sm shrink-0">
+          <div className="flex items-center">
+            <button onClick={() => setIsSidebarOpen(true)} className="md:hidden mr-3 text-gray-500 hover:text-emerald-600">
+              <Menu className="w-6 h-6" />
+            </button>
+            <h2 className="text-lg font-bold text-gray-800 hidden sm:block">
+              {role === 'admin' ? 'Sistem Manajemen LPH' : 'Portal Pelaku Usaha'}
+            </h2>
+            <h2 className="text-lg font-bold text-gray-800 sm:hidden">
+              {role === 'admin' ? 'Admin' : 'Portal PU'}
+            </h2>
+          </div>
+          <div className="flex items-center space-x-2 sm:space-x-4">
+            <div className="hidden sm:flex items-center text-xs sm:text-sm font-medium text-emerald-600 bg-emerald-50 px-2 sm:px-3 py-1 rounded-full border border-emerald-100">
+              <Zap className="w-3 h-3 sm:w-4 sm:h-4 mr-1 text-emerald-500" /> Cloud Sync Active
             </div>
-            <div className="flex items-center space-x-2 pl-4 border-l border-gray-200 cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors">
-               <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+            <div className="flex items-center space-x-2 pl-2 sm:pl-4 sm:border-l border-gray-200 cursor-pointer hover:bg-gray-50 p-1.5 sm:p-2 rounded-lg transition-colors">
+               <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-sm">
                   {role === 'admin' ? 'A' : 'P'}
                </div>
                <span className="text-sm font-medium text-gray-700 hidden sm:block">{role === 'admin' ? 'Admin' : 'Profil PU'}</span>
