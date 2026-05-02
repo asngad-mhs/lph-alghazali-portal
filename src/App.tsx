@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signOut } from 'firebase/auth';
 import { getFirestore, collection, onSnapshot, addDoc, updateDoc, doc, serverTimestamp, deleteDoc } from 'firebase/firestore';
-import { Leaf, Home, FileText, LogOut, PlusCircle, Settings, CheckCircle, Clock, Search, Briefcase, FileSignature, UploadCloud, ArrowLeft, ArrowRight, ShieldCheck, Zap, MonitorSmartphone, UserCheck, Newspaper, Edit, Trash2, X, Image as ImageIcon, Route, Coins, ChevronDown, ChevronRight, Calculator, Receipt, CalendarDays, Activity, Video, Link, MapPin, Phone, Mail, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
+import { Leaf, Home, FileText, LogOut, PlusCircle, Settings, CheckCircle, Clock, Search, Briefcase, FileSignature, UploadCloud, ArrowLeft, ArrowRight, ShieldCheck, Zap, MonitorSmartphone, UserCheck, Newspaper, Edit, Trash2, X, Image as ImageIcon, Route, Coins, ChevronDown, ChevronRight, Calculator, Receipt, CalendarDays, Activity, Video, Link, MapPin, Phone, Mail, Facebook, Twitter, Instagram, Linkedin, History, Target, Award, Network, Users, BookOpen, Handshake } from 'lucide-react';
 
 // ==========================================
 // 1. FIREBASE INITIALIZATION (CLOUD SETUP)
@@ -330,9 +330,34 @@ function LandingView({ navigateTo, beritaList }: any) {
               <a href="#beranda" className="text-gray-600 hover:text-emerald-600 font-medium transition-colors flex items-center">
                 <Home className="w-4 h-4 mr-1" /> Beranda
               </a>
-              <a href="#profil" className="text-gray-600 hover:text-emerald-600 font-medium transition-colors flex items-center">
-                <UserCheck className="w-4 h-4 mr-1" /> Profil
-              </a>
+              <div className="relative group">
+                <button className="text-gray-600 hover:text-emerald-600 font-medium transition-colors flex items-center py-5">
+                  <UserCheck className="w-4 h-4 mr-1" /> Profil <ChevronDown className="w-4 h-4 ml-1" />
+                </button>
+                <div className="absolute top-[80%] left-0 w-72 bg-white border border-gray-100 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 overflow-hidden">
+                  <a href="#profil" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                    <History className="w-4 h-4 mr-2" /> Sejarah dan Latar Belakang
+                  </a>
+                  <a href="#profil" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                    <Target className="w-4 h-4 mr-2" /> Visi Misi
+                  </a>
+                  <a href="#profil" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                    <Award className="w-4 h-4 mr-2" /> Kebijakan Mutu & Sasaran Mutu
+                  </a>
+                  <a href="#profil" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                    <Network className="w-4 h-4 mr-2" /> Struktur Organisasi
+                  </a>
+                  <a href="#profil" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                    <Users className="w-4 h-4 mr-2" /> Auditor Halal
+                  </a>
+                  <a href="#profil" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                    <BookOpen className="w-4 h-4 mr-2" /> SDM Syariah
+                  </a>
+                  <a href="#profil" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center">
+                    <Handshake className="w-4 h-4 mr-2" /> Kerjasama
+                  </a>
+                </div>
+              </div>
               <div className="relative group">
                 <button className="text-gray-600 hover:text-emerald-600 font-medium transition-colors flex items-center py-5">
                   <Briefcase className="w-4 h-4 mr-1" /> Layanan <ChevronDown className="w-4 h-4 ml-1" />
