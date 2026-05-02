@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signOut } from 'firebase/auth';
 import { getFirestore, collection, onSnapshot, addDoc, updateDoc, doc, serverTimestamp, deleteDoc } from 'firebase/firestore';
-import { Leaf, Home, FileText, LogOut, PlusCircle, Settings, CheckCircle, Clock, Search, Briefcase, FileSignature, UploadCloud, ArrowLeft, ArrowRight, ShieldCheck, Zap, MonitorSmartphone, UserCheck, Newspaper, Edit, Trash2, X, Image as ImageIcon, Route, Coins, ChevronDown, ChevronRight, Calculator, Receipt, CalendarDays, Activity, Video, Link, MapPin, Phone, Mail, Facebook, Twitter, Instagram, Linkedin, History, Target, Award, Network, Users, BookOpen, Handshake, Menu } from 'lucide-react';
+import { Leaf, Home, FileText, LogOut, PlusCircle, Settings, CheckCircle, Clock, Search, Briefcase, FileSignature, UploadCloud, ArrowLeft, ArrowRight, ShieldCheck, Zap, MonitorSmartphone, UserCheck, Newspaper, Edit, Trash2, X, Image as ImageIcon, Route, Coins, ChevronDown, ChevronRight, Calculator, Receipt, CalendarDays, Activity, Video, Link, MapPin, Phone, Mail, Facebook, Twitter, Instagram, Linkedin, History, Target, Award, Network, Users, BookOpen, Handshake, Menu, Scale, Landmark } from 'lucide-react';
 
 // ==========================================
 // 1. FIREBASE INITIALIZATION (CLOUD SETUP)
@@ -404,6 +404,31 @@ function LandingView({ navigateTo, beritaList }: any) {
               </div>
               <div className="relative group">
                 <button className="text-gray-600 hover:text-emerald-600 font-medium transition-colors flex items-center py-5">
+                  <Scale className="w-4 h-4 mr-1" /> Regulasi <ChevronDown className="w-4 h-4 ml-1" />
+                </button>
+                <div className="absolute top-[80%] left-0 w-72 bg-white border border-gray-100 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 overflow-hidden z-50">
+                  <a href="#regulasi" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                    <Scale className="w-4 h-4 mr-2 shrink-0" /> <span className="truncate">Undang-undang RI</span>
+                  </a>
+                  <a href="#regulasi" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                    <Landmark className="w-4 h-4 mr-2 shrink-0" /> <span className="truncate">Peraturan Pemerintah</span>
+                  </a>
+                  <a href="#regulasi" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                    <BookOpen className="w-4 h-4 mr-2 shrink-0" /> <span className="truncate">Keputusan Mentri Agama</span>
+                  </a>
+                  <a href="#regulasi" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                    <FileSignature className="w-4 h-4 mr-2 shrink-0" /> <span className="truncate">Keputusan Kepala BPJPH</span>
+                  </a>
+                  <a href="#regulasi" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                    <ShieldCheck className="w-4 h-4 mr-2 shrink-0" /> <span className="truncate">Peraturan BPOM</span>
+                  </a>
+                  <a href="#regulasi" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center">
+                    <Award className="w-4 h-4 mr-2 shrink-0" /> <span className="truncate">SNI</span>
+                  </a>
+                </div>
+              </div>
+              <div className="relative group">
+                <button className="text-gray-600 hover:text-emerald-600 font-medium transition-colors flex items-center py-5">
                   <Newspaper className="w-4 h-4 mr-1" /> Berita <ChevronDown className="w-4 h-4 ml-1" />
                 </button>
                 <div className="absolute top-[80%] left-0 w-48 bg-white border border-gray-100 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 overflow-hidden">
@@ -481,6 +506,18 @@ function LandingView({ navigateTo, beritaList }: any) {
                 <a href="#tarif-layanan" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Tarif Layanan</a>
                 <a href="#form-perhitungan-biaya" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Form Perhitungan Biaya</a>
                 <a href="#detail-hasil-perhitungan" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Detail Hasil Perhitungan</a>
+              </div>
+            </div>
+
+            <div className="px-3 py-2">
+              <div className="text-sm font-bold text-emerald-600 mb-1 flex items-center"><Scale className="w-4 h-4 mr-2" /> Regulasi</div>
+              <div className="ml-6 space-y-1 border-l-2 border-emerald-100 pl-3">
+                <a href="#regulasi" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center py-1.5 text-sm text-gray-600 hover:text-emerald-600"><Scale className="w-4 h-4 mr-2 shrink-0" /> Undang-undang RI</a>
+                <a href="#regulasi" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center py-1.5 text-sm text-gray-600 hover:text-emerald-600"><Landmark className="w-4 h-4 mr-2 shrink-0" /> Peraturan Pemerintah</a>
+                <a href="#regulasi" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center py-1.5 text-sm text-gray-600 hover:text-emerald-600"><BookOpen className="w-4 h-4 mr-2 shrink-0" /> Keputusan Mentri Agama</a>
+                <a href="#regulasi" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center py-1.5 text-sm text-gray-600 hover:text-emerald-600"><FileSignature className="w-4 h-4 mr-2 shrink-0" /> Keputusan Kepala BPJPH</a>
+                <a href="#regulasi" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center py-1.5 text-sm text-gray-600 hover:text-emerald-600"><ShieldCheck className="w-4 h-4 mr-2 shrink-0" /> Peraturan BPOM</a>
+                <a href="#regulasi" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center py-1.5 text-sm text-gray-600 hover:text-emerald-600"><Award className="w-4 h-4 mr-2 shrink-0" /> SNI</a>
               </div>
             </div>
 
