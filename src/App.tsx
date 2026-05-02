@@ -1114,8 +1114,8 @@ function LandingView({ navigateTo, beritaList }: any) {
                     <h4 className="text-white text-lg font-bold mb-4">Tautan Cepat</h4>
                     <ul className="space-y-3 text-sm text-gray-400">
                         <li><a href="#beranda" className="hover:text-emerald-400 transition-colors flex items-center"><ChevronRight className="w-4 h-4 mr-1 text-emerald-600" /> Beranda</a></li>
-                        <li><a href="#kalkulator" className="hover:text-emerald-400 transition-colors flex items-center"><ChevronRight className="w-4 h-4 mr-1 text-emerald-600" /> Kalkulator Biaya</a></li>
-                        <li><a href="#prosedur" className="hover:text-emerald-400 transition-colors flex items-center"><ChevronRight className="w-4 h-4 mr-1 text-emerald-600" /> Prosedur</a></li>
+                        <li><a href="#tarif-layanan" className="hover:text-emerald-400 transition-colors flex items-center"><ChevronRight className="w-4 h-4 mr-1 text-emerald-600" /> Kalkulator Biaya</a></li>
+                        <li><a href="#alur-sertifikasi" className="hover:text-emerald-400 transition-colors flex items-center"><ChevronRight className="w-4 h-4 mr-1 text-emerald-600" /> Prosedur</a></li>
                         <li><a href="#berita" className="hover:text-emerald-400 transition-colors flex items-center"><ChevronRight className="w-4 h-4 mr-1 text-emerald-600" /> Berita Utama</a></li>
                         <li><a href="#faq" className="hover:text-emerald-400 transition-colors flex items-center"><ChevronRight className="w-4 h-4 mr-1 text-emerald-600" /> FAQ</a></li>
                     </ul>
