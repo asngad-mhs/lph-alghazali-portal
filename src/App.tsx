@@ -427,9 +427,9 @@ function LandingView({ navigateTo, beritaList }: any) {
             </div>
             <div className="flex items-center space-x-2 sm:space-x-4">
               <button onClick={() => navigateTo('login')} className="bg-emerald-600 text-white px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg font-medium text-sm sm:text-base hover:bg-emerald-700 shadow-md">Masuk</button>
-              <button onClick={() => navigateTo('login-admin')} className="hidden sm:flex opacity-0 hover:opacity-100 focus:opacity-100 text-emerald-600 transition-opacity items-center" title="Admin Aplikasi">
+              <button onClick={() => navigateTo('login-admin')} className="hidden sm:flex opacity-0 hover:opacity-100 focus:opacity-100 text-emerald-600 transition-opacity items-center" title="Admin">
                 <ShieldCheck className="w-5 h-5 mr-1" />
-                <span className="font-medium text-sm">Admin Aplikasi</span>
+                <span className="font-medium text-sm">Admin</span>
               </button>
               <button className="flex items-center bg-gray-50 p-1.5 sm:p-2 rounded-lg border border-gray-100 transition-colors shadow-sm hover:shadow" title="Indonesia (ID)">
                 <div className="w-6 h-4 sm:w-7 sm:h-5 rounded-sm overflow-hidden border border-gray-200 flex flex-col shadow-inner">
