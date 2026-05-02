@@ -420,11 +420,14 @@ function LandingView({ navigateTo, beritaList }: any) {
               <a href="#faq" className="text-gray-600 hover:text-emerald-600 font-medium transition-colors flex items-center">
                 <Search className="w-4 h-4 mr-1" /> FAQ
               </a>
+              <a href="https://wa.me/6285802494252" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-emerald-600 font-medium transition-colors flex items-center">
+                <Phone className="w-4 h-4 mr-1" /> Kontak
+              </a>
             </div>
             <div className="flex items-center space-x-4">
-              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 text-xl" title="Indonesia">
-                🇮🇩
-              </div>
+              <button className="flex items-center text-gray-600 hover:text-emerald-600 font-medium bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100 transition-colors" title="Indonesia (ID)">
+                <span className="text-lg leading-none">🇮🇩</span>
+              </button>
               <button onClick={() => navigateTo('login')} className="bg-emerald-600 text-white px-5 py-2.5 rounded-lg font-medium hover:bg-emerald-700 shadow-md">Masuk</button>
               <button onClick={() => navigateTo('login-admin')} className="opacity-0 hover:opacity-100 focus:opacity-100 text-emerald-600 transition-opacity flex items-center" title="Admin Aplikasi">
                 <ShieldCheck className="w-5 h-5 mr-1" />
@@ -703,7 +706,7 @@ function LandingView({ navigateTo, beritaList }: any) {
                 <div className="bg-emerald-50 rounded-2xl p-8 border border-emerald-100 shadow-sm text-center">
                     <h3 className="font-bold text-gray-900 text-xl mb-2">Usaha Besar</h3>
                     <p className="text-gray-600 text-sm mb-6">Pabrikasi / Franchise Besar</p>
-                    <div className="text-emerald-600 font-extrabold text-3xl mb-6">Hubungi Kami</div>
+                    <a href="https://wa.me/6285802494252" target="_blank" rel="noopener noreferrer" className="inline-block bg-emerald-600 text-white font-bold py-3 px-8 rounded-lg mb-6 hover:bg-emerald-700 transition-colors">Hubungi Kami</a>
                     <ul className="text-left text-sm text-gray-600 space-y-3 mb-8">
                         <li className="flex items-start"><CheckCircle className="w-4 h-4 text-emerald-500 mr-2 shrink-0 mt-0.5" /> Audit tersendiri oleh tim khusus</li>
                         <li className="flex items-start"><CheckCircle className="w-4 h-4 text-emerald-500 mr-2 shrink-0 mt-0.5" /> Multi-lokasi pabrik/gerai</li>
@@ -1057,7 +1060,7 @@ function LandingView({ navigateTo, beritaList }: any) {
                         </li>
                         <li className="flex items-center group cursor-pointer">
                            <span className="mr-3 text-emerald-500 group-hover:text-emerald-400 transition-colors"><Phone className="w-5 h-5" /></span>
-                           <span className="group-hover:text-gray-300 transition-colors">+62 813-2778-2079</span>
+                           <a href="https://wa.me/6285802494252" target="_blank" rel="noopener noreferrer" className="group-hover:text-gray-300 transition-colors">0858-0249-4252 (WhatsApp)</a>
                         </li>
                         <li className="flex items-center group cursor-pointer">
                            <span className="mr-3 text-emerald-500 group-hover:text-emerald-400 transition-colors"><Mail className="w-5 h-5" /></span>
