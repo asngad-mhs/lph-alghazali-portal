@@ -1140,7 +1140,7 @@ function LandingView({ navigateTo, beritaList }: any) {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
                 <div>
                     <h4 className="text-white text-lg font-bold mb-4 flex items-center">
-                        <Leaf className="w-6 h-6 mr-2 text-emerald-500" />
+                        <img src="https://drive.google.com/uc?export=view&id=1279_6Jv2PVryShpLbfRpHo6uX3YYue6T" alt="Logo LPH Al-Ghazali" className="h-12 w-auto mr-3 bg-white p-1.5 rounded-lg" referrerPolicy="no-referrer" />
                         LPH Al-Ghazali
                     </h4>
                     <p className="text-gray-400 text-sm leading-relaxed">
