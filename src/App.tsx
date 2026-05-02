@@ -335,7 +335,7 @@ function LandingView({ navigateTo, beritaList }: any) {
                   <UserCheck className="w-4 h-4 mr-1" /> Profil <ChevronDown className="w-4 h-4 ml-1" />
                 </button>
                 <div className="absolute top-[80%] left-0 w-72 bg-white border border-gray-100 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 overflow-hidden">
-                  <a href="#profil" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                  <a href="/dokumen/sejarah_lph_al_ghazali.pdf" target="_blank" rel="noopener noreferrer" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
                     <History className="w-4 h-4 mr-2" /> Sejarah dan Latar Belakang
                   </a>
                   <a href="#profil" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
@@ -422,6 +422,9 @@ function LandingView({ navigateTo, beritaList }: any) {
               </a>
             </div>
             <div className="flex items-center space-x-4">
+              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 text-xl" title="Indonesia">
+                🇮🇩
+              </div>
               <button onClick={() => navigateTo('login')} className="bg-emerald-600 text-white px-5 py-2.5 rounded-lg font-medium hover:bg-emerald-700 shadow-md">Masuk</button>
               <button onClick={() => navigateTo('login-admin')} className="opacity-0 hover:opacity-100 focus:opacity-100 text-emerald-600 transition-opacity flex items-center" title="Admin Aplikasi">
                 <ShieldCheck className="w-5 h-5 mr-1" />
