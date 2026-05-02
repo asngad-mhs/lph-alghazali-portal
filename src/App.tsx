@@ -324,12 +324,12 @@ function LandingView({ navigateTo, beritaList }: any) {
         {/* Top Row */}
         <div className="border-b border-gray-100 bg-emerald-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-20 sm:h-24 py-2">
-              <div className="flex items-center space-x-3">
-                <Logo className="h-14 w-14 sm:h-16 sm:w-16 drop-shadow-md" />
+            <div className="flex justify-between items-center h-24 sm:h-32 py-2">
+              <div className="flex items-center space-x-3 sm:space-x-4">
+                <Logo className="h-16 w-16 sm:h-24 sm:w-24 drop-shadow-md" />
                 <div className="flex flex-col">
-                  <span className="font-bold text-xl sm:text-2xl tracking-tight text-gray-900 leading-none mb-1">LPH Al-Ghazali</span>
-                  <span className="text-xs sm:text-sm font-semibold text-emerald-700 tracking-wider">HALAL INDONESIA</span>
+                  <span className="font-bold text-2xl sm:text-3xl tracking-tight text-gray-900 leading-none mb-1">LPH Al-Ghazali</span>
+                  <span className="text-sm sm:text-base font-semibold text-emerald-700 tracking-wider">HALAL INDONESIA</span>
                 </div>
               </div>
               <div className="flex items-center space-x-2 sm:space-x-4 text-sm mt-1 sm:mt-0">
@@ -586,7 +586,7 @@ function LandingView({ navigateTo, beritaList }: any) {
       </nav>
 
       {/* Hero */}
-      <section id="beranda" className="pt-40 pb-20 bg-emerald-600 text-white flex-1 flex items-center relative overflow-hidden">
+      <section id="beranda" className="pt-48 sm:pt-56 pb-20 bg-emerald-600 text-white flex-1 flex items-center relative overflow-hidden">
          <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#10b981 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center lg:text-left flex flex-col lg:flex-row items-center">
             <div className="lg:w-1/2 lg:pr-12">
