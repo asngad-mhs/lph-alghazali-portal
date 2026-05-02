@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signOut } from 'firebase/auth';
 import { getFirestore, collection, onSnapshot, addDoc, updateDoc, doc, serverTimestamp, deleteDoc } from 'firebase/firestore';
-import { Leaf, Home, FileText, LogOut, PlusCircle, Settings, CheckCircle, Clock, Search, Briefcase, FileSignature, UploadCloud, ArrowLeft, ArrowRight, ShieldCheck, Zap, MonitorSmartphone, UserCheck, Newspaper, Edit, Trash2, X, Image as ImageIcon, Route, Coins, ChevronDown, ChevronRight, Calculator, Receipt, CalendarDays, Activity, Video, Link, MapPin, Phone, Mail, Facebook, Twitter, Instagram, Linkedin, History, Target, Award, Network, Users, BookOpen, Handshake } from 'lucide-react';
+import { Leaf, Home, FileText, LogOut, PlusCircle, Settings, CheckCircle, Clock, Search, Briefcase, FileSignature, UploadCloud, ArrowLeft, ArrowRight, ShieldCheck, Zap, MonitorSmartphone, UserCheck, Newspaper, Edit, Trash2, X, Image as ImageIcon, Route, Coins, ChevronDown, ChevronRight, Calculator, Receipt, CalendarDays, Activity, Video, Link, MapPin, Phone, Mail, Facebook, Twitter, Instagram, Linkedin, History, Target, Award, Network, Users, BookOpen, Handshake, Menu } from 'lucide-react';
 
 // ==========================================
 // 1. FIREBASE INITIALIZATION (CLOUD SETUP)
@@ -272,6 +272,7 @@ function LandingView({ navigateTo, beritaList }: any) {
     jumlahPabrik: 0,
     tiketPesawat: 0
   });
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleFormChange = (e: any) => {
     const { name, value } = e.target;
@@ -326,7 +327,7 @@ function LandingView({ navigateTo, beritaList }: any) {
               <Logo className="h-10 w-10 mr-2" />
               <span className="font-bold text-2xl tracking-tight text-gray-900">LPH Al-Ghazali</span>
             </div>
-            <div className="hidden md:flex space-x-8 items-center">
+            <div className="hidden lg:flex space-x-8 items-center">
               <a href="#beranda" className="text-gray-600 hover:text-emerald-600 font-medium transition-colors flex items-center">
                 <Home className="w-4 h-4 mr-1" /> Beranda
               </a>
@@ -424,18 +425,92 @@ function LandingView({ navigateTo, beritaList }: any) {
                 <Phone className="w-4 h-4 mr-1" /> Kontak
               </a>
             </div>
-            <div className="flex items-center space-x-4">
-              <button className="flex items-center text-gray-600 hover:text-emerald-600 font-medium bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100 transition-colors" title="Indonesia (ID)">
+            <div className="flex items-center space-x-2 sm:space-x-4">
+              <button className="flex items-center text-gray-600 hover:text-emerald-600 font-medium bg-gray-50 px-2 sm:px-3 py-1.5 rounded-lg border border-gray-100 transition-colors" title="Indonesia (ID)">
                 <span className="text-lg leading-none">🇮🇩</span>
               </button>
-              <button onClick={() => navigateTo('login')} className="bg-emerald-600 text-white px-5 py-2.5 rounded-lg font-medium hover:bg-emerald-700 shadow-md">Masuk</button>
-              <button onClick={() => navigateTo('login-admin')} className="opacity-0 hover:opacity-100 focus:opacity-100 text-emerald-600 transition-opacity flex items-center" title="Admin Aplikasi">
+              <button onClick={() => navigateTo('login')} className="bg-emerald-600 text-white px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg font-medium text-sm sm:text-base hover:bg-emerald-700 shadow-md">Masuk</button>
+              <button onClick={() => navigateTo('login-admin')} className="hidden sm:flex opacity-0 hover:opacity-100 focus:opacity-100 text-emerald-600 transition-opacity items-center" title="Admin Aplikasi">
                 <ShieldCheck className="w-5 h-5 mr-1" />
                 <span className="font-medium text-sm">Admin Aplikasi</span>
+              </button>
+              <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="lg:hidden text-gray-600 hover:text-emerald-600 ml-2">
+                {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
             </div>
           </div>
         </div>
+        
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="lg:hidden bg-white border-b border-gray-100 px-4 pt-2 pb-4 space-y-1 shadow-lg max-h-[80vh] overflow-y-auto">
+            <a href="#beranda" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-md">
+              <div className="flex items-center"><Home className="w-4 h-4 mr-2" /> Beranda</div>
+            </a>
+            
+            <div className="px-3 py-2">
+              <div className="text-sm font-bold text-emerald-600 mb-1 flex items-center"><UserCheck className="w-4 h-4 mr-2" /> Profil</div>
+              <div className="ml-6 space-y-1 border-l-2 border-emerald-100 pl-3">
+                <a href="/dokumen/sejarah_lph_al_ghazali.pdf" target="_blank" rel="noopener noreferrer" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Sejarah dan Latar Belakang</a>
+                <a href="#profil" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Visi Misi</a>
+                <a href="#profil" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Kebijakan Mutu & Sasaran Mutu</a>
+                <a href="#profil" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Struktur Organisasi</a>
+                <a href="#profil" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Auditor Halal</a>
+                <a href="#profil" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">SDM Syariah</a>
+                <a href="#profil" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Kerjasama</a>
+              </div>
+            </div>
+
+            <div className="px-3 py-2">
+              <div className="text-sm font-bold text-emerald-600 mb-1 flex items-center"><Briefcase className="w-4 h-4 mr-2" /> Layanan</div>
+              <div className="ml-6 space-y-1 border-l-2 border-emerald-100 pl-3">
+                <a href="#pendaftaran" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Pendaftaran Sertifikasi Halal</a>
+                <a href="#ruang-lingkup" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Ruang Lingkup dan Layanan Pemeriksaan Halal</a>
+                <a href="#pencarian" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Pencarian Sertifikasi Halal</a>
+                <a href="#daftar-audit" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Daftar Audit</a>
+              </div>
+            </div>
+
+            <div className="px-3 py-2">
+              <div className="text-sm font-bold text-emerald-600 mb-1 flex items-center"><FileSignature className="w-4 h-4 mr-2" /> Proses</div>
+              <div className="ml-6 space-y-1 border-l-2 border-emerald-100 pl-3">
+                <a href="#alur-sertifikasi" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Alur Sertifikasi</a>
+                <a href="#tarif-layanan" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Tarif Layanan</a>
+                <a href="#form-perhitungan-biaya" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Form Perhitungan Biaya</a>
+                <a href="#detail-hasil-perhitungan" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Detail Hasil Perhitungan</a>
+              </div>
+            </div>
+
+            <div className="px-3 py-2">
+              <div className="text-sm font-bold text-emerald-600 mb-1 flex items-center"><Newspaper className="w-4 h-4 mr-2" /> Berita</div>
+              <div className="ml-6 space-y-1 border-l-2 border-emerald-100 pl-3">
+                <a href="#berita" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Berita Utama</a>
+                <a href="#kegiatan" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Kegiatan</a>
+                <a href="#agenda" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Agenda</a>
+              </div>
+            </div>
+
+            <a href="#faq" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-md">
+              <div className="flex items-center"><Search className="w-4 h-4 mr-2" /> FAQ</div>
+            </a>
+            
+            <a href="https://wa.me/6285802494252" target="_blank" rel="noopener noreferrer" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-md">
+              <div className="flex items-center"><Phone className="w-4 h-4 mr-2" /> Kontak</div>
+            </a>
+            
+            <div className="px-3 pt-4 pb-2 border-t border-gray-100 mt-2">
+              <button 
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  navigateTo('login-admin');
+                }} 
+                className="w-full flex justify-center items-center px-4 py-2 text-emerald-600 hover:bg-emerald-50 rounded-lg text-sm font-medium border border-emerald-100"
+              >
+                <ShieldCheck className="w-4 h-4 mr-2" /> Login Admin
+              </button>
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* Hero */}
