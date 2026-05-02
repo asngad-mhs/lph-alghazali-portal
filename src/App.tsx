@@ -784,9 +784,18 @@ function LandingView({ navigateTo, beritaList }: any) {
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Jumlah Pabrik / Cabang</label>
                                 <input name="jumlahPabrik" type="number" min="0" value={formData.jumlahPabrik || ''} onChange={handleFormChange} placeholder="Isi jumlah pabrik / cabang" className="w-full border-gray-300 rounded-lg border p-3 bg-white focus:ring-emerald-500 focus:border-emerald-500" />
                             </div>
-                            <div>
+                            <div className="md:col-span-2">
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Lembaga Pemeriksa Halal (LPH)</label>
                                 <input type="text" value="LPH ALGHAZALI" readOnly className="w-full border-gray-300 rounded-lg border p-3 bg-gray-100 text-gray-600 focus:ring-emerald-500 focus:border-emerald-500 cursor-not-allowed" />
+                            </div>
+                            <div className="md:col-span-2 pt-4">
+                                <button type="button" onClick={() => {
+                                    const el = document.getElementById('detail-hasil-perhitungan');
+                                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                                }} className="w-full bg-emerald-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-colors flex items-center justify-center">
+                                    <Calculator className="w-5 h-5 mr-2" />
+                                    Hitung
+                                </button>
                             </div>
                         </div>
                     </form>
