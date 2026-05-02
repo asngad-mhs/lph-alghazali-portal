@@ -321,18 +321,46 @@ function LandingView({ navigateTo, beritaList }: any) {
     <div className="flex flex-col min-h-screen scroll-smooth">
       {/* Navbar */}
       <nav className="fixed w-full bg-white/90 backdrop-blur-md border-b border-gray-100 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-20 items-center">
-            <div className="flex items-center">
-              <Logo className="h-10 w-10 mr-2" />
-              <span className="font-bold text-2xl tracking-tight text-gray-900">LPH Al-Ghazali</span>
+        {/* Top Row */}
+        <div className="border-b border-gray-100 bg-emerald-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center h-14">
+              <div className="flex items-center">
+                <Logo className="h-8 w-8 mr-2" />
+                <span className="font-bold text-xl tracking-tight text-gray-900 hidden sm:block">LPH Al-Ghazali</span>
+                <span className="font-bold text-xl tracking-tight text-gray-900 sm:hidden">LPH</span>
+              </div>
+              <div className="flex items-center space-x-4 sm:space-x-6 text-sm">
+                <a href="https://wa.me/6285802494252" target="_blank" rel="noopener noreferrer" className="hidden sm:flex items-center font-medium text-emerald-700 hover:text-emerald-800 transition-colors">
+                  <Phone className="w-4 h-4 mr-1.5" /> 0858 0249 4252
+                </a>
+                <div className="relative hidden md:block">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Search className="h-4 w-4 text-emerald-600" />
+                  </div>
+                  <input type="text" placeholder="Pencarian..." className="pl-9 pr-4 py-1.5 w-48 border border-emerald-200 rounded-full text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 bg-white" />
+                </div>
+                <button className="md:hidden text-emerald-700 p-1">
+                  <Search className="w-5 h-5" />
+                </button>
+                <button onClick={() => navigateTo('login')} className="flex items-center bg-emerald-600 text-white px-4 py-1.5 rounded-full font-medium hover:bg-emerald-700 shadow-sm transition-colors">
+                  <LogOut className="w-4 h-4 mr-1.5 rotate-180" /> Masuk
+                </button>
+              </div>
             </div>
-            <div className="hidden lg:flex space-x-8 items-center">
-              <a href="#beranda" className="text-gray-600 hover:text-emerald-600 font-medium transition-colors flex items-center">
+          </div>
+        </div>
+
+        {/* Bottom Row */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-14 items-center">
+            {/* Desktop Navigation */}
+            <div className="hidden lg:flex space-x-6 items-center text-sm font-medium">
+              <a href="#beranda" className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center">
                 <Home className="w-4 h-4 mr-1" /> Beranda
               </a>
               <div className="relative group">
-                <button className="text-gray-600 hover:text-emerald-600 font-medium transition-colors flex items-center py-5">
+                <button className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center py-4">
                   <UserCheck className="w-4 h-4 mr-1" /> Profil <ChevronDown className="w-4 h-4 ml-1" />
                 </button>
                 <div className="absolute top-[80%] left-0 w-72 bg-white border border-gray-100 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 overflow-hidden">
@@ -360,7 +388,7 @@ function LandingView({ navigateTo, beritaList }: any) {
                 </div>
               </div>
               <div className="relative group">
-                <button className="text-gray-600 hover:text-emerald-600 font-medium transition-colors flex items-center py-5">
+                <button className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center py-4">
                   <Briefcase className="w-4 h-4 mr-1" /> Layanan <ChevronDown className="w-4 h-4 ml-1" />
                 </button>
                 <div className="absolute top-[80%] left-0 w-80 bg-white border border-gray-100 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 overflow-hidden">
@@ -379,7 +407,7 @@ function LandingView({ navigateTo, beritaList }: any) {
                 </div>
               </div>
               <div className="relative group">
-                <button className="text-gray-600 hover:text-emerald-600 font-medium transition-colors flex items-center py-5">
+                <button className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center py-4">
                   <FileSignature className="w-4 h-4 mr-1" /> Proses <ChevronDown className="w-4 h-4 ml-1" />
                 </button>
                 <div className="absolute top-[80%] left-0 w-52 bg-white border border-gray-100 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 overflow-hidden">
@@ -403,7 +431,7 @@ function LandingView({ navigateTo, beritaList }: any) {
                 </div>
               </div>
               <div className="relative group">
-                <button className="text-gray-600 hover:text-emerald-600 font-medium transition-colors flex items-center py-5">
+                <button className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center py-4">
                   <Scale className="w-4 h-4 mr-1" /> Regulasi <ChevronDown className="w-4 h-4 ml-1" />
                 </button>
                 <div className="absolute top-[80%] left-0 w-72 bg-white border border-gray-100 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 overflow-hidden z-50">
@@ -428,7 +456,7 @@ function LandingView({ navigateTo, beritaList }: any) {
                 </div>
               </div>
               <div className="relative group">
-                <button className="text-gray-600 hover:text-emerald-600 font-medium transition-colors flex items-center py-5">
+                <button className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center py-4">
                   <Newspaper className="w-4 h-4 mr-1" /> Berita <ChevronDown className="w-4 h-4 ml-1" />
                 </button>
                 <div className="absolute top-[80%] left-0 w-48 bg-white border border-gray-100 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 overflow-hidden">
@@ -443,15 +471,15 @@ function LandingView({ navigateTo, beritaList }: any) {
                   </a>
                 </div>
               </div>
-              <a href="#faq" className="text-gray-600 hover:text-emerald-600 font-medium transition-colors flex items-center">
+              <a href="#faq" className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center">
                 <Search className="w-4 h-4 mr-1" /> FAQ
               </a>
-              <a href="https://wa.me/6285802494252" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-emerald-600 font-medium transition-colors flex items-center">
+              <a href="https://wa.me/6285802494252" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center">
                 <Phone className="w-4 h-4 mr-1" /> Kontak
               </a>
             </div>
-            <div className="flex items-center space-x-2 sm:space-x-4">
-              <button onClick={() => navigateTo('login')} className="bg-emerald-600 text-white px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg font-medium text-sm sm:text-base hover:bg-emerald-700 shadow-md">Masuk</button>
+
+            <div className="flex items-center space-x-2 sm:space-x-4 lg:ml-auto">
               <button onClick={() => navigateTo('login-admin')} className="hidden sm:flex opacity-0 hover:opacity-100 focus:opacity-100 text-emerald-600 transition-opacity items-center" title="Admin">
                 <ShieldCheck className="w-5 h-5 mr-1" />
                 <span className="font-medium text-sm">Admin</span>
