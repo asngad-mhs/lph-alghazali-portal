@@ -320,31 +320,33 @@ function LandingView({ navigateTo, beritaList }: any) {
   return (
     <div className="flex flex-col min-h-screen scroll-smooth">
       {/* Navbar */}
-      <nav className="fixed w-full bg-white/90 backdrop-blur-md border-b border-gray-100 z-50">
+      <nav className="fixed w-full bg-white/90 backdrop-blur-md z-50">
         {/* Top Row */}
         <div className="border-b border-gray-100 bg-emerald-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-14">
-              <div className="flex items-center">
-                <Logo className="h-8 w-8 mr-2" />
-                <span className="font-bold text-xl tracking-tight text-gray-900 hidden sm:block">LPH Al-Ghazali</span>
-                <span className="font-bold text-xl tracking-tight text-gray-900 sm:hidden">LPH</span>
+            <div className="flex justify-between items-center h-20 sm:h-24 py-2">
+              <div className="flex items-center space-x-3">
+                <Logo className="h-14 w-14 sm:h-16 sm:w-16 drop-shadow-md" />
+                <div className="flex flex-col">
+                  <span className="font-bold text-xl sm:text-2xl tracking-tight text-gray-900 leading-none mb-1">LPH Al-Ghazali</span>
+                  <span className="text-xs sm:text-sm font-semibold text-emerald-700 tracking-wider">HALAL INDONESIA</span>
+                </div>
               </div>
-              <div className="flex items-center space-x-4 sm:space-x-6 text-sm">
-                <a href="https://wa.me/6285802494252" target="_blank" rel="noopener noreferrer" className="hidden sm:flex items-center font-medium text-emerald-700 hover:text-emerald-800 transition-colors">
+              <div className="flex items-center space-x-2 sm:space-x-4 text-sm mt-1 sm:mt-0">
+                <a href="https://wa.me/6285802494252" target="_blank" rel="noopener noreferrer" className="hidden lg:flex items-center font-medium text-emerald-700 hover:text-emerald-800 transition-colors bg-emerald-100/50 px-3 py-2 rounded-full">
                   <Phone className="w-4 h-4 mr-1.5" /> 0858 0249 4252
                 </a>
                 <div className="relative hidden md:block">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <Search className="h-4 w-4 text-emerald-600" />
                   </div>
-                  <input type="text" placeholder="Pencarian..." className="pl-9 pr-4 py-1.5 w-48 border border-emerald-200 rounded-full text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 bg-white" />
+                  <input type="text" placeholder="Pencarian..." className="pl-9 pr-4 py-2 w-48 sm:w-56 border border-emerald-200 rounded-full text-sm focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 bg-white transition-all shadow-sm" />
                 </div>
-                <button className="md:hidden text-emerald-700 p-1">
+                <button className="md:hidden text-emerald-700 p-2 hover:bg-emerald-100 rounded-full transition-colors">
                   <Search className="w-5 h-5" />
                 </button>
-                <button onClick={() => navigateTo('login')} className="flex items-center bg-emerald-600 text-white px-4 py-1.5 rounded-full font-medium hover:bg-emerald-700 shadow-sm transition-colors">
-                  <LogOut className="w-4 h-4 mr-1.5 rotate-180" /> Masuk
+                <button onClick={() => navigateTo('login')} className="flex items-center bg-emerald-600 text-white px-4 sm:px-6 py-2 rounded-full font-medium hover:bg-emerald-700 shadow-md hover:shadow-lg transition-all text-sm">
+                  <LogOut className="w-4 h-4 sm:mr-1.5 rotate-180" /> <span className="hidden sm:inline">Masuk Portal</span>
                 </button>
               </div>
             </div>
@@ -352,14 +354,14 @@ function LandingView({ navigateTo, beritaList }: any) {
         </div>
 
         {/* Bottom Row */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-white border-b border-gray-100">
           <div className="flex justify-between h-14 items-center">
             {/* Desktop Navigation */}
-            <div className="hidden lg:flex space-x-6 items-center text-sm font-medium">
-              <a href="#beranda" className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center">
+            <div className="hidden xl:flex space-x-6 items-center text-sm font-medium">
+              <a href="#beranda" className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center shrink-0">
                 <Home className="w-4 h-4 mr-1" /> Beranda
               </a>
-              <div className="relative group">
+              <div className="relative group shrink-0">
                 <button className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center py-4">
                   <UserCheck className="w-4 h-4 mr-1" /> Profil <ChevronDown className="w-4 h-4 ml-1" />
                 </button>
@@ -387,7 +389,7 @@ function LandingView({ navigateTo, beritaList }: any) {
                   </a>
                 </div>
               </div>
-              <div className="relative group">
+              <div className="relative group shrink-0">
                 <button className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center py-4">
                   <Briefcase className="w-4 h-4 mr-1" /> Layanan <ChevronDown className="w-4 h-4 ml-1" />
                 </button>
@@ -406,7 +408,7 @@ function LandingView({ navigateTo, beritaList }: any) {
                   </a>
                 </div>
               </div>
-              <div className="relative group">
+              <div className="relative group shrink-0">
                 <button className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center py-4">
                   <FileSignature className="w-4 h-4 mr-1" /> Proses <ChevronDown className="w-4 h-4 ml-1" />
                 </button>
@@ -430,7 +432,7 @@ function LandingView({ navigateTo, beritaList }: any) {
                   </div>
                 </div>
               </div>
-              <div className="relative group">
+              <div className="relative group shrink-0">
                 <button className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center py-4">
                   <Scale className="w-4 h-4 mr-1" /> Regulasi <ChevronDown className="w-4 h-4 ml-1" />
                 </button>
@@ -455,7 +457,7 @@ function LandingView({ navigateTo, beritaList }: any) {
                   </a>
                 </div>
               </div>
-              <div className="relative group">
+              <div className="relative group shrink-0">
                 <button className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center py-4">
                   <Newspaper className="w-4 h-4 mr-1" /> Berita <ChevronDown className="w-4 h-4 ml-1" />
                 </button>
@@ -471,15 +473,15 @@ function LandingView({ navigateTo, beritaList }: any) {
                   </a>
                 </div>
               </div>
-              <a href="#faq" className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center">
+              <a href="#faq" className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center shrink-0">
                 <Search className="w-4 h-4 mr-1" /> FAQ
               </a>
-              <a href="#kontak" className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center">
+              <a href="#kontak" className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center shrink-0">
                 <Phone className="w-4 h-4 mr-1" /> Kontak
               </a>
             </div>
 
-            <div className="flex items-center space-x-2 sm:space-x-4 lg:ml-auto">
+            <div className="flex items-center space-x-2 sm:space-x-4 ml-auto xl:ml-0">
               <button onClick={() => navigateTo('login-admin')} className="hidden sm:flex opacity-0 hover:opacity-100 focus:opacity-100 text-emerald-600 transition-opacity items-center" title="Admin">
                 <ShieldCheck className="w-5 h-5 mr-1" />
                 <span className="font-medium text-sm">Admin</span>
@@ -490,8 +492,10 @@ function LandingView({ navigateTo, beritaList }: any) {
                   <div className="w-full h-1/2 bg-white"></div>
                 </div>
               </button>
-              <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="lg:hidden text-gray-600 hover:text-emerald-600 ml-2">
+              <span className="xl:hidden border-l border-gray-200 h-6 mx-1"></span>
+              <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="xl:hidden flex items-center text-gray-600 hover:text-emerald-600 transition-colors bg-gray-50 border border-gray-100 p-1.5 rounded-lg shadow-sm">
                 {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                <span className="hidden sm:block ml-2 text-sm font-medium">Menu</span>
               </button>
             </div>
           </div>
@@ -499,7 +503,7 @@ function LandingView({ navigateTo, beritaList }: any) {
         
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden bg-white border-b border-gray-100 px-4 pt-2 pb-4 space-y-1 shadow-lg max-h-[80vh] overflow-y-auto">
+          <div className="xl:hidden bg-white px-4 pt-2 pb-4 space-y-1 shadow-lg max-h-[80vh] overflow-y-auto">
             <a href="#beranda" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-md">
               <div className="flex items-center"><Home className="w-4 h-4 mr-2" /> Beranda</div>
             </a>
@@ -582,7 +586,7 @@ function LandingView({ navigateTo, beritaList }: any) {
       </nav>
 
       {/* Hero */}
-      <section id="beranda" className="pt-32 pb-20 bg-emerald-600 text-white flex-1 flex items-center relative overflow-hidden">
+      <section id="beranda" className="pt-40 pb-20 bg-emerald-600 text-white flex-1 flex items-center relative overflow-hidden">
          <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#10b981 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center lg:text-left flex flex-col lg:flex-row items-center">
             <div className="lg:w-1/2 lg:pr-12">
