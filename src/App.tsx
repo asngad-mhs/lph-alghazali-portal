@@ -1318,14 +1318,27 @@ function LandingView({ navigateTo, beritaList }: any) {
                         </li>
                         <li className="flex items-center group cursor-pointer">
                            <span className="mr-3 text-emerald-500 group-hover:text-emerald-400 transition-colors"><Mail className="w-5 h-5" /></span>
-                           <span className="group-hover:text-gray-300 transition-colors">lph@alghazali.com</span>
+                           <span className="group-hover:text-gray-300 transition-colors">lphalghazali@gmail.com</span>
+                        </li>
+                        <li className="flex items-start group">
+                           <span className="mt-1 mr-3 text-emerald-500 group-hover:text-emerald-400 transition-colors"><Clock className="w-5 h-5" /></span>
+                           <span className="group-hover:text-gray-300 transition-colors flex flex-col">
+                              <span>Senin - Jum'at,</span>
+                              <span>9:00 AM - 8:00 PM</span>
+                           </span>
                         </li>
                     </ul>
                 </div>
             </div>
             
             <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500 gap-4">
-                <p className="order-3 md:order-1">&copy; {new Date().getFullYear()} LPH Al-Ghazali. Hak Cipta Dilindungi.</p>
+                <div className="order-3 md:order-1 flex flex-col md:flex-row md:items-center md:gap-3 text-center md:text-left">
+                    <p>&copy; {new Date().getFullYear()} LPH Al-Ghazali. Hak Cipta Dilindungi.</p>
+                    <span className="hidden md:inline text-gray-600">•</span>
+                    <p className="flex items-center justify-center md:justify-start text-gray-400 mt-2 md:mt-0 font-medium">
+                        <Clock className="w-4 h-4 mr-1.5 text-emerald-500" /> Jam Buka: Senin - Jum'at, 9:00 AM - 8:00 PM
+                    </p>
+                </div>
                 <div className="flex space-x-5 order-2">
                     <a href="#" className="text-gray-400 hover:text-emerald-500 transition-colors"><span className="sr-only">Facebook</span><Facebook className="w-5 h-5" /></a>
                     <a href="#" className="text-gray-400 hover:text-emerald-500 transition-colors"><span className="sr-only">Twitter</span><Twitter className="w-5 h-5" /></a>
