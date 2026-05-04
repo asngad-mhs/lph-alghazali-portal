@@ -1956,8 +1956,8 @@ function AdminBerita({ data, addData, updateData, deleteData }: any) {
                      <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-6 text-center bg-white cursor-pointer hover:bg-gray-50 transition">
                        <UploadCloud className="text-emerald-500 w-8 h-8 mb-2" />
                        <span className="text-sm font-medium text-gray-700">Klik untuk memilih file</span>
-                       <span className="text-xs text-gray-400 mt-1">Mendukung: JPG, PNG, PDF, MP4 (Maks 10MB)</span>
-                       <input type="file" accept=".jpg,.jpeg,.png,.pdf,.mp4" onChange={handleFileChange} className="hidden" />
+                       <span className="text-xs text-gray-400 mt-1">Mendukung: PDF, JPG, PNG, GIF, SVG, WEBP (Maks 10MB)</span>
+                       <input type="file" accept=".pdf,.jpg,.jpeg,.png,.gif,.svg,.webp" onChange={handleFileChange} className="hidden" />
                      </label>
                    )}
                 </div>
