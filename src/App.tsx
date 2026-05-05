@@ -242,6 +242,12 @@ export default function LPHApp() {
         </DashboardLayout>
       )}
 
+      {currentView === 'pu-settings' && (
+        <DashboardLayout role="pu" navigateTo={navigateTo} logout={handleLogout} currentView={currentView}>
+          <PUSettings navigateTo={navigateTo} />
+        </DashboardLayout>
+      )}
+
       {currentView === 'admin-dashboard' && (
         <DashboardLayout role="admin" navigateTo={navigateTo} logout={handleLogout} currentView={currentView}>
           <AdminDashboard data={pengajuanList} updateStatus={handleUpdateStatus} />
@@ -1478,7 +1484,7 @@ function DashboardLayout({ children, role, navigateTo, logout, currentView }: an
           </button>
           
           {role === 'pu' && (
-            <button onClick={() => { navigateTo('pu-pengajuan'); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'pu-pengajuan' ? 'bg-emerald-100 text-emerald-700 font-medium' : 'hover:bg-emerald-50 hover:text-emerald-600'}`}>
+            <button onClick={() => { navigateTo('pu-settings'); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'pu-pengajuan' || currentView === 'pu-settings' ? 'bg-emerald-100 text-emerald-700 font-medium' : 'hover:bg-emerald-50 hover:text-emerald-600'}`}>
               <PlusCircle className="w-5 h-5 mr-3" /> Buat Pengajuan
             </button>
           )}
@@ -1494,7 +1500,7 @@ function DashboardLayout({ children, role, navigateTo, logout, currentView }: an
             </>
           )}
 
-          <button onClick={() => { if (role === 'admin') { navigateTo('admin-settings'); setIsSidebarOpen(false); } }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'admin-settings' && role === 'admin' ? 'bg-emerald-600 text-white font-medium' : role === 'admin' ? 'hover:bg-slate-800 hover:text-white' : 'hover:bg-emerald-50 hover:text-emerald-600'}`}>
+          <button onClick={() => { if (role === 'admin') { navigateTo('admin-settings'); } else { navigateTo('pu-settings'); } setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'admin-settings' && role === 'admin' ? 'bg-emerald-600 text-white font-medium' : currentView === 'pu-settings' && role === 'pu' ? 'bg-emerald-100 text-emerald-700 font-medium' : role === 'admin' ? 'hover:bg-slate-800 hover:text-white' : 'hover:bg-emerald-50 hover:text-emerald-600'}`}>
             <Settings className="w-5 h-5 mr-3" /> Pengaturan
           </button>
         </nav>
@@ -1552,7 +1558,7 @@ function PUDashboard({ data, navigateTo }: any) {
           <h2 className="text-2xl font-bold text-gray-800">Dashboard Anda</h2>
           <p className="text-gray-500">Pantau status pemeriksaan sertifikasi dari cloud.</p>
         </div>
-        <button onClick={() => navigateTo('pu-pengajuan')} className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-lg font-medium shadow-md transition-colors flex items-center">
+        <button onClick={() => navigateTo('pu-settings')} className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-lg font-medium shadow-md transition-colors flex items-center">
           <PlusCircle className="w-5 h-5 mr-2" /> Pengajuan Baru
         </button>
       </div>
@@ -1578,7 +1584,7 @@ function PUDashboard({ data, navigateTo }: any) {
           <div className="p-12 text-center text-gray-500">
             <FileSignature className="w-12 h-12 mx-auto text-gray-300 mb-3" />
             <p>Belum ada data pengajuan di Cloud.</p>
-            <button onClick={() => navigateTo('pu-pengajuan')} className="mt-4 text-emerald-600 font-medium hover:underline">Buat pengajuan pertama Anda</button>
+            <button onClick={() => navigateTo('pu-settings')} className="mt-4 text-emerald-600 font-medium hover:underline">Buat pengajuan pertama Anda</button>
           </div>
         ) : (
           <table className="min-w-full divide-y divide-gray-200">
@@ -1615,14 +1621,52 @@ function PUDashboard({ data, navigateTo }: any) {
 
 function PUFormPengajuan({ submit, navigateTo }: any) {
   const [formData, setFormData] = useState({ companyName: '', productName: '' });
+  const [file, setFile] = useState<File | null>(null);
+  const [dragActive, setDragActive] = useState(false);
   const [loading, setLoading] = useState(false);
+  const inputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFile(e.dataTransfer.files[0]);
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    if (e.target.files && e.target.files[0]) {
+      handleFile(e.target.files[0]);
+    }
+  };
+
+  const handleFile = (selectedFile: File) => {
+    const validTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
+    if (validTypes.includes(selectedFile.type)) {
+      setFile(selectedFile);
+    } else {
+      alert("Tipe file tidak didukung. Harap unggah PDF, JPG, PNG, atau WEBP.");
+    }
+  };
 
   const onSubmit = (e: any) => {
     e.preventDefault();
     setLoading(true);
     // Simulate Cloud Upload Delay
     setTimeout(() => {
-      submit(formData);
+      submit({ ...formData, file });
     }, 1200);
   };
 
@@ -1648,10 +1692,42 @@ function PUFormPengajuan({ submit, navigateTo }: any) {
             <input type="text" required value={formData.productName} onChange={e => setFormData({...formData, productName: e.target.value})} className="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500" placeholder="Kripik Pisang Aneka Rasa" />
           </div>
 
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-emerald-400 transition-colors bg-gray-50">
-             <UploadCloud className="w-10 h-10 mx-auto text-gray-400 mb-2" />
-             <p className="text-sm font-medium text-gray-900">Unggah Matriks Bahan (PDF)</p>
-             <p className="text-xs text-gray-500 mt-1">Disimulasikan sebagai metadata dokumen di Cloud</p>
+          <div
+            className={`relative border-2 border-dashed rounded-lg p-6 text-center transition-colors cursor-pointer ${
+              dragActive ? 'border-emerald-500 bg-emerald-50' : 'border-gray-300 hover:border-emerald-400 bg-gray-50'
+            }`}
+            onDragEnter={handleDrag}
+            onDragLeave={handleDrag}
+            onDragOver={handleDrag}
+            onDrop={handleDrop}
+            onClick={() => inputRef.current?.click()}
+          >
+             <input
+               ref={inputRef}
+               type="file"
+               className="hidden"
+               accept=".pdf,.jpg,.jpeg,.png,.webp"
+               onChange={handleChange}
+             />
+             <UploadCloud className={`w-10 h-10 mx-auto mb-2 ${dragActive ? 'text-emerald-500' : 'text-gray-400'}`} />
+             {file ? (
+               <div className="flex flex-col items-center">
+                 <p className="text-sm font-medium text-emerald-600 truncate max-w-xs">{file.name}</p>
+                 <p className="text-xs text-gray-500 mt-1">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                 <button 
+                   type="button" 
+                   onClick={(e) => { e.stopPropagation(); setFile(null); }}
+                   className="mt-2 text-xs text-red-500 hover:text-red-700 font-medium"
+                 >
+                   Hapus File
+                 </button>
+               </div>
+             ) : (
+               <>
+                 <p className="text-sm font-medium text-gray-900">Klik atau Drag & Drop dokumen persyaratan</p>
+                 <p className="text-xs text-gray-500 mt-1">Mendukung format: PDF, JPG, PNG, WEBP</p>
+               </>
+             )}
           </div>
 
           <div className="pt-6 border-t border-gray-200 flex justify-end">
@@ -1660,6 +1736,151 @@ function PUFormPengajuan({ submit, navigateTo }: any) {
             </button>
           </div>
         </form>
+      </div>
+    </div>
+  );
+}
+
+function PUSettings({ navigateTo }: any) {
+  const [activeTab, setActiveTab] = useState('profil');
+  const [agreed, setAgreed] = useState(false);
+
+  const tabs = [
+    { id: 'profil', label: 'Profil Usaha', icon: Briefcase },
+    { id: 'aturan', label: 'Aturan & Regulasi LPH', icon: ShieldCheck }
+  ];
+
+  return (
+    <div className="space-y-6 max-w-5xl mx-auto">
+      <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">Pengaturan & Informasi</h2>
+          <p className="text-sm text-gray-500 mt-1">Kelola data profil usaha dan baca aturan LPH Al-Ghazali sebelum mengajukan permohonan audit.</p>
+        </div>
+      </div>
+
+      <div className="flex flex-col md:flex-row gap-6">
+        {/* Sidebar Tabs */}
+        <div className="w-full md:w-64 shrink-0">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <nav className="flex flex-row md:flex-col overflow-x-auto md:overflow-visible relative" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
+              {tabs.map(tab => {
+                const Icon = tab.icon;
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`flex items-center w-full px-4 py-4 sm:px-6 whitespace-nowrap md:whitespace-normal transition-all border-b-2 md:border-b-0 md:border-l-4 text-sm font-medium ${
+                      isActive 
+                        ? 'bg-emerald-50 text-emerald-700 border-emerald-500 md:border-b-transparent' 
+                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 border-transparent md:border-l-transparent'
+                    }`}
+                  >
+                    <Icon className={`w-5 h-5 mr-3 shrink-0 ${isActive ? 'text-emerald-600' : 'text-gray-400'}`} />
+                    {tab.label}
+                  </button>
+                );
+              })}
+            </nav>
+          </div>
+        </div>
+
+        {/* Tab Content */}
+        <div className="flex-1 bg-white rounded-xl shadow-sm border border-gray-200 min-h-[400px]">
+          {activeTab === 'profil' && (
+            <div className="p-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-6">Profil Pelaku Usaha</h3>
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1">Nama Pemilik/Penanggung Jawab</label>
+                    <input type="text" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1">Nama Perusahaan/Usaha</label>
+                    <input type="text" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1">NIB</label>
+                    <input type="text" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1">Email</label>
+                    <input type="email" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500" />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-semibold text-gray-700 mb-1">Alamat Lengkap</label>
+                    <textarea rows={3} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500"></textarea>
+                  </div>
+                </div>
+                <div className="flex justify-end pt-4 gap-3">
+                  <button onClick={() => alert("Profil berhasil disimpan.")} className="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-5 py-2.5 rounded-lg font-medium shadow-sm transition-colors text-sm">
+                    Simpan Profil
+                  </button>
+                  <button onClick={() => setActiveTab('aturan')} className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-lg font-medium shadow-sm transition-colors text-sm flex items-center">
+                    Lanjut ke Aturan <ArrowRight className="w-4 h-4 ml-2" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+          {activeTab === 'aturan' && (
+            <div className="p-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-2">Aturan & Persyaratan Pelaku Usaha</h3>
+              <p className="text-sm text-gray-500 mb-6">Syarat dan ketentuan yang harus dipatuhi selama proses pengajuan audit di LPH Al-Ghazali.</p>
+              
+              <div className="space-y-4">
+                <div className="p-4 bg-emerald-50 border border-emerald-100 rounded-lg">
+                  <h4 className="font-bold text-emerald-800 text-sm mb-2 flex items-center">
+                    <CheckCircle className="w-4 h-4 mr-2" /> Kewajiban Pelaku Usaha (PU)
+                  </h4>
+                  <ul className="list-disc list-inside text-sm text-emerald-900 space-y-1.5 ml-1">
+                    <li>Memberikan informasi dan dokumen yang benar, sah, dan valid sesuai persyaratan SIHALAL BPJPH.</li>
+                    <li>Memisahkan lokasi, tempat, dan alat penyembelihan, pengolahan, penyimpanan, pengemasan, pendistribusian, penjualan, serta penyajian antara produk halal dan tidak halal.</li>
+                    <li>Memiliki Penyelia Halal yang beragama Islam dan memiliki sertifikat pelatihan Penyelia Halal.</li>
+                    <li>Melaporkan setiap perubahan komposisi bahan (ingredients) kepada BPJPH dan LPH.</li>
+                    <li>Mengikuti seluruh rangkaian proses audit lapangan (on-site) yang dilakukan oleh tim Auditor LPH Al-Ghazali.</li>
+                    <li>Membayar tarif layanan sertifikasi sesuai tagihan (invoice) yang ditetapkan.</li>
+                  </ul>
+                </div>
+
+                <div className="p-4 bg-orange-50 border border-orange-100 rounded-lg">
+                  <h4 className="font-bold text-orange-800 text-sm mb-2 flex items-center">
+                    <Zap className="w-4 h-4 mr-2" /> Sanksi & Ketentuan Lainnya
+                  </h4>
+                  <ul className="list-disc list-inside text-sm text-orange-900 space-y-1.5 ml-1">
+                    <li>Pemalsuan dokumen persyaratan dapat mengakibatkan penolakan pengajuan sertifikasi secara sepihak.</li>
+                    <li>Auditor berhak menolak melanjutkan proses audit apabila ditemukan indikasi kontaminasi najis berat (mughallazah) yang tidak dilaporkan.</li>
+                    <li>Hasil penetapan kehalalan (Fatwa MUI) bersifat mutlak dan LPH Al-Ghazali hanya bertugas melakukan pemeriksaan/pengujian.</li>
+                  </ul>
+                </div>
+                
+                <div className="mt-6 pt-6 border-t border-gray-200">
+                  <label className="flex items-start cursor-pointer group">
+                    <div className="flex items-center h-5">
+                      <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="w-4 h-4 text-emerald-600 bg-gray-100 border-gray-300 rounded focus:ring-emerald-500" />
+                    </div>
+                    <div className="ml-3 text-sm">
+                      <span className="font-medium text-gray-900 group-hover:text-emerald-700 transition-colors">Saya telah membaca dan menyetujui aturan serta kewajiban di atas.</span>
+                      <p className="text-gray-500 text-xs mt-1">Persetujuan ini menjadi syarat wajib bagi setiap Pelaku Usaha yang mengajukan pemeriksaan di LPH.</p>
+                    </div>
+                  </label>
+                  
+                  <div className="mt-6 flex justify-end">
+                    <button 
+                      disabled={!agreed} 
+                      onClick={() => navigateTo('pu-pengajuan')} 
+                      className={`px-5 py-2.5 rounded-lg font-medium shadow-sm transition-colors text-sm flex items-center ${agreed ? 'bg-emerald-600 hover:bg-emerald-700 text-white' : 'bg-gray-200 text-gray-500 cursor-not-allowed'}`}
+                    >
+                      Mulai Pengajuan Sertifikasi <ArrowRight className="w-4 h-4 ml-2" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
