@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signOut } from 'firebase/auth';
-import { getFirestore, collection, onSnapshot, addDoc, updateDoc, doc, serverTimestamp, deleteDoc } from 'firebase/firestore';
+import { getFirestore, collection, onSnapshot, addDoc, updateDoc, doc, serverTimestamp, deleteDoc, setDoc } from 'firebase/firestore';
 import { Leaf, Home, FileText, LogOut, PlusCircle, Settings, CheckCircle, Clock, Search, Briefcase, FileSignature, UploadCloud, ArrowLeft, ArrowRight, ShieldCheck, Zap, MonitorSmartphone, UserCheck, Newspaper, Edit, Trash2, X, Image as ImageIcon, Route, Coins, ChevronDown, ChevronRight, Calculator, Receipt, CalendarDays, Activity, Video, Link, MapPin, Phone, Mail, Facebook, Twitter, Instagram, Linkedin, History, Target, Award, Network, Users, BookOpen, Handshake, Menu, Scale, Landmark } from 'lucide-react';
 
 // ==========================================
@@ -2095,6 +2095,88 @@ function AdminAuditor({ data }: any) {
 
 function AdminSettings() {
   const [activeTab, setActiveTab] = useState('profil');
+  const [isSaving, setIsSaving] = useState(false);
+
+  const defaultSettings = {
+    profil: {
+      namaLembaga: 'LPH Al-Ghazali',
+      noAkreditasi: 'LPH-1811-001',
+      alamat: 'Jl. Kemerdekaan Barat No.12, Kesugihan, Cilacap, Jawa Tengah 53274',
+      email: 'lphalghazali@gmail.com',
+      noWa: '085802494252'
+    },
+    sistem: {
+      whatsappBot: true,
+      emailNotif: true,
+      maintenance: false
+    },
+    integrasi: {
+      sihalalEndpoint: 'https://api.sihalal.bpjph.go.id/v1/',
+      sihalalSecret: 'sihalal-sec-1234567890'
+    },
+    tarifData: [
+      { komponen: 'Biaya Pemeriksaan (Mandoc)', skala: 'Mikro & Kecil', nominal: '350.000' },
+      { komponen: 'Biaya Pemeriksaan (Mandoc)', skala: 'Menengah', nominal: '2.500.000' },
+      { komponen: 'Biaya Transportasi Auditor', skala: 'Dalam Kota (Radius < 50km)', nominal: '150.000' },
+      { komponen: 'Uang Harian Auditor', skala: 'Semua Skala (Per Hari)', nominal: '200.000' }
+    ],
+    produkData: [
+      'Susu dan analognya',
+      'Lemak, minyak, dan emulsi minyak',
+      'Buah dan sayur olahan',
+      'Kembang gula/permen dan cokelat',
+      'Serealia dan produk serealia',
+      'Produk bakeri'
+    ],
+    wilayahData: [
+      { nama: 'Jawa Tengah', cakupan: 'Cilacap, Banyumas, Purbalingga, Banjarnegara' },
+      { nama: 'Jawa Barat', cakupan: 'Pangandaran, Ciamis, Banjar, Tasikmalaya' }
+    ],
+    roles: [
+      { role: 'Super Admin', desc: 'Akses penuh ke semua modul konfigurasi dan master data.', status: 'Aktif' },
+      { role: 'Auditor Utama', desc: 'Terbitkan laporan LHP, kelola data audit & plotting.', status: 'Aktif' },
+      { role: 'Staf Keuangan', desc: 'Validasi pembayaran tarif layanan oleh PU.', status: 'Aktif' }
+    ]
+  };
+
+  const [settings, setSettings] = useState(defaultSettings);
+
+  useEffect(() => {
+    // Fetch from Firebase
+    const settingsRef = doc(db, 'artifacts', appId, 'public', 'system_settings');
+    const unsubscribe = onSnapshot(settingsRef, (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        setSettings(prev => ({ ...prev, ...data }));
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      const settingsRef = doc(db, 'artifacts', appId, 'public', 'system_settings');
+      await setDoc(settingsRef, settings, { merge: true });
+    } catch (error) {
+      console.error('Error saving settings:', error);
+    }
+    
+    setTimeout(() => {
+      setIsSaving(false);
+      alert("Pengaturan Sistem berhasil disimpan ke Cloud Database!");
+    }, 800);
+  };
+
+  const handleChange = (category: string, field: string, value: any) => {
+    setSettings(prev => ({
+      ...prev,
+      [category]: {
+        ...(prev as any)[category],
+        [field]: value
+      }
+    }));
+  };
 
   const tabs = [
     { id: 'profil', label: 'Profil Lembaga', icon: Landmark },
@@ -2112,8 +2194,8 @@ function AdminSettings() {
           <h2 className="text-2xl font-bold text-gray-900">Pengaturan Sistem</h2>
           <p className="text-sm text-gray-500 mt-1">Konfigurasi dan manajemen platform LPH Al-Ghazali.</p>
         </div>
-        <button className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-lg font-medium shadow-md transition-colors flex items-center text-sm shrink-0">
-          <CheckCircle className="w-4 h-4 mr-2" /> Simpan Perubahan
+        <button onClick={handleSave} disabled={isSaving} className="bg-emerald-600 hover:bg-emerald-700 disabled:opacity-70 text-white px-5 py-2.5 rounded-lg font-medium shadow-md transition-colors flex items-center text-sm shrink-0">
+          <CheckCircle className="w-4 h-4 mr-2" /> {isSaving ? "Menyimpan..." : "Simpan Perubahan"}
         </button>
       </div>
 
@@ -2153,23 +2235,23 @@ function AdminSettings() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Nama Lembaga</label>
-                    <input type="text" defaultValue="LPH Al-Ghazali" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500" />
+                    <input type="text" value={settings.profil.namaLembaga} onChange={(e) => handleChange('profil', 'namaLembaga', e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500" />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Nomor Akreditasi BPJPH</label>
-                    <input type="text" defaultValue="LPH-1811-001" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500" />
+                    <input type="text" value={settings.profil.noAkreditasi} onChange={(e) => handleChange('profil', 'noAkreditasi', e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500" />
                   </div>
                   <div className="sm:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-1">Alamat Lengkap</label>
-                    <textarea rows={3} defaultValue="Jl. Kemerdekaan Barat No.12, Kesugihan, Cilacap, Jawa Tengah 53274" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500"></textarea>
+                    <textarea rows={3} value={settings.profil.alamat} onChange={(e) => handleChange('profil', 'alamat', e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500"></textarea>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Email Resmi</label>
-                    <input type="email" defaultValue="lphalghazali@gmail.com" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500" />
+                    <input type="email" value={settings.profil.email} onChange={(e) => handleChange('profil', 'email', e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500" />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Nomor WhatsApp/Telepon</label>
-                    <input type="text" defaultValue="085802494252" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500" />
+                    <input type="text" value={settings.profil.noWa} onChange={(e) => handleChange('profil', 'noWa', e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500" />
                   </div>
                 </div>
               </div>
@@ -2189,25 +2271,32 @@ function AdminSettings() {
                          </tr>
                       </thead>
                       <tbody className="bg-white divide-y divide-gray-200">
-                         <tr className="hover:bg-gray-50">
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">Super Admin</td>
-                            <td className="px-6 py-4 text-sm text-gray-600">Akses penuh ke semua modul konfigurasi dan master data.</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-right"><span className="px-2.5 py-1 inline-flex text-xs font-semibold rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">Aktif</span></td>
-                         </tr>
-                         <tr className="hover:bg-gray-50">
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">Auditor Utama</td>
-                            <td className="px-6 py-4 text-sm text-gray-600">Terbitkan laporan LHP, kelola data audit & plotting.</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-right"><span className="px-2.5 py-1 inline-flex text-xs font-semibold rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">Aktif</span></td>
-                         </tr>
-                         <tr className="hover:bg-gray-50">
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">Staf Keuangan</td>
-                            <td className="px-6 py-4 text-sm text-gray-600">Validasi pembayaran tarif layanan oleh PU.</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-right"><span className="px-2.5 py-1 inline-flex text-xs font-semibold rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">Aktif</span></td>
-                         </tr>
+                         {settings.roles.map((role: any, idx: number) => (
+                           <tr key={idx} className="hover:bg-gray-50">
+                              <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                                <input type="text" value={role.role} onChange={(e) => {
+                                  const newRoles = [...settings.roles];
+                                  newRoles[idx].role = e.target.value;
+                                  handleChange('roles', '', newRoles);
+                                }} className="w-full bg-transparent border-b border-transparent hover:border-gray-300 focus:border-emerald-500 focus:outline-none" />
+                              </td>
+                              <td className="px-6 py-4 text-sm text-gray-600">
+                                <input type="text" value={role.desc} onChange={(e) => {
+                                  const newRoles = [...settings.roles];
+                                  newRoles[idx].desc = e.target.value;
+                                  handleChange('roles', '', newRoles);
+                                }} className="w-full bg-transparent border-b border-transparent hover:border-gray-300 focus:border-emerald-500 focus:outline-none" />
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-right"><span className="px-2.5 py-1 inline-flex text-xs font-semibold rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">{role.status}</span></td>
+                           </tr>
+                         ))}
                       </tbody>
                    </table>
                 </div>
-                <button className="mt-5 text-sm text-emerald-600 font-semibold hover:text-emerald-700 flex items-center bg-emerald-50 px-3 py-2 rounded-lg transition-colors"><PlusCircle className="w-4 h-4 mr-1.5" /> Tambah Role Baru</button>
+                <button onClick={() => {
+                  const newRoles = [...settings.roles, { role: 'Role Baru', desc: 'Deskripsi Role', status: 'Aktif' }];
+                  setSettings(prev => ({ ...prev, roles: newRoles }));
+                }} className="mt-5 text-sm text-emerald-600 font-semibold hover:text-emerald-700 flex items-center bg-emerald-50 px-3 py-2 rounded-lg transition-colors"><PlusCircle className="w-4 h-4 mr-1.5" /> Tambah Role Baru</button>
              </div>
           )}
           {activeTab === 'master' && (
@@ -2238,38 +2327,39 @@ function AdminSettings() {
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-gray-200">
-                            <tr>
-                              <td className="px-4 py-3 text-sm text-gray-900 font-medium">Biaya Pemeriksaan (Mandoc)</td>
-                              <td className="px-4 py-3 text-sm text-gray-500">Mikro & Kecil</td>
-                              <td className="px-4 py-3 text-sm text-gray-900 font-mono">350.000</td>
-                              <td className="px-4 py-3 text-right">
-                                <button className="text-emerald-600 hover:text-emerald-800"><Edit className="w-4 h-4" /></button>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td className="px-4 py-3 text-sm text-gray-900 font-medium">Biaya Pemeriksaan (Mandoc)</td>
-                              <td className="px-4 py-3 text-sm text-gray-500">Menengah</td>
-                              <td className="px-4 py-3 text-sm text-gray-900 font-mono">2.500.000</td>
-                              <td className="px-4 py-3 text-right">
-                                <button className="text-emerald-600 hover:text-emerald-800"><Edit className="w-4 h-4" /></button>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td className="px-4 py-3 text-sm text-gray-900 font-medium">Biaya Transportasi Auditor</td>
-                              <td className="px-4 py-3 text-sm text-gray-500">Dalam Kota (Radius &lt; 50km)</td>
-                              <td className="px-4 py-3 text-sm text-gray-900 font-mono">150.000</td>
-                              <td className="px-4 py-3 text-right">
-                                <button className="text-emerald-600 hover:text-emerald-800"><Edit className="w-4 h-4" /></button>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td className="px-4 py-3 text-sm text-gray-900 font-medium">Uang Harian Auditor</td>
-                              <td className="px-4 py-3 text-sm text-gray-500">Semua Skala (Per Hari)</td>
-                              <td className="px-4 py-3 text-sm text-gray-900 font-mono">200.000</td>
-                              <td className="px-4 py-3 text-right">
-                                <button className="text-emerald-600 hover:text-emerald-800"><Edit className="w-4 h-4" /></button>
-                              </td>
-                            </tr>
+                            {settings.tarifData.map((item: any, idx: number) => (
+                              <tr key={idx}>
+                                <td className="px-4 py-3 text-sm text-gray-900 font-medium">
+                                  <input type="text" value={item.komponen} onChange={(e) => {
+                                    const newData = [...settings.tarifData];
+                                    newData[idx].komponen = e.target.value;
+                                    handleChange('tarifData', '', newData);
+                                  }} className="w-full bg-transparent border-b border-transparent hover:border-gray-300 focus:border-emerald-500 focus:outline-none" />
+                                </td>
+                                <td className="px-4 py-3 text-sm text-gray-500">
+                                  <input type="text" value={item.skala} onChange={(e) => {
+                                    const newData = [...settings.tarifData];
+                                    newData[idx].skala = e.target.value;
+                                    handleChange('tarifData', '', newData);
+                                  }} className="w-full bg-transparent border-b border-transparent hover:border-gray-300 focus:border-emerald-500 focus:outline-none" />
+                                </td>
+                                <td className="px-4 py-3 text-sm text-gray-900 font-mono">
+                                  <input type="text" value={item.nominal} onChange={(e) => {
+                                    const newData = [...settings.tarifData];
+                                    newData[idx].nominal = e.target.value;
+                                    handleChange('tarifData', '', newData);
+                                  }} className="w-full bg-transparent border-b border-transparent hover:border-gray-300 focus:border-emerald-500 focus:outline-none" />
+                                </td>
+                                <td className="px-4 py-3 text-right">
+                                  <button onClick={() => {
+                                      const newData = settings.tarifData.filter((_: any, i: number) => i !== idx);
+                                      handleChange('tarifData', '', newData);
+                                  }} className="text-red-500 hover:text-red-700">
+                                    <Trash2 className="w-4 h-4 ml-auto" />
+                                  </button>
+                                </td>
+                              </tr>
+                            ))}
                           </tbody>
                         </table>
                       </div>
@@ -2283,18 +2373,29 @@ function AdminSettings() {
                          <BookOpen className="w-5 h-5 text-emerald-600 mr-2" />
                          <h4 className="font-bold text-gray-900">Master Data Jenis Produk</h4>
                       </div>
-                      <button className="text-sm bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-3 py-1.5 rounded-lg font-medium transition-colors">
+                      <button onClick={() => {
+                        handleChange('produkData', '', [...settings.produkData, 'Produk Baru']);
+                      }} className="text-sm bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-3 py-1.5 rounded-lg font-medium transition-colors">
                         <PlusCircle className="w-4 h-4 inline mr-1" /> Tambah Produk
                       </button>
                     </div>
                     <div className="p-5">
                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <input type="text" defaultValue="Susu dan analognya" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500" />
-                          <input type="text" defaultValue="Lemak, minyak, dan emulsi minyak" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500" />
-                          <input type="text" defaultValue="Buah dan sayur olahan" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500" />
-                          <input type="text" defaultValue="Kembang gula/permen dan cokelat" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500" />
-                          <input type="text" defaultValue="Serealia dan produk serealia" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500" />
-                          <input type="text" defaultValue="Produk bakeri" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500" />
+                          {settings.produkData.map((prod: string, idx: number) => (
+                            <div key={idx} className="flex items-center border border-gray-300 rounded-md pr-2">
+                               <input type="text" value={prod} onChange={(e) => {
+                                 const newProd = [...settings.produkData];
+                                 newProd[idx] = e.target.value;
+                                 handleChange('produkData', '', newProd);
+                               }} className="w-full flex-1 border-none focus:ring-0 px-3 py-2 text-sm rounded-l-md" />
+                               <button onClick={() => {
+                                 const newProd = settings.produkData.filter((_: any, i: number) => i !== idx);
+                                 handleChange('produkData', '', newProd);
+                               }} className="p-1 text-gray-400 hover:text-red-500 transition-colors">
+                                  <X className="w-4 h-4" />
+                               </button>
+                            </div>
+                          ))}
                        </div>
                     </div>
                   </div>
@@ -2311,25 +2412,24 @@ function AdminSettings() {
                       </button>
                     </div>
                     <div className="p-5 flex gap-4 overflow-x-auto">
-                        <div className="border border-gray-200 p-4 rounded-lg min-w-[200px]">
-                           <h5 className="font-bold text-gray-900 mb-2 border-b pb-2">Jawa Tengah</h5>
-                           <ul className="text-sm text-gray-600 space-y-1">
-                             <li>Cilacap</li>
-                             <li>Banyumas</li>
-                             <li>Purbalingga</li>
-                             <li>Banjarnegara</li>
-                           </ul>
-                        </div>
-                        <div className="border border-gray-200 p-4 rounded-lg min-w-[200px]">
-                           <h5 className="font-bold text-gray-900 mb-2 border-b pb-2">Jawa Barat</h5>
-                           <ul className="text-sm text-gray-600 space-y-1">
-                             <li>Pangandaran</li>
-                             <li>Ciamis</li>
-                             <li>Banjar</li>
-                             <li>Tasikmalaya</li>
-                           </ul>
-                        </div>
-                        <div className="border border-gray-200 p-4 rounded-lg min-w-[200px] border-dashed bg-gray-50 flex items-center justify-center cursor-pointer hover:bg-gray-100 transition-colors">
+                        {settings.wilayahData.map((wil: any, idx: number) => (
+                          <div key={idx} className="border border-gray-200 p-4 rounded-lg min-w-[200px]">
+                             <input type="text" value={wil.nama} onChange={(e) => {
+                               const newWil = [...settings.wilayahData];
+                               newWil[idx].nama = e.target.value;
+                               handleChange('wilayahData', '', newWil);
+                             }} className="font-bold text-gray-900 mb-2 border-b pb-2 w-full bg-transparent focus:outline-none" />
+                             <textarea value={wil.cakupan} onChange={(e) => {
+                               const newWil = [...settings.wilayahData];
+                               newWil[idx].cakupan = e.target.value;
+                               handleChange('wilayahData', '', newWil);
+                             }} className="text-sm text-gray-600 w-full bg-transparent border-none focus:ring-0 resize-none px-0" rows={4} />
+                          </div>
+                        ))}
+                        
+                        <div onClick={() => {
+                           handleChange('wilayahData', '', [...settings.wilayahData, { nama: 'Provinsi Baru', cakupan: 'Kota/Kabupaten Baru' }]);
+                        }} className="border border-gray-200 p-4 rounded-lg min-w-[200px] border-dashed bg-gray-50 flex items-center justify-center cursor-pointer hover:bg-gray-100 transition-colors">
                            <span className="text-emerald-600 font-medium text-sm flex items-center"><PlusCircle className="w-4 h-4 mr-1"/> Provinsi Baru</span>
                         </div>
                     </div>
@@ -2347,8 +2447,8 @@ function AdminSettings() {
                          <p className="text-sm text-gray-500">Kirim otomatis pesan perubahan status dokumen kepada Pelaku Usaha.</p>
                       </div>
                       <div className="relative inline-block w-12 shrink-0 align-middle select-none transition duration-200 ease-in">
-                         <input type="checkbox" name="toggle" id="whatsapp-toggle" defaultChecked className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer border-emerald-500" style={{ right: 0 }}/>
-                         <label htmlFor="whatsapp-toggle" className="toggle-label block overflow-hidden h-6 rounded-full bg-emerald-500 cursor-pointer"></label>
+                         <input type="checkbox" name="toggle" id="whatsapp-toggle" checked={settings.sistem.whatsappBot} onChange={(e) => handleChange('sistem', 'whatsappBot', e.target.checked)} className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer border-emerald-500" style={{ right: settings.sistem.whatsappBot ? 0 : '1.5rem' }}/>
+                         <label htmlFor="whatsapp-toggle" className={`toggle-label block overflow-hidden h-6 rounded-full cursor-pointer ${settings.sistem.whatsappBot ? 'bg-emerald-500' : 'bg-gray-300'}`}></label>
                       </div>
                    </div>
                    <div className="flex items-center justify-between border-b border-gray-100 pb-5">
@@ -2357,8 +2457,8 @@ function AdminSettings() {
                          <p className="text-sm text-gray-500">Email pemberitahuan penagihan invoice & sertifikat elektronik.</p>
                       </div>
                       <div className="relative inline-block w-12 shrink-0 align-middle select-none transition duration-200 ease-in">
-                         <input type="checkbox" name="toggle" id="email-toggle" defaultChecked className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer border-emerald-500" style={{ right: 0 }}/>
-                         <label htmlFor="email-toggle" className="toggle-label block overflow-hidden h-6 rounded-full bg-emerald-500 cursor-pointer"></label>
+                         <input type="checkbox" name="toggle" id="email-toggle" checked={settings.sistem.emailNotif} onChange={(e) => handleChange('sistem', 'emailNotif', e.target.checked)} className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer border-emerald-500" style={{ right: settings.sistem.emailNotif ? 0 : '1.5rem' }}/>
+                         <label htmlFor="email-toggle" className={`toggle-label block overflow-hidden h-6 rounded-full cursor-pointer ${settings.sistem.emailNotif ? 'bg-emerald-500' : 'bg-gray-300'}`}></label>
                       </div>
                    </div>
                    <div className="flex items-center justify-between pb-2">
@@ -2367,8 +2467,8 @@ function AdminSettings() {
                          <p className="text-sm text-gray-500">Tutup portal publik sementara waktu saat sistem dimutakhirkan.</p>
                       </div>
                       <div className="relative inline-block w-12 shrink-0 align-middle select-none transition duration-200 ease-in">
-                         <input type="checkbox" name="toggle" id="maint-toggle" className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-300" style={{ right: '1.5rem', left: 0 }}/>
-                         <label htmlFor="maint-toggle" className="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                         <input type="checkbox" name="toggle" id="maint-toggle" checked={settings.sistem.maintenance} onChange={(e) => handleChange('sistem', 'maintenance', e.target.checked)} className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-300" style={{ right: settings.sistem.maintenance ? 0 : '1.5rem' }}/>
+                         <label htmlFor="maint-toggle" className={`toggle-label block overflow-hidden h-6 rounded-full cursor-pointer ${settings.sistem.maintenance ? 'bg-emerald-500' : 'bg-gray-300'}`}></label>
                       </div>
                    </div>
                 </div>
@@ -2425,11 +2525,11 @@ function AdminSettings() {
                       <div className="space-y-4 pt-2">
                          <div>
                             <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">REST API Endpoint</label>
-                            <input type="text" defaultValue="https://api.sihalal.bpjph.go.id/v1/" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500 bg-gray-50 font-mono text-gray-600" />
+                            <input type="text" value={settings.integrasi.sihalalEndpoint} onChange={(e) => handleChange('integrasi', 'sihalalEndpoint', e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500 bg-gray-50 font-mono text-gray-600" />
                          </div>
                          <div>
                             <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Client Secret Key</label>
-                            <input type="password" defaultValue="sihalal-sec-1234567890" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500 bg-gray-50 font-mono text-gray-600" />
+                            <input type="password" value={settings.integrasi.sihalalSecret} onChange={(e) => handleChange('integrasi', 'sihalalSecret', e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500 bg-gray-50 font-mono text-gray-600" />
                          </div>
                          <div className="pt-2">
                              <button className="bg-gray-100 border border-gray-200 text-gray-800 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-gray-200 transition-colors">Uji Koneksi (Ping)</button>
