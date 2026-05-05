@@ -2214,34 +2214,126 @@ function AdminSettings() {
              <div className="p-6">
                 <h3 className="text-lg font-bold text-gray-900 mb-2">Master Data</h3>
                 <p className="text-sm text-gray-500 mb-6">Data referensi global untuk dropdown dan variabel sistem.</p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                   <div className="border border-gray-200 rounded-lg p-5 hover:border-emerald-400 hover:shadow-sm cursor-pointer transition-all bg-white group">
+                <div className="space-y-8">
+                  {/* Komponen Tarif */}
+                  <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
+                    <div className="bg-gray-50 px-5 py-4 border-b border-gray-200 flex justify-between items-center">
                       <div className="flex items-center">
-                         <div className="p-3 bg-emerald-50 group-hover:bg-emerald-100 rounded-xl mr-4 transition-colors"><BookOpen className="w-6 h-6 text-emerald-600" /></div>
-                         <div>
-                            <h4 className="text-base font-bold text-gray-900 mb-0.5">Jenis Produk</h4>
-                            <p className="text-xs text-gray-500">32 Kategori terdaftar di BPJPH</p>
-                         </div>
+                         <Coins className="w-5 h-5 text-emerald-600 mr-2" />
+                         <h4 className="font-bold text-gray-900">Master Data Tarif LPH</h4>
                       </div>
-                   </div>
-                   <div className="border border-gray-200 rounded-lg p-5 hover:border-emerald-400 hover:shadow-sm cursor-pointer transition-all bg-white group">
+                      <button className="text-sm bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-3 py-1.5 rounded-lg font-medium transition-colors">
+                        <PlusCircle className="w-4 h-4 inline mr-1" /> Tambah Tarif
+                      </button>
+                    </div>
+                    <div className="p-5">
+                      <div className="overflow-x-auto">
+                        <table className="min-w-full divide-y divide-gray-200">
+                          <thead className="bg-gray-50">
+                            <tr>
+                              <th className="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Komponen Biaya</th>
+                              <th className="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Kategori Skala Usaha</th>
+                              <th className="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Nominal (Rp)</th>
+                              <th className="px-4 py-2 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Aksi</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-gray-200">
+                            <tr>
+                              <td className="px-4 py-3 text-sm text-gray-900 font-medium">Biaya Pemeriksaan (Mandoc)</td>
+                              <td className="px-4 py-3 text-sm text-gray-500">Mikro & Kecil</td>
+                              <td className="px-4 py-3 text-sm text-gray-900 font-mono">350.000</td>
+                              <td className="px-4 py-3 text-right">
+                                <button className="text-emerald-600 hover:text-emerald-800"><Edit className="w-4 h-4" /></button>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td className="px-4 py-3 text-sm text-gray-900 font-medium">Biaya Pemeriksaan (Mandoc)</td>
+                              <td className="px-4 py-3 text-sm text-gray-500">Menengah</td>
+                              <td className="px-4 py-3 text-sm text-gray-900 font-mono">2.500.000</td>
+                              <td className="px-4 py-3 text-right">
+                                <button className="text-emerald-600 hover:text-emerald-800"><Edit className="w-4 h-4" /></button>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td className="px-4 py-3 text-sm text-gray-900 font-medium">Biaya Transportasi Auditor</td>
+                              <td className="px-4 py-3 text-sm text-gray-500">Dalam Kota (Radius &lt; 50km)</td>
+                              <td className="px-4 py-3 text-sm text-gray-900 font-mono">150.000</td>
+                              <td className="px-4 py-3 text-right">
+                                <button className="text-emerald-600 hover:text-emerald-800"><Edit className="w-4 h-4" /></button>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td className="px-4 py-3 text-sm text-gray-900 font-medium">Uang Harian Auditor</td>
+                              <td className="px-4 py-3 text-sm text-gray-500">Semua Skala (Per Hari)</td>
+                              <td className="px-4 py-3 text-sm text-gray-900 font-mono">200.000</td>
+                              <td className="px-4 py-3 text-right">
+                                <button className="text-emerald-600 hover:text-emerald-800"><Edit className="w-4 h-4" /></button>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Jenis Produk */}
+                  <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
+                    <div className="bg-gray-50 px-5 py-4 border-b border-gray-200 flex justify-between items-center">
                       <div className="flex items-center">
-                         <div className="p-3 bg-emerald-50 group-hover:bg-emerald-100 rounded-xl mr-4 transition-colors"><Coins className="w-6 h-6 text-emerald-600" /></div>
-                         <div>
-                            <h4 className="text-base font-bold text-gray-900 mb-0.5">Komponen Tarif</h4>
-                            <p className="text-xs text-gray-500">Master biaya Mandoc, Transport, Unit</p>
-                         </div>
+                         <BookOpen className="w-5 h-5 text-emerald-600 mr-2" />
+                         <h4 className="font-bold text-gray-900">Master Data Jenis Produk</h4>
                       </div>
-                   </div>
-                   <div className="border border-gray-200 rounded-lg p-5 hover:border-emerald-400 hover:shadow-sm cursor-pointer transition-all bg-white group">
+                      <button className="text-sm bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-3 py-1.5 rounded-lg font-medium transition-colors">
+                        <PlusCircle className="w-4 h-4 inline mr-1" /> Tambah Produk
+                      </button>
+                    </div>
+                    <div className="p-5">
+                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <input type="text" defaultValue="Susu dan analognya" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500" />
+                          <input type="text" defaultValue="Lemak, minyak, dan emulsi minyak" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500" />
+                          <input type="text" defaultValue="Buah dan sayur olahan" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500" />
+                          <input type="text" defaultValue="Kembang gula/permen dan cokelat" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500" />
+                          <input type="text" defaultValue="Serealia dan produk serealia" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500" />
+                          <input type="text" defaultValue="Produk bakeri" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500" />
+                       </div>
+                    </div>
+                  </div>
+
+                  {/* Wilayah */}
+                  <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
+                    <div className="bg-gray-50 px-5 py-4 border-b border-gray-200 flex justify-between items-center">
                       <div className="flex items-center">
-                         <div className="p-3 bg-emerald-50 group-hover:bg-emerald-100 rounded-xl mr-4 transition-colors"><MapPin className="w-6 h-6 text-emerald-600" /></div>
-                         <div>
-                            <h4 className="text-base font-bold text-gray-900 mb-0.5">Wilayah & Radius</h4>
-                            <p className="text-xs text-gray-500">Data Provinsi & Kabupaten Kota</p>
-                         </div>
+                         <MapPin className="w-5 h-5 text-emerald-600 mr-2" />
+                         <h4 className="font-bold text-gray-900">Master Data Wilayah Layanan</h4>
                       </div>
-                   </div>
+                      <button className="text-sm bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-3 py-1.5 rounded-lg font-medium transition-colors">
+                        <PlusCircle className="w-4 h-4 inline mr-1" /> Tambah Wilayah
+                      </button>
+                    </div>
+                    <div className="p-5 flex gap-4 overflow-x-auto">
+                        <div className="border border-gray-200 p-4 rounded-lg min-w-[200px]">
+                           <h5 className="font-bold text-gray-900 mb-2 border-b pb-2">Jawa Tengah</h5>
+                           <ul className="text-sm text-gray-600 space-y-1">
+                             <li>Cilacap</li>
+                             <li>Banyumas</li>
+                             <li>Purbalingga</li>
+                             <li>Banjarnegara</li>
+                           </ul>
+                        </div>
+                        <div className="border border-gray-200 p-4 rounded-lg min-w-[200px]">
+                           <h5 className="font-bold text-gray-900 mb-2 border-b pb-2">Jawa Barat</h5>
+                           <ul className="text-sm text-gray-600 space-y-1">
+                             <li>Pangandaran</li>
+                             <li>Ciamis</li>
+                             <li>Banjar</li>
+                             <li>Tasikmalaya</li>
+                           </ul>
+                        </div>
+                        <div className="border border-gray-200 p-4 rounded-lg min-w-[200px] border-dashed bg-gray-50 flex items-center justify-center cursor-pointer hover:bg-gray-100 transition-colors">
+                           <span className="text-emerald-600 font-medium text-sm flex items-center"><PlusCircle className="w-4 h-4 mr-1"/> Provinsi Baru</span>
+                        </div>
+                    </div>
+                  </div>
                 </div>
              </div>
           )}
