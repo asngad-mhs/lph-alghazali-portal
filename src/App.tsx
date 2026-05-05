@@ -259,6 +259,12 @@ export default function LPHApp() {
           <AdminAuditor data={pengajuanList} />
         </DashboardLayout>
       )}
+
+      {currentView === 'admin-settings' && (
+        <DashboardLayout role="admin" navigateTo={navigateTo} logout={handleLogout} currentView={currentView}>
+          <AdminSettings />
+        </DashboardLayout>
+      )}
     </div>
   );
 }
@@ -1488,7 +1494,7 @@ function DashboardLayout({ children, role, navigateTo, logout, currentView }: an
             </>
           )}
 
-          <button className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${role === 'admin' ? 'hover:bg-slate-800 hover:text-white' : 'hover:bg-emerald-50 hover:text-emerald-600'}`}>
+          <button onClick={() => { if (role === 'admin') { navigateTo('admin-settings'); setIsSidebarOpen(false); } }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'admin-settings' && role === 'admin' ? 'bg-emerald-600 text-white font-medium' : role === 'admin' ? 'hover:bg-slate-800 hover:text-white' : 'hover:bg-emerald-50 hover:text-emerald-600'}`}>
             <Settings className="w-5 h-5 mr-3" /> Pengaturan
           </button>
         </nav>
@@ -2081,6 +2087,284 @@ function AdminAuditor({ data }: any) {
               )}
             </tbody>
           </table>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AdminSettings() {
+  const [activeTab, setActiveTab] = useState('profil');
+
+  const tabs = [
+    { id: 'profil', label: 'Profil Lembaga', icon: Landmark },
+    { id: 'akses', label: 'Hak Akses & Role', icon: Users },
+    { id: 'master', label: 'Master Data', icon: BookOpen },
+    { id: 'sistem', label: 'Sistem & Notifikasi', icon: MonitorSmartphone },
+    { id: 'template', label: 'Template Dokumen', icon: FileText },
+    { id: 'integrasi', label: 'Integrasi & API', icon: Network }
+  ];
+
+  return (
+    <div className="space-y-6 max-w-6xl mx-auto">
+      <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">Pengaturan Sistem</h2>
+          <p className="text-sm text-gray-500 mt-1">Konfigurasi dan manajemen platform LPH Al-Ghazali.</p>
+        </div>
+        <button className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-lg font-medium shadow-md transition-colors flex items-center text-sm shrink-0">
+          <CheckCircle className="w-4 h-4 mr-2" /> Simpan Perubahan
+        </button>
+      </div>
+
+      <div className="flex flex-col lg:flex-row gap-6">
+        {/* Sidebar Tabs */}
+        <div className="w-full lg:w-64 shrink-0">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <nav className="flex flex-row lg:flex-col overflow-x-auto lg:overflow-visible relative" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
+              {tabs.map(tab => {
+                const Icon = tab.icon;
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`flex items-center w-full px-4 py-4 sm:px-6 whitespace-nowrap lg:whitespace-normal transition-all border-b-2 lg:border-b-0 lg:border-l-4 text-sm font-medium ${
+                      isActive 
+                        ? 'bg-emerald-50 text-emerald-700 border-emerald-500 lg:border-b-transparent' 
+                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 border-transparent lg:border-l-transparent'
+                    }`}
+                  >
+                    <Icon className={`w-5 h-5 mr-3 shrink-0 ${isActive ? 'text-emerald-600' : 'text-gray-400'}`} />
+                    {tab.label}
+                  </button>
+                );
+              })}
+            </nav>
+          </div>
+        </div>
+
+        {/* Form Area */}
+        <div className="flex-1 bg-white rounded-xl shadow-sm border border-gray-200 min-h-[500px]">
+          {activeTab === 'profil' && (
+            <div className="p-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-6">Profil Lembaga LPH</h3>
+              <div className="space-y-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Nama Lembaga</label>
+                    <input type="text" defaultValue="LPH Al-Ghazali" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Nomor Akreditasi BPJPH</label>
+                    <input type="text" defaultValue="LPH-1811-001" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500" />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Alamat Lengkap</label>
+                    <textarea rows={3} defaultValue="Jl. Kemerdekaan Barat No.12, Kesugihan, Cilacap, Jawa Tengah 53274" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500"></textarea>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Email Resmi</label>
+                    <input type="email" defaultValue="lphalghazali@gmail.com" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Nomor WhatsApp/Telepon</label>
+                    <input type="text" defaultValue="085802494252" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          {activeTab === 'akses' && (
+             <div className="p-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-2">Hak Akses & Role</h3>
+                <p className="text-sm text-gray-500 mb-6">Kelola wewenang dan jenis staf dalam sistem.</p>
+                <div className="border border-gray-200 rounded-lg overflow-x-auto">
+                   <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-50">
+                         <tr>
+                            <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Role</th>
+                            <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Deskripsi Wewenang</th>
+                            <th className="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
+                         </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                         <tr className="hover:bg-gray-50">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">Super Admin</td>
+                            <td className="px-6 py-4 text-sm text-gray-600">Akses penuh ke semua modul konfigurasi dan master data.</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-right"><span className="px-2.5 py-1 inline-flex text-xs font-semibold rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">Aktif</span></td>
+                         </tr>
+                         <tr className="hover:bg-gray-50">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">Auditor Utama</td>
+                            <td className="px-6 py-4 text-sm text-gray-600">Terbitkan laporan LHP, kelola data audit & plotting.</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-right"><span className="px-2.5 py-1 inline-flex text-xs font-semibold rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">Aktif</span></td>
+                         </tr>
+                         <tr className="hover:bg-gray-50">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">Staf Keuangan</td>
+                            <td className="px-6 py-4 text-sm text-gray-600">Validasi pembayaran tarif layanan oleh PU.</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-right"><span className="px-2.5 py-1 inline-flex text-xs font-semibold rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">Aktif</span></td>
+                         </tr>
+                      </tbody>
+                   </table>
+                </div>
+                <button className="mt-5 text-sm text-emerald-600 font-semibold hover:text-emerald-700 flex items-center bg-emerald-50 px-3 py-2 rounded-lg transition-colors"><PlusCircle className="w-4 h-4 mr-1.5" /> Tambah Role Baru</button>
+             </div>
+          )}
+          {activeTab === 'master' && (
+             <div className="p-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-2">Master Data</h3>
+                <p className="text-sm text-gray-500 mb-6">Data referensi global untuk dropdown dan variabel sistem.</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                   <div className="border border-gray-200 rounded-lg p-5 hover:border-emerald-400 hover:shadow-sm cursor-pointer transition-all bg-white group">
+                      <div className="flex items-center">
+                         <div className="p-3 bg-emerald-50 group-hover:bg-emerald-100 rounded-xl mr-4 transition-colors"><BookOpen className="w-6 h-6 text-emerald-600" /></div>
+                         <div>
+                            <h4 className="text-base font-bold text-gray-900 mb-0.5">Jenis Produk</h4>
+                            <p className="text-xs text-gray-500">32 Kategori terdaftar di BPJPH</p>
+                         </div>
+                      </div>
+                   </div>
+                   <div className="border border-gray-200 rounded-lg p-5 hover:border-emerald-400 hover:shadow-sm cursor-pointer transition-all bg-white group">
+                      <div className="flex items-center">
+                         <div className="p-3 bg-emerald-50 group-hover:bg-emerald-100 rounded-xl mr-4 transition-colors"><Coins className="w-6 h-6 text-emerald-600" /></div>
+                         <div>
+                            <h4 className="text-base font-bold text-gray-900 mb-0.5">Komponen Tarif</h4>
+                            <p className="text-xs text-gray-500">Master biaya Mandoc, Transport, Unit</p>
+                         </div>
+                      </div>
+                   </div>
+                   <div className="border border-gray-200 rounded-lg p-5 hover:border-emerald-400 hover:shadow-sm cursor-pointer transition-all bg-white group">
+                      <div className="flex items-center">
+                         <div className="p-3 bg-emerald-50 group-hover:bg-emerald-100 rounded-xl mr-4 transition-colors"><MapPin className="w-6 h-6 text-emerald-600" /></div>
+                         <div>
+                            <h4 className="text-base font-bold text-gray-900 mb-0.5">Wilayah & Radius</h4>
+                            <p className="text-xs text-gray-500">Data Provinsi & Kabupaten Kota</p>
+                         </div>
+                      </div>
+                   </div>
+                </div>
+             </div>
+          )}
+          {activeTab === 'sistem' && (
+             <div className="p-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-6">Sistem & Notifikasi</h3>
+                <div className="space-y-6">
+                   <div className="flex items-center justify-between border-b border-gray-100 pb-5">
+                      <div className="pr-4">
+                         <h4 className="text-sm font-bold text-gray-900 flex items-center mb-1"><Zap className="w-4 h-4 text-yellow-500 mr-1.5" /> Notifikasi WhatsApp Bot</h4>
+                         <p className="text-sm text-gray-500">Kirim otomatis pesan perubahan status dokumen kepada Pelaku Usaha.</p>
+                      </div>
+                      <div className="relative inline-block w-12 shrink-0 align-middle select-none transition duration-200 ease-in">
+                         <input type="checkbox" name="toggle" id="whatsapp-toggle" defaultChecked className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer border-emerald-500" style={{ right: 0 }}/>
+                         <label htmlFor="whatsapp-toggle" className="toggle-label block overflow-hidden h-6 rounded-full bg-emerald-500 cursor-pointer"></label>
+                      </div>
+                   </div>
+                   <div className="flex items-center justify-between border-b border-gray-100 pb-5">
+                      <div className="pr-4">
+                         <h4 className="text-sm font-bold text-gray-900 flex items-center mb-1"><Mail className="w-4 h-4 text-blue-500 mr-1.5" /> Notifikasi Email</h4>
+                         <p className="text-sm text-gray-500">Email pemberitahuan penagihan invoice & sertifikat elektronik.</p>
+                      </div>
+                      <div className="relative inline-block w-12 shrink-0 align-middle select-none transition duration-200 ease-in">
+                         <input type="checkbox" name="toggle" id="email-toggle" defaultChecked className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer border-emerald-500" style={{ right: 0 }}/>
+                         <label htmlFor="email-toggle" className="toggle-label block overflow-hidden h-6 rounded-full bg-emerald-500 cursor-pointer"></label>
+                      </div>
+                   </div>
+                   <div className="flex items-center justify-between pb-2">
+                      <div className="pr-4">
+                         <h4 className="text-sm font-bold text-gray-900 flex items-center mb-1"><Settings className="w-4 h-4 text-gray-500 mr-1.5" /> Mode Perbaikan (Maintenance)</h4>
+                         <p className="text-sm text-gray-500">Tutup portal publik sementara waktu saat sistem dimutakhirkan.</p>
+                      </div>
+                      <div className="relative inline-block w-12 shrink-0 align-middle select-none transition duration-200 ease-in">
+                         <input type="checkbox" name="toggle" id="maint-toggle" className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-300" style={{ right: '1.5rem', left: 0 }}/>
+                         <label htmlFor="maint-toggle" className="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                      </div>
+                   </div>
+                </div>
+             </div>
+          )}
+          {activeTab === 'template' && (
+             <div className="p-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-2">Template Dokumen</h3>
+                <p className="text-sm text-gray-500 mb-6">Kelola struktur format cetak PDF otomatis berbasis variabel.</p>
+                <div className="space-y-4">
+                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-5 border border-gray-200 rounded-xl hover:border-emerald-300 transition-colors bg-gray-50">
+                      <div className="flex items-center mb-4 sm:mb-0">
+                         <div className="bg-white p-2.5 rounded-lg border border-gray-200 mr-4 shadow-sm">
+                            <Receipt className="w-6 h-6 text-emerald-600" />
+                         </div>
+                         <div>
+                            <h4 className="text-sm font-bold text-gray-900">Tagihan & Kwitansi (PDF)</h4>
+                            <p className="text-xs text-gray-500 mt-0.5">Versi: v2.1 • Diubah: 2 hari yang lalu</p>
+                         </div>
+                      </div>
+                      <button className="text-sm text-emerald-700 bg-emerald-100 hover:bg-emerald-200 px-4 py-2 rounded-lg font-medium transition-colors w-full sm:w-auto">Edit Tata Letak</button>
+                   </div>
+                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-5 border border-gray-200 rounded-xl hover:border-emerald-300 transition-colors bg-gray-50">
+                      <div className="flex items-center mb-4 sm:mb-0">
+                         <div className="bg-white p-2.5 rounded-lg border border-gray-200 mr-4 shadow-sm">
+                            <FileSignature className="w-6 h-6 text-emerald-600" />
+                         </div>
+                         <div>
+                            <h4 className="text-sm font-bold text-gray-900">Surat Rekomendasi / LHP</h4>
+                            <p className="text-xs text-gray-500 mt-0.5">Versi: v1.0 • Diubah: 1 bulan yang lalu</p>
+                         </div>
+                      </div>
+                      <button className="text-sm text-emerald-700 bg-emerald-100 hover:bg-emerald-200 px-4 py-2 rounded-lg font-medium transition-colors w-full sm:w-auto">Edit Tata Letak</button>
+                   </div>
+                </div>
+             </div>
+          )}
+          {activeTab === 'integrasi' && (
+             <div className="p-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-2">Integrasi & API</h3>
+                <p className="text-sm text-gray-500 mb-6">Kelola konektor kunci (webhook) dengan sistem pihak ketiga.</p>
+                <div className="grid grid-cols-1 gap-6">
+                   <div className="p-6 border border-gray-200 rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow">
+                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5 gap-3">
+                         <div className="flex items-center">
+                            <div className="p-2.5 bg-gray-50 rounded-xl border border-gray-100 mr-4"><Network className="w-6 h-6 text-blue-600" /></div>
+                            <div>
+                               <h4 className="text-base font-bold text-gray-900">Bridging SIHALAL BPJPH</h4>
+                               <p className="text-xs text-gray-500">Sinkronisasi Pendaftaran & LHP Nasional</p>
+                            </div>
+                         </div>
+                         <span className="px-2.5 py-1 bg-yellow-50 text-yellow-700 text-xs font-bold rounded-full border border-yellow-200 shrink-0">Menunggu Koneksi</span>
+                      </div>
+                      <div className="space-y-4 pt-2">
+                         <div>
+                            <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">REST API Endpoint</label>
+                            <input type="text" defaultValue="https://api.sihalal.bpjph.go.id/v1/" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500 bg-gray-50 font-mono text-gray-600" />
+                         </div>
+                         <div>
+                            <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Client Secret Key</label>
+                            <input type="password" defaultValue="sihalal-sec-1234567890" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500 bg-gray-50 font-mono text-gray-600" />
+                         </div>
+                         <div className="pt-2">
+                             <button className="bg-gray-100 border border-gray-200 text-gray-800 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-gray-200 transition-colors">Uji Koneksi (Ping)</button>
+                         </div>
+                      </div>
+                   </div>
+                   
+                   <div className="p-6 border border-gray-200 rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow">
+                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5 gap-3">
+                         <div className="flex items-center">
+                            <div className="p-2.5 bg-green-50 rounded-xl border border-green-100 mr-4"><Phone className="w-6 h-6 text-green-600" /></div>
+                            <div>
+                               <h4 className="text-base font-bold text-gray-900">WhatsApp Engine</h4>
+                               <p className="text-xs text-gray-500">Server Pengirim Pesan Otomatis</p>
+                            </div>
+                         </div>
+                         <span className="px-2.5 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-full border border-emerald-200 shrink-0 flex items-center"><div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></div>Terhubung Aktif</span>
+                      </div>
+                      <div className="bg-gray-50 p-4 rounded-lg border border-gray-100 mb-4">
+                         <p className="text-sm font-medium text-gray-700">Modul: <span className="font-semibold text-gray-900">Baileys Multidevice v6</span></p>
+                         <p className="text-sm font-medium text-gray-700 mt-1">Sesi: <span className="font-bold text-emerald-600">+62 858-0249-4252</span></p>
+                      </div>
+                      <button className="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-gray-50 shadow-sm transition-colors">Putuskan & Scan Ulang QR</button>
+                   </div>
+                </div>
+             </div>
+          )}
         </div>
       </div>
     </div>
