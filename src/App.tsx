@@ -303,6 +303,7 @@ function LandingView({ navigateTo, beritaList }: any) {
   const [isStrukturPdfOpen, setIsStrukturPdfOpen] = useState(false);
   const [isAuditorPdfOpen, setIsAuditorPdfOpen] = useState(false);
   const [isSdmPdfOpen, setIsSdmPdfOpen] = useState(false);
+  const [isKerjasamaPdfOpen, setIsKerjasamaPdfOpen] = useState(false);
 
   const handleFormChange = (e: any) => {
     const { name, value } = e.target;
@@ -414,9 +415,9 @@ function LandingView({ navigateTo, beritaList }: any) {
                   <button onClick={() => setIsSdmPdfOpen(true)} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
                     <BookOpen className="w-4 h-4 mr-2" /> SDM Syariah
                   </button>
-                  <a href="#profil" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center">
+                  <button onClick={() => setIsKerjasamaPdfOpen(true)} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center">
                     <Handshake className="w-4 h-4 mr-2" /> Kerjasama
-                  </a>
+                  </button>
                 </div>
               </div>
               <div className="relative group shrink-0">
@@ -547,7 +548,7 @@ function LandingView({ navigateTo, beritaList }: any) {
                 <button onClick={() => { setIsStrukturPdfOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600">Struktur Organisasi</button>
                 <button onClick={() => { setIsAuditorPdfOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600">Auditor Halal</button>
                 <button onClick={() => { setIsSdmPdfOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600">SDM Syariah</button>
-                <a href="#profil" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Kerjasama</a>
+                <button onClick={() => { setIsKerjasamaPdfOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600">Kerjasama</button>
               </div>
             </div>
 
@@ -1954,6 +1955,144 @@ function LandingView({ navigateTo, beritaList }: any) {
             <div className="p-4 bg-gray-50 border-t border-gray-200 rounded-b-xl flex justify-end shrink-0">
               <button 
                 onClick={() => setIsSdmPdfOpen(false)}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg font-medium shadow-sm transition-colors"
+                type="button"
+              >
+                Tutup Dokumen
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isKerjasamaPdfOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6 overflow-y-auto">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl flex flex-col max-h-full">
+            <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50 rounded-t-xl shrink-0">
+              <div className="flex items-center space-x-2">
+                <FileText className="w-5 h-5 text-gray-500" />
+                <h3 className="font-semibold text-gray-700">Jejaring_dan_Kerjasama_LPH_Al_Ghazali.pdf</h3>
+              </div>
+              <button 
+                onClick={() => setIsKerjasamaPdfOpen(false)} 
+                className="p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-200 transition-colors"
+                title="Tutup"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="p-8 sm:p-12 overflow-y-auto bg-gray-100 flex-1">
+              <div className="bg-white max-w-3xl mx-auto shadow-sm ring-1 ring-gray-900/5 min-h-[600px] p-8 sm:p-12 text-gray-800">
+                <div className="border-b-2 border-emerald-800 pb-6 mb-8 text-center">
+                  <Logo className="h-16 w-16 mx-auto mb-4" />
+                  <h1 className="text-2xl font-bold text-gray-900 uppercase tracking-wide">JEJARING DAN MITRA</h1>
+                  <h2 className="text-xl font-bold text-emerald-700 uppercase tracking-widest mt-1">Kerjasama LPH Al-Ghazali</h2>
+                </div>
+                
+                <div className="space-y-8 leading-relaxed text-justify">
+                  <div className="bg-emerald-50 p-6 rounded-lg border border-emerald-100 shadow-sm text-center">
+                    <p className="text-lg font-medium text-emerald-900 italic">
+                      "Kami percaya bahwa percepatan ekosistem Produk Halal di Indonesia hanya dapat diwujudkan melalui sinergi, kolaborasi yang kuat, dan kerjasama strategis lintas sektoral."
+                    </p>
+                  </div>
+
+                  <section>
+                    <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                      <Network className="w-6 h-6 mr-3 text-emerald-600" />
+                      Komitmen Kerjasama
+                    </h3>
+                    <p className="mb-4">
+                      LPH Al-Ghazali di bawah naungan Universitas Nahdlatul Ulama Al Ghazali (UNUGHA) secara aktif terus membangun kemitraan dengan berbagai lembaga pemerintah, perguruan tinggi, asosiasi pengusaha, serta lembaga swadaya masyarakat untuk memperluas jangkauan layanan penjaminan mutu produk halal yang inklusif dan mempermudah akses sertifikasi bagi pelaku UMKM.
+                    </p>
+                  </section>
+
+                  <section>
+                    <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                      <Handshake className="w-6 h-6 mr-3 text-emerald-600" />
+                      Fokus Kemitraan Kami
+                    </h3>
+                    
+                    <div className="grid gap-6">
+                      <div className="border border-gray-200 rounded-xl overflow-hidden shadow-sm flex flex-col sm:flex-row bg-white">
+                        <div className="bg-emerald-700 p-6 flex flex-col items-center justify-center text-white sm:w-1/3">
+                          <Landmark className="w-10 h-10 mb-2" />
+                          <h4 className="font-bold text-center">Lembaga Pemerintahan & Regulator</h4>
+                        </div>
+                        <div className="p-6 sm:w-2/3">
+                          <p className="text-sm text-gray-600 mb-3">
+                            Bersinergi dalam pelaksanaan regulasi, program fasilitasi sertifikasi halal gratis (SEHATI), dan kampanye sadar halal nasional.
+                          </p>
+                          <ul className="text-sm space-y-1 text-gray-700">
+                            <li className="flex items-center"><CheckCircle2 className="w-4 h-4 mr-2 text-emerald-500" /> Badan Penyelenggara Jaminan Produk Halal (BPJPH)</li>
+                            <li className="flex items-center"><CheckCircle2 className="w-4 h-4 mr-2 text-emerald-500" /> Kemenag Provinsi Jawa Tengah / Kabupaten Cilacap</li>
+                            <li className="flex items-center"><CheckCircle2 className="w-4 h-4 mr-2 text-emerald-500" /> Dinas Koperasi dan UKM / Dinas Perindustrian</li>
+                          </ul>
+                        </div>
+                      </div>
+
+                      <div className="border border-gray-200 rounded-xl overflow-hidden shadow-sm flex flex-col sm:flex-row bg-white">
+                        <div className="bg-emerald-700 p-6 flex flex-col items-center justify-center text-white sm:w-1/3">
+                          <BookOpen className="w-10 h-10 mb-2" />
+                          <h4 className="font-bold text-center">Institusi Akademik & Riset</h4>
+                        </div>
+                        <div className="p-6 sm:w-2/3">
+                          <p className="text-sm text-gray-600 mb-3">
+                            Kerjasama dalam pengembangan sains halal, uji laboratorium, inovasi bahan substitusi halal, dan peningkatan SDM.
+                          </p>
+                          <ul className="text-sm space-y-1 text-gray-700">
+                            <li className="flex items-center"><CheckCircle2 className="w-4 h-4 mr-2 text-emerald-500" /> Jejaring Laboratorium Halal Nasional</li>
+                            <li className="flex items-center"><CheckCircle2 className="w-4 h-4 mr-2 text-emerald-500" /> Pusat Kajian Halal Perguruan Tinggi (PTH)</li>
+                            <li className="flex items-center"><CheckCircle2 className="w-4 h-4 mr-2 text-emerald-500" /> Halal Center Mandiri & Universitas Terafiliasi</li>
+                          </ul>
+                        </div>
+                      </div>
+                      
+                      <div className="border border-gray-200 rounded-xl overflow-hidden shadow-sm flex flex-col sm:flex-row bg-white">
+                        <div className="bg-emerald-700 p-6 flex flex-col items-center justify-center text-white sm:w-1/3">
+                          <Users className="w-10 h-10 mb-2" />
+                          <h4 className="font-bold text-center">Asosiasi Industri & UMKM</h4>
+                        </div>
+                        <div className="p-6 sm:w-2/3">
+                          <p className="text-sm text-gray-600 mb-3">
+                            Pendampingan kolektif, bimbingan teknis (Bimtek) penerapan Sistem Jaminan Produk Halal (SJPH), dan konsultasi pra-audit.
+                          </p>
+                          <ul className="text-sm space-y-1 text-gray-700">
+                            <li className="flex items-center"><CheckCircle2 className="w-4 h-4 mr-2 text-emerald-500" /> Perkumpulan Pengusaha Muslim / Hijrah</li>
+                            <li className="flex items-center"><CheckCircle2 className="w-4 h-4 mr-2 text-emerald-500" /> Koperasi Produsen Makanan dan Minuman</li>
+                            <li className="flex items-center"><CheckCircle2 className="w-4 h-4 mr-2 text-emerald-500" /> Asosiasi Pemotong Hewan/RPH Kategori Halal</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+
+                  <section className="bg-gray-50 p-6 rounded-lg border-l-4 border-emerald-600 mt-6">
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">Peluang Kemitraan Baru</h3>
+                    <p className="text-sm text-gray-700">
+                      LPH Al-Ghazali sangat terbuka untuk menjalin Memorandum of Understanding (MoU) atau Perjanjian Kerjasama (PKS) baru dengan lembaga Anda terkait pelatihan kepatuhan halal, pengujian produk komersial, maupun program pengabdian masyarakat. <a href="#kontak" className="text-emerald-700 font-semibold underline" onClick={() => setIsKerjasamaPdfOpen(false)}>Hubungi Kami</a> untuk menginisiasi kerjasama.
+                    </p>
+                  </section>
+
+                  <div className="pt-16 mt-12 border-t border-gray-200">
+                    <div className="flex justify-between items-end text-sm text-gray-600">
+                      <div>
+                        Dokumen: Profil_Mitra_v1.0
+                      </div>
+                      <div className="text-right">
+                        <p className="mb-16">Bagian Hubungan Masyarakat dan Kemitraan</p>
+                        <p className="font-bold underline text-gray-900">Manajer Puncak LPH</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            
+            <div className="p-4 bg-gray-50 border-t border-gray-200 rounded-b-xl flex justify-end shrink-0">
+              <button 
+                onClick={() => setIsKerjasamaPdfOpen(false)}
                 className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg font-medium shadow-sm transition-colors"
                 type="button"
               >
