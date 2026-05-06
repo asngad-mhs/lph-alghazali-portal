@@ -299,6 +299,7 @@ function LandingView({ navigateTo, beritaList }: any) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isVisiMisiPdfOpen, setIsVisiMisiPdfOpen] = useState(false);
   const [isSejarahPdfOpen, setIsSejarahPdfOpen] = useState(false);
+  const [isKebijakanPdfOpen, setIsKebijakanPdfOpen] = useState(false);
 
   const handleFormChange = (e: any) => {
     const { name, value } = e.target;
@@ -398,9 +399,9 @@ function LandingView({ navigateTo, beritaList }: any) {
                   <button onClick={() => setIsVisiMisiPdfOpen(true)} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
                     <Target className="w-4 h-4 mr-2" /> Visi Misi
                   </button>
-                  <a href="#profil" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                  <button onClick={() => setIsKebijakanPdfOpen(true)} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
                     <Award className="w-4 h-4 mr-2" /> Kebijakan Mutu & Sasaran Mutu
-                  </a>
+                  </button>
                   <a href="#profil" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
                     <Network className="w-4 h-4 mr-2" /> Struktur Organisasi
                   </a>
@@ -539,7 +540,7 @@ function LandingView({ navigateTo, beritaList }: any) {
               <div className="ml-6 space-y-1 border-l-2 border-emerald-100 pl-3">
                 <button onClick={() => { setIsSejarahPdfOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600">Sejarah dan Latar Belakang</button>
                 <button onClick={() => { setIsVisiMisiPdfOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600">Visi Misi</button>
-                <a href="#profil" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Kebijakan Mutu & Sasaran Mutu</a>
+                <button onClick={() => { setIsKebijakanPdfOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600">Kebijakan Mutu & Sasaran Mutu</button>
                 <a href="#profil" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Struktur Organisasi</a>
                 <a href="#profil" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Auditor Halal</a>
                 <a href="#profil" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">SDM Syariah</a>
@@ -1527,6 +1528,90 @@ function LandingView({ navigateTo, beritaList }: any) {
             <div className="p-4 bg-gray-50 border-t border-gray-200 rounded-b-xl flex justify-end shrink-0">
               <button 
                 onClick={() => setIsSejarahPdfOpen(false)}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg font-medium shadow-sm transition-colors"
+                type="button"
+              >
+                Tutup Dokumen
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isKebijakanPdfOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6 overflow-y-auto">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-3xl flex flex-col max-h-full">
+            <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50 rounded-t-xl shrink-0">
+              <div className="flex items-center space-x-2">
+                <FileText className="w-5 h-5 text-gray-500" />
+                <h3 className="font-semibold text-gray-700">Kebijakan_Mutu_dan_Sasaran_Mutu_LPH_Al_Ghazali.pdf</h3>
+              </div>
+              <button 
+                onClick={() => setIsKebijakanPdfOpen(false)} 
+                className="p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-200 transition-colors"
+                title="Tutup"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="p-8 sm:p-12 overflow-y-auto bg-gray-100 flex-1">
+              <div className="bg-white max-w-2xl mx-auto shadow-sm ring-1 ring-gray-900/5 min-h-[600px] p-10 sm:p-16">
+                <div className="text-center border-b-2 border-emerald-800 pb-6 mb-8">
+                  <Logo className="h-16 w-16 mx-auto mb-4" />
+                  <h1 className="text-2xl font-bold text-gray-900 uppercase tracking-wide">Lembaga Pemeriksa Halal (LPH)</h1>
+                  <h2 className="text-xl font-bold text-emerald-700 uppercase tracking-widest mt-1">Al-Ghazali</h2>
+                  <p className="text-sm text-gray-500 mt-2">Universitas Nahdlatul Ulama Al Ghazali (UNUGHA) Cilacap</p>
+                </div>
+                
+                <div className="space-y-6 text-gray-800 leading-relaxed text-justify">
+                  <div className="text-center mb-8">
+                    <h3 className="text-2xl font-bold underline mb-2">KEBIJAKAN MUTU & SASARAN MUTU</h3>
+                    <p className="text-sm">Dokumen Profil LPH Al-Ghazali</p>
+                  </div>
+
+                  <section className="mb-6">
+                    <h4 className="text-lg font-bold text-gray-900 mb-3 bg-emerald-100 text-emerald-800 px-3 py-1 rounded inline-block">A. KEBIJAKAN MUTU</h4>
+                    <p className="mb-3">
+                      LPH Al-Ghazali berkomitmen penuh memberikan pelayanan pemeriksaan dan/atau pengujian kehalalan produk yang profesional, independen, objektif, dan tidak memihak. Kami secara konsisten mengedepankan:
+                    </p>
+                    <ol className="list-decimal pl-6 space-y-2 marker:text-emerald-600 marker:font-bold">
+                      <li><strong>Kepatuhan Regulasi:</strong> Menjalankan seluruh proses sertifikasi sesuai dengan regulasi Badan Penyelenggara Jaminan Produk Halal (BPJPH) dan Fatwa Majelis Ulama Indonesia (MUI).</li>
+                      <li><strong>Standar Internasional:</strong> Secara berkelanjutan menerapkan pedoman SNI ISO/IEC 17065:2012 terkait persyaratan untuk lembaga sertifikasi produk, proses, dan jasa.</li>
+                      <li><strong>Integritas dan Ketidakberpihakan:</strong> Menjaga objektivitas dalam setiap tahap pemeriksaan, bebas dari tekanan komersial, finansial, maupun tekanan lainnya yang mempengaruhi hasil audit.</li>
+                      <li><strong>Kompetensi Berkelanjutan:</strong> Meningkatkan kompetensi Auditor Halal secara berkelanjutan melalui pelatihan guna memastikan keahlian dalam sains, teknologi pangan, dan syariat Islam.</li>
+                      <li><strong>Kerahasiaan Data:</strong> Menjaga seluruh tingkat kerahasiaan informasi, dokumen formula, dan matrik proses produksi milik Pelaku Usaha sesuai dengan kode etik.</li>
+                    </ol>
+                  </section>
+
+                  <section>
+                    <h4 className="text-lg font-bold text-gray-900 mb-3 bg-emerald-100 text-emerald-800 px-3 py-1 rounded inline-block">B. SASARAN MUTU</h4>
+                    <p className="mb-3">
+                      Dalam rangka mewujudkan Kebijakan Mutu tersebut, LPH Al-Ghazali menetapkan Sasaran Mutu terukur yang harus dicapai sebagai berikut:
+                    </p>
+                    <ul className="list-disc pl-6 space-y-3 marker:text-emerald-500">
+                      <li>Penyelesaian proses pemeriksaan dan pengujian lapangan <strong>(audit) maksimal 15 (lima belas) hari kerja</strong> sejak ditetapkan oleh BPJPH.</li>
+                      <li>Mencapai <strong>Tingkat Kepuasan Pelanggan (Pelaku Usaha) minimal 85%</strong> (Kategori Sangat Baik) melalui layanan yang ramah, responsif, dan solutif.</li>
+                      <li>Memastikan <strong>0% (Nol Persen) benturan kepentingan (Conflict of Interest)</strong> dan pelanggaran kode etik oleh auditor halal dalam seluruh proses sertifikasi.</li>
+                      <li>Peningkatan kompetensi auditor melalui <strong>pelaksanaan pelatihan/workshop internal atau eksternal minimal 2 (dua) kali dalam satu tahun</strong>.</li>
+                    </ul>
+                  </section>
+                  
+                  <div className="pt-16 mt-12 border-t border-gray-200 grid grid-cols-2">
+                    <div></div>
+                    <div className="text-center text-sm">
+                      <p className="mb-16">Cilacap, Jawa Tengah</p>
+                      <p className="font-bold underline">Manajer Puncak LPH Al-Ghazali</p>
+                      <p>NIP. -</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="p-4 bg-gray-50 border-t border-gray-200 rounded-b-xl flex justify-end shrink-0">
+              <button 
+                onClick={() => setIsKebijakanPdfOpen(false)}
                 className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg font-medium shadow-sm transition-colors"
                 type="button"
               >
