@@ -305,6 +305,7 @@ function LandingView({ navigateTo, beritaList }: any) {
   const [isSdmPdfOpen, setIsSdmPdfOpen] = useState(false);
   const [isKerjasamaPdfOpen, setIsKerjasamaPdfOpen] = useState(false);
   const [isPencarianPdfOpen, setIsPencarianPdfOpen] = useState(false);
+  const [isDaftarAuditPdfOpen, setIsDaftarAuditPdfOpen] = useState(false);
 
   const handleFormChange = (e: any) => {
     const { name, value } = e.target;
@@ -435,9 +436,9 @@ function LandingView({ navigateTo, beritaList }: any) {
                   <button onClick={() => setIsPencarianPdfOpen(true)} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
                     <CheckCircle className="w-4 h-4 mr-2" /> Pencarian Sertifikasi Halal
                   </button>
-                  <a href="#daftar-audit" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center">
+                  <button onClick={() => setIsDaftarAuditPdfOpen(true)} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center">
                     <FileText className="w-4 h-4 mr-2" /> Daftar Audit
-                  </a>
+                  </button>
                 </div>
               </div>
               <div className="relative group shrink-0">
@@ -559,7 +560,7 @@ function LandingView({ navigateTo, beritaList }: any) {
                 <a href="#pendaftaran" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Pendaftaran Sertifikasi Halal</a>
                 <a href="#ruang-lingkup" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Ruang Lingkup dan Layanan Pemeriksaan Halal</a>
                 <button onClick={() => { setIsPencarianPdfOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600">Pencarian Sertifikasi Halal</button>
-                <a href="#daftar-audit" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Daftar Audit</a>
+                <button onClick={() => { setIsDaftarAuditPdfOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600">Daftar Audit</button>
               </div>
             </div>
 
@@ -2228,6 +2229,159 @@ function LandingView({ navigateTo, beritaList }: any) {
             <div className="p-4 bg-gray-50 border-t border-gray-200 rounded-b-xl flex justify-end shrink-0">
               <button 
                 onClick={() => setIsPencarianPdfOpen(false)}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg font-medium shadow-sm transition-colors"
+                type="button"
+              >
+                Tutup Dokumen
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isDaftarAuditPdfOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6 overflow-y-auto">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl flex flex-col max-h-full">
+            <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50 rounded-t-xl shrink-0">
+              <div className="flex items-center space-x-2">
+                <FileText className="w-5 h-5 text-gray-500" />
+                <h3 className="font-semibold text-gray-700">Daftar_Audit_dan_Klien_LPH_Al_Ghazali.pdf</h3>
+              </div>
+              <button 
+                onClick={() => setIsDaftarAuditPdfOpen(false)} 
+                className="p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-200 transition-colors"
+                title="Tutup"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="p-8 sm:p-12 overflow-y-auto bg-gray-100 flex-1">
+              <div className="bg-white max-w-3xl mx-auto shadow-sm ring-1 ring-gray-900/5 min-h-[600px] p-8 sm:p-12 text-gray-800">
+                <div className="border-b-2 border-emerald-800 pb-6 mb-8 text-center">
+                  <Logo className="h-16 w-16 mx-auto mb-4" />
+                  <h1 className="text-2xl font-bold text-gray-900 uppercase tracking-wide">LAYANAN PUBLIK</h1>
+                  <h2 className="text-xl font-bold text-emerald-700 uppercase tracking-widest mt-1">Daftar Audit dan Rekam Jejak LPH</h2>
+                </div>
+                
+                <div className="space-y-8 leading-relaxed">
+                  <div className="bg-emerald-50 p-6 rounded-lg border border-emerald-100 shadow-sm text-center">
+                    <p className="text-lg font-medium text-emerald-900 italic">
+                      "Transparansi layanan adalah wujud komitmen LPH Al-Ghazali dalam melayani umat dan mendampingi pelaku usaha merengkuh jaminan kepastian halal."
+                    </p>
+                  </div>
+
+                  <section>
+                    <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                      <Briefcase className="w-6 h-6 mr-3 text-emerald-600" />
+                      Lingkup Klien Kami
+                    </h3>
+                    <p className="mb-4 text-gray-700">
+                      Selama beroperasi, Lembaga Pemeriksa Halal Universitas Nahdlatul Ulama Al Ghazali telah dipercaya oleh berbagai skala usaha lintas sektor, terutama yang beroperasi di wilayah eks-Karesidenan Banyumas (Cilacap, Banyumas, Purbalingga, Banjarnegara) hingga seluruh Jawa Tengah dan area strategis lainnya. Skala usaha yang kami audit meliputi:
+                    </p>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6">
+                      <div className="bg-white border border-emerald-100 p-4 rounded-xl shadow-sm text-center">
+                        <div className="bg-emerald-50 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                          <CheckCircle2 className="w-6 h-6 text-emerald-600" />
+                        </div>
+                        <h4 className="font-bold text-gray-800 text-sm">Usaha Mikro (UMi)</h4>
+                      </div>
+                      <div className="bg-white border border-emerald-100 p-4 rounded-xl shadow-sm text-center">
+                        <div className="bg-emerald-50 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                          <CheckCircle2 className="w-6 h-6 text-emerald-600" />
+                        </div>
+                        <h4 className="font-bold text-gray-800 text-sm">Usaha Kecil</h4>
+                      </div>
+                      <div className="bg-white border border-emerald-100 p-4 rounded-xl shadow-sm text-center">
+                        <div className="bg-emerald-50 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                          <CheckCircle2 className="w-6 h-6 text-emerald-600" />
+                        </div>
+                        <h4 className="font-bold text-gray-800 text-sm">Usaha Menengah</h4>
+                      </div>
+                      <div className="bg-white border border-emerald-100 p-4 rounded-xl shadow-sm text-center">
+                        <div className="bg-emerald-50 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                          <CheckCircle2 className="w-6 h-6 text-emerald-600" />
+                        </div>
+                        <h4 className="font-bold text-gray-800 text-sm">Usaha Besar</h4>
+                      </div>
+                    </div>
+                  </section>
+
+                  <section className="bg-gray-50 border border-gray-200 rounded-xl overflow-hidden mt-8">
+                    <div className="bg-emerald-700 px-6 py-4 flex items-center justify-between text-white">
+                      <h3 className="font-bold flex items-center">
+                        <Activity className="w-5 h-5 mr-2" />
+                        Daftar Pemeriksaan Berjalan
+                      </h3>
+                      <span className="text-xs bg-emerald-600 px-2 py-1 rounded-full border border-emerald-500">Live Update</span>
+                    </div>
+                    
+                    <div className="p-0 overflow-x-auto">
+                      <table className="w-full text-sm text-left text-gray-600">
+                        <thead className="text-xs text-gray-700 uppercase bg-gray-100 border-b border-gray-200">
+                          <tr>
+                            <th scope="col" className="px-6 py-4 font-bold">No. Reg / Tgl</th>
+                            <th scope="col" className="px-6 py-4 font-bold">Nama PU / Merek</th>
+                            <th scope="col" className="px-6 py-4 font-bold">Jenis Produk</th>
+                            <th scope="col" className="px-6 py-4 font-bold">Auditor</th>
+                            <th scope="col" className="px-6 py-4 font-bold rounded-tr-lg">Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr className="bg-white border-b hover:bg-gray-50 transition-colors">
+                            <td className="px-6 py-4 font-mono text-xs">REG-2309xx<br/><span className="text-gray-400">01 Sep 2023</span></td>
+                            <td className="px-6 py-4"><span className="font-semibold text-gray-800">CV. Berkah Rasa</span><br/><span className="text-gray-500 text-xs shadow-sm px-1 py-0.5 rounded border border-gray-100">Kripik Singkong</span></td>
+                            <td className="px-6 py-4">Makanan Ringan</td>
+                            <td className="px-6 py-4 text-emerald-700 font-medium whitespace-nowrap">A. Fathoni, S.TP.</td>
+                            <td className="px-6 py-4">
+                              <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded-full whitespace-nowrap border border-yellow-200">Audit Fasilitas</span>
+                            </td>
+                          </tr>
+                          <tr className="bg-white border-b hover:bg-gray-50 transition-colors">
+                            <td className="px-6 py-4 font-mono text-xs">REG-2308xx<br/><span className="text-gray-400">15 Agu 2023</span></td>
+                            <td className="px-6 py-4"><span className="font-semibold text-gray-800">Catering Al-Ikhlas</span><br/><span className="text-gray-500 text-xs shadow-sm px-1 py-0.5 rounded border border-gray-100">Nasi Kotak & Prasmanan</span></td>
+                            <td className="px-6 py-4">Penyediaan Makanan</td>
+                            <td className="px-6 py-4 text-emerald-700 font-medium whitespace-nowrap">R. Hidayat, M.Si.</td>
+                            <td className="px-6 py-4">
+                              <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-semibold rounded-full whitespace-nowrap border border-blue-200">Sidang Fatwa</span>
+                            </td>
+                          </tr>
+                          <tr className="bg-white hover:bg-gray-50 transition-colors">
+                            <td className="px-6 py-4 font-mono text-xs">REG-2308xx<br/><span className="text-gray-400">02 Agu 2023</span></td>
+                            <td className="px-6 py-4"><span className="font-semibold text-gray-800">RPH Jamilah</span><br/><span className="text-gray-500 text-xs shadow-sm px-1 py-0.5 rounded border border-gray-100">Daging Sapi Segar</span></td>
+                            <td className="px-6 py-4">Rumah Potong</td>
+                            <td className="px-6 py-4 text-emerald-700 font-medium whitespace-nowrap">Dr. Siti Mariam</td>
+                            <td className="px-6 py-4">
+                              <span className="px-2 py-1 bg-emerald-100 text-emerald-800 text-xs font-semibold rounded-full whitespace-nowrap border border-emerald-200">Selesai (LHP Terbit)</span>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div className="bg-white px-6 py-3 border-t border-gray-200 text-xs text-gray-500 text-center">
+                      *Data di atas disamarkan (masking) sebagian untuk menjaga kerahasiaan klien sesuai dengan pedoman kerahasiaan ISO/IEC 17065 dan regulasi BPJPH.
+                    </div>
+                  </section>
+
+                  <div className="pt-16 mt-12 border-t border-gray-200">
+                    <div className="flex justify-between items-end text-sm text-gray-600">
+                      <div>
+                        Dokumen: Rekam_Jejak_Audit
+                      </div>
+                      <div className="text-right">
+                        <p className="mb-16">Divisi Layanan & Operasional LPH</p>
+                        <p className="font-bold underline text-gray-900">Manajer Operasional LPH</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            
+            <div className="p-4 bg-gray-50 border-t border-gray-200 rounded-b-xl flex justify-end shrink-0">
+              <button 
+                onClick={() => setIsDaftarAuditPdfOpen(false)}
                 className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg font-medium shadow-sm transition-colors"
                 type="button"
               >
