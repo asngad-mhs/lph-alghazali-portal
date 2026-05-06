@@ -307,6 +307,7 @@ function LandingView({ navigateTo, beritaList }: any) {
   const [isPencarianPdfOpen, setIsPencarianPdfOpen] = useState(false);
   const [isDaftarAuditPdfOpen, setIsDaftarAuditPdfOpen] = useState(false);
   const [isAgendaPdfOpen, setIsAgendaPdfOpen] = useState(false);
+  const [isKegiatanPdfOpen, setIsKegiatanPdfOpen] = useState(false);
 
   const handleFormChange = (e: any) => {
     const { name, value } = e.target;
@@ -499,9 +500,9 @@ function LandingView({ navigateTo, beritaList }: any) {
                   <a href="#berita" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
                     <Newspaper className="w-4 h-4 mr-2" /> Berita Utama
                   </a>
-                  <a href="#kegiatan" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                  <button onClick={() => setIsKegiatanPdfOpen(true)} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
                     <Activity className="w-4 h-4 mr-2" /> Kegiatan
-                  </a>
+                  </button>
                   <button onClick={() => setIsAgendaPdfOpen(true)} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center">
                     <CalendarDays className="w-4 h-4 mr-2" /> Agenda
                   </button>
@@ -591,7 +592,7 @@ function LandingView({ navigateTo, beritaList }: any) {
               <div className="text-sm font-bold text-emerald-600 mb-1 flex items-center"><Newspaper className="w-4 h-4 mr-2" /> Berita</div>
               <div className="ml-6 space-y-1 border-l-2 border-emerald-100 pl-3">
                 <a href="#berita" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Berita Utama</a>
-                <a href="#kegiatan" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Kegiatan</a>
+                <button onClick={() => { setIsKegiatanPdfOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600">Kegiatan</button>
                 <button onClick={() => { setIsAgendaPdfOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600">Agenda</button>
               </div>
             </div>
@@ -2523,6 +2524,122 @@ function LandingView({ navigateTo, beritaList }: any) {
             <div className="p-4 bg-gray-50 border-t border-gray-200 rounded-b-xl flex justify-end shrink-0">
               <button 
                 onClick={() => setIsAgendaPdfOpen(false)}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg font-medium shadow-sm transition-colors"
+                type="button"
+              >
+                Tutup Dokumen
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isKegiatanPdfOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6 overflow-y-auto">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl flex flex-col max-h-full">
+            <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50 rounded-t-xl shrink-0">
+              <div className="flex items-center space-x-2">
+                <Activity className="w-5 h-5 text-gray-500" />
+                <h3 className="font-semibold text-gray-700">Laporan_Kegiatan_LPH_Al_Ghazali.pdf</h3>
+              </div>
+              <button 
+                onClick={() => setIsKegiatanPdfOpen(false)} 
+                className="p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-200 transition-colors"
+                title="Tutup"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="p-8 sm:p-12 overflow-y-auto bg-gray-100 flex-1">
+              <div className="bg-white max-w-3xl mx-auto shadow-sm ring-1 ring-gray-900/5 min-h-[600px] p-8 sm:p-12 text-gray-800">
+                <div className="border-b-2 border-emerald-800 pb-6 mb-8 text-center">
+                  <Logo className="h-16 w-16 mx-auto mb-4" />
+                  <h1 className="text-2xl font-bold text-gray-900 uppercase tracking-wide">BERITA & INFORMASI</h1>
+                  <h2 className="text-xl font-bold text-emerald-700 uppercase tracking-widest mt-1">Kegiatan & Pendampingan LPH</h2>
+                </div>
+                
+                <div className="space-y-8 leading-relaxed">
+                  <div className="bg-emerald-50 p-6 rounded-lg border border-emerald-100 shadow-sm text-center">
+                    <p className="text-lg font-medium text-emerald-900 italic">
+                      "Dokumentasi kiprah nyata LPH Al-Ghazali dalam memfasilitasi, mendampingi, dan mengedukasi masyarakat serta UMKM demi terwujudnya ekosistem halal yang kuat dan berdaya saing."
+                    </p>
+                  </div>
+
+                  <section>
+                    <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                      <Image className="w-6 h-6 mr-3 text-emerald-600" />
+                      Galeri & Laporan Kegiatan Terbaru
+                    </h3>
+                    
+                    <div className="space-y-8">
+                      <div className="border border-gray-200 rounded-xl overflow-hidden shadow-sm bg-white group hover:shadow-md transition-shadow">
+                        <div className="aspect-[21/9] bg-gray-200 relative overflow-hidden flex items-center justify-center">
+                          <ImageIcon className="w-16 h-16 text-gray-400 group-hover:scale-110 transition-transform duration-500" />
+                          <div className="absolute top-4 left-4 bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm">
+                            Bimtek & Pendampingan
+                          </div>
+                        </div>
+                        <div className="p-6">
+                          <div className="flex items-center text-sm text-gray-500 mb-3 space-x-4">
+                            <span className="flex items-center"><CalendarDays className="w-4 h-4 mr-1 text-emerald-600" /> 12 Agustus 2023</span>
+                            <span className="flex items-center"><MapPin className="w-4 h-4 mr-1 text-emerald-600" /> Cilacap</span>
+                          </div>
+                          <h4 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-emerald-700 transition-colors">Sosialisasi Wajib Halal Oktober 2024 (WHO2024) bagi Pelaku UMKM Karesidenan Banyumas</h4>
+                          <p className="text-sm text-gray-600 mb-4 line-clamp-3">LPH Al-Ghazali berkolaborasi dengan Satgas Halal Kabupaten Cilacap sukses menyelenggarakan sosialisasi masif yang dihadiri oleh lebih dari 200 pelaku UMKM binaan. Kegiatan ini difokuskan pada percepatan sertifikasi halal jalur mandiri (reguler) maupun fasilitas gratis pemerintah (SEHATI).</p>
+                          <button className="text-emerald-600 font-semibold text-sm hover:underline flex items-center">Selengkapnya <ArrowRight className="w-4 h-4 ml-1" /></button>
+                        </div>
+                      </div>
+
+                      <div className="border border-gray-200 rounded-xl overflow-hidden shadow-sm bg-white group hover:shadow-md transition-shadow">
+                        <div className="aspect-[21/9] bg-gray-200 relative overflow-hidden flex items-center justify-center">
+                          <ImageIcon className="w-16 h-16 text-gray-400 group-hover:scale-110 transition-transform duration-500" />
+                          <div className="absolute top-4 left-4 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm">
+                            Kunjungan & Audit
+                          </div>
+                        </div>
+                        <div className="p-6">
+                          <div className="flex items-center text-sm text-gray-500 mb-3 space-x-4">
+                            <span className="flex items-center"><CalendarDays className="w-4 h-4 mr-1 text-blue-600" /> 05 Juli 2023</span>
+                            <span className="flex items-center"><MapPin className="w-4 h-4 mr-1 text-blue-600" /> Purbalingga</span>
+                          </div>
+                          <h4 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-700 transition-colors">Audit Pemeriksaan Fasilitas Sentra Pemotongan Ayam Kab. Purbalingga</h4>
+                          <p className="text-sm text-gray-600 mb-4 line-clamp-3">Tim Auditor dan SDM Syariah LPH Al-Ghazali melaksanakan audit lapangan secara komprehensif di salah satu sentra pemotongan ayam terbesar (RPA) di Purbalingga. Pemeriksaan mencakup aspek kebersihan (thayyib) dan pemotongan sesuai syariat (halal).</p>
+                          <button className="text-blue-600 font-semibold text-sm hover:underline flex items-center">Selengkapnya <ArrowRight className="w-4 h-4 ml-1" /></button>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+
+                  <section className="bg-gray-50 border border-gray-200 p-6 rounded-xl mt-8 flex flex-col sm:flex-row items-center justify-between">
+                    <div>
+                      <h3 className="text-lg font-bold text-gray-900">Arsip Kegiatan</h3>
+                      <p className="text-sm text-gray-600">Telusuri rekam jejak program dan kegiatan yang telah kami laksanakan di waktu terdahulu.</p>
+                    </div>
+                    <button className="mt-4 sm:mt-0 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap">
+                      Lihat Semua Arsip
+                    </button>
+                  </section>
+
+                  <div className="pt-16 mt-12 border-t border-gray-200">
+                    <div className="flex justify-between items-end text-sm text-gray-600">
+                      <div>
+                        Modul: Laporan_Giat_Publik
+                      </div>
+                      <div className="text-right">
+                        <p className="mb-16">Divisi Humas & Publikasi</p>
+                        <p className="font-bold underline text-gray-900">Redaksi LPH Al-Ghazali</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            
+            <div className="p-4 bg-gray-50 border-t border-gray-200 rounded-b-xl flex justify-end shrink-0">
+              <button 
+                onClick={() => setIsKegiatanPdfOpen(false)}
                 className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg font-medium shadow-sm transition-colors"
                 type="button"
               >
