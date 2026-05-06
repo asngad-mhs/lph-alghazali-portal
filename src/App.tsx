@@ -297,6 +297,8 @@ function LandingView({ navigateTo, beritaList }: any) {
     tiketPesawat: 0
   });
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isVisiMisiPdfOpen, setIsVisiMisiPdfOpen] = useState(false);
+  const [isSejarahPdfOpen, setIsSejarahPdfOpen] = useState(false);
 
   const handleFormChange = (e: any) => {
     const { name, value } = e.target;
@@ -390,12 +392,12 @@ function LandingView({ navigateTo, beritaList }: any) {
                   <UserCheck className="w-4 h-4 mr-1" /> Profil <ChevronDown className="w-4 h-4 ml-1" />
                 </button>
                 <div className="absolute top-[80%] left-0 w-72 bg-white border border-gray-100 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 overflow-hidden">
-                  <a href="/dokumen/sejarah_lph_al_ghazali.pdf" target="_blank" rel="noopener noreferrer" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                  <button onClick={() => setIsSejarahPdfOpen(true)} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
                     <History className="w-4 h-4 mr-2" /> Sejarah dan Latar Belakang
-                  </a>
-                  <a href="#profil" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                  </button>
+                  <button onClick={() => setIsVisiMisiPdfOpen(true)} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
                     <Target className="w-4 h-4 mr-2" /> Visi Misi
-                  </a>
+                  </button>
                   <a href="#profil" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
                     <Award className="w-4 h-4 mr-2" /> Kebijakan Mutu & Sasaran Mutu
                   </a>
@@ -535,8 +537,8 @@ function LandingView({ navigateTo, beritaList }: any) {
             <div className="px-3 py-2">
               <div className="text-sm font-bold text-emerald-600 mb-1 flex items-center"><UserCheck className="w-4 h-4 mr-2" /> Profil</div>
               <div className="ml-6 space-y-1 border-l-2 border-emerald-100 pl-3">
-                <a href="/dokumen/sejarah_lph_al_ghazali.pdf" target="_blank" rel="noopener noreferrer" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Sejarah dan Latar Belakang</a>
-                <a href="#profil" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Visi Misi</a>
+                <button onClick={() => { setIsSejarahPdfOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600">Sejarah dan Latar Belakang</button>
+                <button onClick={() => { setIsVisiMisiPdfOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600">Visi Misi</button>
                 <a href="#profil" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Kebijakan Mutu & Sasaran Mutu</a>
                 <a href="#profil" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Struktur Organisasi</a>
                 <a href="#profil" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Auditor Halal</a>
@@ -1376,6 +1378,164 @@ function LandingView({ navigateTo, beritaList }: any) {
             </div>
         </div>
       </footer>
+
+      {isVisiMisiPdfOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6 overflow-y-auto">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-3xl flex flex-col max-h-full">
+            <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50 rounded-t-xl shrink-0">
+              <div className="flex items-center space-x-2">
+                <FileText className="w-5 h-5 text-gray-500" />
+                <h3 className="font-semibold text-gray-700">Dokumen_Visi_Misi_LPH_Al_Ghazali.pdf</h3>
+              </div>
+              <button 
+                onClick={() => setIsVisiMisiPdfOpen(false)} 
+                className="p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-200 transition-colors"
+                title="Tutup"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="p-8 sm:p-12 overflow-y-auto bg-gray-100 flex-1">
+              <div className="bg-white max-w-2xl mx-auto shadow-sm ring-1 ring-gray-900/5 min-h-[600px] p-10 sm:p-16">
+                <div className="text-center border-b-2 border-emerald-800 pb-6 mb-8">
+                  <Logo className="h-16 w-16 mx-auto mb-4" />
+                  <h1 className="text-2xl font-bold text-gray-900 uppercase tracking-wide">Lembaga Pemeriksa Halal (LPH)</h1>
+                  <h2 className="text-xl font-bold text-emerald-700 uppercase tracking-widest mt-1">Al-Ghazali</h2>
+                  <p className="text-sm text-gray-500 mt-2">Jl. Kemerdekaan Barat No.12, Kesugihan, Cilacap, Jawa Tengah 53274</p>
+                </div>
+                
+                <div className="space-y-8 text-gray-800 leading-relaxed">
+                  <div className="text-center mb-10">
+                    <h3 className="text-2xl font-bold underline mb-2">VISI DAN MISI</h3>
+                    <p className="text-sm">Dokumen Profil LPH Al-Ghazali</p>
+                  </div>
+
+                  <section>
+                    <h4 className="text-xl font-bold text-gray-900 mb-3 flex items-center">
+                      <span className="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-md mr-3 border border-emerald-200">A</span> VISI
+                    </h4>
+                    <div className="bg-gray-50 p-6 rounded-lg border border-gray-100">
+                      <p className="text-lg font-medium text-center italic text-gray-700">
+                        "Menjadi Lembaga Pemeriksa Halal yang tepercaya, profesional, dan unggul dalam mendukung ekosistem penyelenggaraan jaminan produk halal di Indonesia yang bertaraf Internasional."
+                      </p>
+                    </div>
+                  </section>
+
+                  <section>
+                    <h4 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                      <span className="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-md mr-3 border border-emerald-200">B</span> MISI
+                    </h4>
+                    <ol className="list-decimal list-outside ml-6 space-y-4 marker:text-emerald-600 marker:font-bold">
+                      <li className="pl-2">
+                        Menyelenggarakan pemeriksaan dan/atau pengujian kehalalan produk secara komprehensif, independen, dan berintegritas sesuai dengan prinsip Syariah Islam dan regulasi Badan Penyelenggara Jaminan Produk Halal (BPJPH).
+                      </li>
+                      <li className="pl-2">
+                        Mengembangkan sumber daya manusia (Auditor Halal) yang kompeten, mutakhir, profesional, dan menjunjung tinggi kode etik sesuai dengan Standar Kompetensi Kerja Nasional Indonesia (SKKNI).
+                      </li>
+                      <li className="pl-2">
+                        Mendorong kolaborasi aktif dengan berbagai pemangku kepentingan, Perguruan Tinggi, pelaku industri, dan asosiasi pengusaha (Pondok Pesantren, UMKM) untuk mempercepat perwujudan ekosistem halal.
+                      </li>
+                      <li className="pl-2">
+                        Memberikan edukasi, pelatihan, dan pendampingan kepada pelaku usaha terkait standar operasional kehalalan produk, penerapan Sistem Jaminan Produk Halal (SJPH), serta keamanan pangan secara berkelanjutan.
+                      </li>
+                    </ol>
+                  </section>
+                  
+                  <div className="pt-16 mt-12 border-t border-gray-200 grid grid-cols-2">
+                    <div></div>
+                    <div className="text-center text-sm">
+                      <p className="mb-16">Disahkan pada Direktur Utama,</p>
+                      <p className="font-bold underline">Direktur LPH Al-Ghazali</p>
+                      <p>NIP. -</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="p-4 bg-gray-50 border-t border-gray-200 rounded-b-xl flex justify-end shrink-0">
+              <button 
+                onClick={() => setIsVisiMisiPdfOpen(false)}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg font-medium shadow-sm transition-colors"
+                type="button"
+              >
+                Tutup Dokumen
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isSejarahPdfOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6 overflow-y-auto">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-3xl flex flex-col max-h-full">
+            <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50 rounded-t-xl shrink-0">
+              <div className="flex items-center space-x-2">
+                <FileText className="w-5 h-5 text-gray-500" />
+                <h3 className="font-semibold text-gray-700">Sejarah_dan_Latar_Belakang_LPH_Al_Ghazali.pdf</h3>
+              </div>
+              <button 
+                onClick={() => setIsSejarahPdfOpen(false)} 
+                className="p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-200 transition-colors"
+                title="Tutup"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="p-8 sm:p-12 overflow-y-auto bg-gray-100 flex-1">
+              <div className="bg-white max-w-2xl mx-auto shadow-sm ring-1 ring-gray-900/5 min-h-[600px] p-10 sm:p-16">
+                <div className="text-center border-b-2 border-emerald-800 pb-6 mb-8">
+                  <Logo className="h-16 w-16 mx-auto mb-4" />
+                  <h1 className="text-2xl font-bold text-gray-900 uppercase tracking-wide">Lembaga Pemeriksa Halal (LPH)</h1>
+                  <h2 className="text-xl font-bold text-emerald-700 uppercase tracking-widest mt-1">Al-Ghazali</h2>
+                  <p className="text-sm text-gray-500 mt-2">Universitas Nahdlatul Ulama Al Ghazali (UNUGHA) Cilacap</p>
+                </div>
+                
+                <div className="space-y-6 text-gray-800 leading-relaxed text-justify">
+                  <div className="text-center mb-8">
+                    <h3 className="text-2xl font-bold underline mb-2">SEJARAH & LATAR BELAKANG</h3>
+                    <p className="text-sm">Dokumen Profil LPH Al-Ghazali</p>
+                  </div>
+
+                  <p>
+                    Lembaga Pemeriksa Halal (LPH) Al-Ghazali didirikan sebagai wujud nyata dari komitmen Universitas Nahdlatul Ulama Al Ghazali (UNUGHA) Cilacap dalam mengabdi kepada masyarakat, khususnya dalam mendukung ekosistem produk halal di Indonesia sesuai dengan amanat Undang-Undang Nomor 33 Tahun 2014 tentang Jaminan Produk Halal.
+                  </p>
+                  <p>
+                    Berdirinya LPH Al-Ghazali dilatarbelakangi oleh tingginya kebutuhan masyarakat muslim akan jaminan produk halal, serta komitmen pemerintah dalam mensertifikasi produk Usaha Mikro, Kecil, dan Menengah (UMKM). UNUGHA Cilacap, sebagai salah satu perguruan tinggi Nahdlatul Ulama yang memiliki kapasitas sumber daya manusia di bidang sains, teknologi pangan, dan syariah, mengambil peran strategis ini dengan membentuk LPH.
+                  </p>
+                  <p>
+                    Dengan mengintegrasikan sains dan prinsip-prinsip syariat Islam, LPH Al-Ghazali berdedikasi untuk melakukan pemeriksaan dan pengujian kehalalan produk secara objektif, independen, dan terpercaya. Kami dibekali dengan auditor halal yang telah lulus uji kompetensi dari Badan Nasional Sertifikasi Profesi (BNSP) dan terdaftar resmi di Badan Penyelenggara Jaminan Produk Halal (BPJPH).
+                  </p>
+                  <p>
+                    Hingga saat ini, LPH Al-Ghazali terus berkomitmen untuk memberikan layanan sertifikasi halal yang cepat, transparan, dan dapat diakses dengan mudah oleh seluruh lapisan pelaku usaha melalui portal terintegrasi kami, guna mendukung Indonesia sebagai pusat produsen halal dunia.
+                  </p>
+                  
+                  <div className="pt-16 mt-12 border-t border-gray-200 grid grid-cols-2">
+                    <div></div>
+                    <div className="text-center text-sm">
+                      <p className="mb-16">Cilacap, Jawa Tengah</p>
+                      <p className="font-bold underline">Rektor UNUGHA / Direktur LPH</p>
+                      <p>NIP. -</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="p-4 bg-gray-50 border-t border-gray-200 rounded-b-xl flex justify-end shrink-0">
+              <button 
+                onClick={() => setIsSejarahPdfOpen(false)}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg font-medium shadow-sm transition-colors"
+                type="button"
+              >
+                Tutup Dokumen
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
