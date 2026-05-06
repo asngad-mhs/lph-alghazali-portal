@@ -306,6 +306,7 @@ function LandingView({ navigateTo, beritaList }: any) {
   const [isKerjasamaPdfOpen, setIsKerjasamaPdfOpen] = useState(false);
   const [isPencarianPdfOpen, setIsPencarianPdfOpen] = useState(false);
   const [isDaftarAuditPdfOpen, setIsDaftarAuditPdfOpen] = useState(false);
+  const [isAgendaPdfOpen, setIsAgendaPdfOpen] = useState(false);
 
   const handleFormChange = (e: any) => {
     const { name, value } = e.target;
@@ -501,9 +502,9 @@ function LandingView({ navigateTo, beritaList }: any) {
                   <a href="#kegiatan" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
                     <Activity className="w-4 h-4 mr-2" /> Kegiatan
                   </a>
-                  <a href="#agenda" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center">
+                  <button onClick={() => setIsAgendaPdfOpen(true)} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center">
                     <CalendarDays className="w-4 h-4 mr-2" /> Agenda
-                  </a>
+                  </button>
                 </div>
               </div>
               <a href="#faq" className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center shrink-0">
@@ -591,7 +592,7 @@ function LandingView({ navigateTo, beritaList }: any) {
               <div className="ml-6 space-y-1 border-l-2 border-emerald-100 pl-3">
                 <a href="#berita" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Berita Utama</a>
                 <a href="#kegiatan" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Kegiatan</a>
-                <a href="#agenda" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Agenda</a>
+                <button onClick={() => { setIsAgendaPdfOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600">Agenda</button>
               </div>
             </div>
 
@@ -2382,6 +2383,146 @@ function LandingView({ navigateTo, beritaList }: any) {
             <div className="p-4 bg-gray-50 border-t border-gray-200 rounded-b-xl flex justify-end shrink-0">
               <button 
                 onClick={() => setIsDaftarAuditPdfOpen(false)}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg font-medium shadow-sm transition-colors"
+                type="button"
+              >
+                Tutup Dokumen
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isAgendaPdfOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6 overflow-y-auto">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl flex flex-col max-h-full">
+            <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50 rounded-t-xl shrink-0">
+              <div className="flex items-center space-x-2">
+                <CalendarDays className="w-5 h-5 text-gray-500" />
+                <h3 className="font-semibold text-gray-700">Agenda_dan_Jadwal_Kegiatan_LPH_Al_Ghazali.pdf</h3>
+              </div>
+              <button 
+                onClick={() => setIsAgendaPdfOpen(false)} 
+                className="p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-200 transition-colors"
+                title="Tutup"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="p-8 sm:p-12 overflow-y-auto bg-gray-100 flex-1">
+              <div className="bg-white max-w-3xl mx-auto shadow-sm ring-1 ring-gray-900/5 min-h-[600px] p-8 sm:p-12 text-gray-800">
+                <div className="border-b-2 border-emerald-800 pb-6 mb-8 text-center">
+                  <Logo className="h-16 w-16 mx-auto mb-4" />
+                  <h1 className="text-2xl font-bold text-gray-900 uppercase tracking-wide">BERITA & INFORMASI</h1>
+                  <h2 className="text-xl font-bold text-emerald-700 uppercase tracking-widest mt-1">Agenda Kampanye Halal Nasional</h2>
+                </div>
+                
+                <div className="space-y-8 leading-relaxed">
+                  <div className="bg-emerald-50 p-6 rounded-lg border border-emerald-100 shadow-sm text-center">
+                    <p className="text-lg font-medium text-emerald-900 italic">
+                      "Menyemai kesadaran halal melalui langkah nyata. Ikuti dan hadiri ragam agenda edukasi, pelatihan, dan kegiatan pendampingan sertifikasi yang diselenggarakan oleh LPH Al-Ghazali."
+                    </p>
+                  </div>
+
+                  <section>
+                    <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                      <CalendarDays className="w-6 h-6 mr-3 text-emerald-600" />
+                      Jadwal Kegiatan Mendatang Terdekat
+                    </h3>
+                    
+                    <div className="space-y-6">
+                      <div className="flex flex-col sm:flex-row bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                        <div className="bg-emerald-700 text-white p-6 flex flex-col items-center justify-center sm:w-1/4">
+                          <span className="text-3xl font-black">15</span>
+                          <span className="text-sm font-semibold uppercase tracking-widest mt-1">OKTOBER</span>
+                          <span className="text-emerald-200 text-xs mt-1">2023</span>
+                        </div>
+                        <div className="p-6 sm:w-3/4 flex flex-col justify-center">
+                          <div className="flex items-center text-xs text-emerald-600 font-semibold mb-2 bg-emerald-50 w-fit px-2 py-1 rounded">
+                            <Activity className="w-3 h-3 mr-1" /> Pelatihan SDM
+                          </div>
+                          <h4 className="text-xl font-bold text-gray-900 mb-2">Bimtek Penyelia Halal Batch IV</h4>
+                          <p className="text-sm text-gray-600 mb-4 line-clamp-2">Bimbingan teknis komprehensif bagi calon Penyelia Halal di lingkungan industri makanan ringan dan katering, bekerjasama dengan Dinas Koperasi UKM Cilacap.</p>
+                          <div className="flex items-center text-xs text-gray-500 space-x-4">
+                            <span className="flex items-center"><Clock className="w-4 h-4 mr-1 text-gray-400" /> 08:00 - Selesai</span>
+                            <span className="flex items-center"><MapPin className="w-4 h-4 mr-1 text-gray-400" /> Aula Lt.3 UNUGHA</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                        <div className="bg-emerald-700 text-white p-6 flex flex-col items-center justify-center sm:w-1/4">
+                          <span className="text-3xl font-black">28</span>
+                          <span className="text-sm font-semibold uppercase tracking-widest mt-1">OKTOBER</span>
+                          <span className="text-emerald-200 text-xs mt-1">2023</span>
+                        </div>
+                        <div className="p-6 sm:w-3/4 flex flex-col justify-center">
+                          <div className="flex items-center text-xs text-blue-600 font-semibold mb-2 bg-blue-50 w-fit px-2 py-1 rounded">
+                            <Activity className="w-3 h-3 mr-1" /> Kampanye Sosial
+                          </div>
+                          <h4 className="text-xl font-bold text-gray-900 mb-2">Festival Jajanan Halal Nusantara</h4>
+                          <p className="text-sm text-gray-600 mb-4 line-clamp-2">Pameran UMKM Binaan LPH Al-Ghazali sekaligus kampanye Wajib Halal Oktober 2024 (WHO2024). Menghadirkan 50+ tenant makanan tersertifikasi.</p>
+                          <div className="flex items-center text-xs text-gray-500 space-x-4">
+                            <span className="flex items-center"><Clock className="w-4 h-4 mr-1 text-gray-400" /> 09:00 - 21:00</span>
+                            <span className="flex items-center"><MapPin className="w-4 h-4 mr-1 text-gray-400" /> Alun-alun Cilacap</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex flex-col sm:flex-row bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                        <div className="bg-gray-100 text-gray-500 p-6 flex flex-col items-center justify-center sm:w-1/4">
+                          <span className="text-3xl font-black">10</span>
+                          <span className="text-sm font-semibold uppercase tracking-widest mt-1">NOVEMBER</span>
+                          <span className="text-gray-400 text-xs mt-1">2023</span>
+                        </div>
+                        <div className="p-6 sm:w-3/4 flex flex-col justify-center">
+                          <div className="flex items-center text-xs text-gray-600 font-semibold mb-2 bg-gray-200 w-fit px-2 py-1 rounded">
+                            <Activity className="w-3 h-3 mr-1" /> Konsultasi Publik
+                          </div>
+                          <h4 className="text-xl font-bold text-gray-900 mb-2">Layanan Jemput Bola "Gerai Halal"</h4>
+                          <p className="text-sm text-gray-600 mb-4 line-clamp-2">Konsultasi gratis pra-audit dan pendaftaran NIB terintegrasi Sihalal bagi UMKM Kecamatan Kesugihan dan sekitarnya.</p>
+                          <div className="flex items-center text-xs text-gray-500 space-x-4">
+                            <span className="flex items-center"><Clock className="w-4 h-4 mr-1 text-gray-400" /> 08:30 - 15:00</span>
+                            <span className="flex items-center"><MapPin className="w-4 h-4 mr-1 text-gray-400" /> Balai Desa Kesugihan</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+
+                  <section className="bg-white p-6 rounded-lg border border-gray-200 mt-8">
+                    <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center">
+                      <Phone className="w-5 h-5 mr-2 text-emerald-600" />
+                      Tertarik Berpartisipasi?
+                    </h3>
+                    <p className="text-sm text-gray-700 mb-4">
+                      Untuk informasi pendaftaran Bimtek, pemesanan kuota peserta, atau kolaborasi penyelenggaraan kegiatan, silakan hubungi tim Kesekretariatan kami.
+                    </p>
+                    <a href="#kontak" onClick={() => setIsAgendaPdfOpen(false)} className="inline-flex items-center bg-emerald-100 text-emerald-800 hover:bg-emerald-200 px-4 py-2 rounded-md font-medium text-sm transition-colors">
+                      Hubungi Kesekretariatan LPH
+                    </a>
+                  </section>
+
+                  <div className="pt-16 mt-12 border-t border-gray-200">
+                    <div className="flex justify-between items-end text-sm text-gray-600">
+                      <div>
+                        Modul: Informasi_Agenda_Tahunan
+                      </div>
+                      <div className="text-right">
+                        <p className="mb-16">Bagian Publikasi & Informasi</p>
+                        <p className="font-bold underline text-gray-900">Admin Portal Publik LPH</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            
+            <div className="p-4 bg-gray-50 border-t border-gray-200 rounded-b-xl flex justify-end shrink-0">
+              <button 
+                onClick={() => setIsAgendaPdfOpen(false)}
                 className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg font-medium shadow-sm transition-colors"
                 type="button"
               >
