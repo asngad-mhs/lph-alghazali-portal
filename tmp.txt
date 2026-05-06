@@ -1,0 +1,101 @@
+1731:      {isAuditorPdfOpen && (
+1732-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6 overflow-y-auto">
+1733-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl flex flex-col max-h-full">
+1734-            <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50 rounded-t-xl shrink-0">
+1735-              <div className="flex items-center space-x-2">
+1736-                <FileText className="w-5 h-5 text-gray-500" />
+1737-                <h3 className="font-semibold text-gray-700">Profil_Auditor_Halal_LPH_Al_Ghazali.pdf</h3>
+1738-              </div>
+1739-              <button 
+1740-                onClick={() => setIsAuditorPdfOpen(false)} 
+1741-                className="p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-200 transition-colors"
+1742-                title="Tutup"
+1743-              >
+1744-                <X className="w-5 h-5" />
+1745-              </button>
+1746-            </div>
+1747-            
+1748-            <div className="p-8 sm:p-12 overflow-y-auto bg-gray-100 flex-1">
+1749-              <div className="bg-white max-w-3xl mx-auto shadow-sm ring-1 ring-gray-900/5 min-h-[600px] p-8 sm:p-12 text-gray-800">
+1750-                <div className="border-b-2 border-emerald-800 pb-6 mb-8 text-center">
+1751-                  <Logo className="h-16 w-16 mx-auto mb-4" />
+1752-                  <h1 className="text-2xl font-bold text-gray-900 uppercase tracking-wide">SUMBER DAYA MANUSIA</h1>
+1753-                  <h2 className="text-xl font-bold text-emerald-700 uppercase tracking-widest mt-1">Daftar Auditor Halal LPH Al-Ghazali</h2>
+1754-                </div>
+1755-                
+1756-                <div className="space-y-8 leading-relaxed text-justify">
+1757-                  <div className="bg-emerald-50 p-6 rounded-lg border border-emerald-100 shadow-sm text-center">
+1758-                    <p className="text-lg font-medium text-emerald-900 italic">
+1759-                      "Auditor Halal LPH Al-Ghazali adalah tenaga profesional, terdidik, dan tersertifikasi yang bertugas menjadi garda terdepan dalam memastikan kepatuhan syariat dan standar mutu pada setiap produk yang disertifikasi."
+1760-                    </p>
+1761-                  </div>
+1762-
+1763-                  <section>
+1764-                    <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+1765-                      <ShieldCheck className="w-6 h-6 mr-3 text-emerald-600" />
+1766-                      Legalitas dan Kompetensi
+1767-                    </h3>
+1768-                    <p className="mb-4">
+1769-                      Seluruh Auditor Halal yang tergabung di LPH Al-Ghazali Universitas Nahdlatul Ulama Al Ghazali (UNUGHA) telah memenuhi kualifikasi ketat sesuai dengan regulasi pemerintah, yaitu:
+1770-                    </p>
+1771-                    <ul className="list-none space-y-3 pl-2 text-gray-700">
+1772-                      <li className="flex items-start">
+1773-                        <CheckCircle2 className="w-5 h-5 mr-3 text-emerald-500 shrink-0 mt-0.5" />
+1774-                        <span>Telah lulus uji kompetensi dari <strong>Badan Nasional Sertifikasi Profesi (BNSP)</strong> di bidang penjaminan produk halal.</span>
+1775-                      </li>
+1776-                      <li className="flex items-start">
+1777-                        <CheckCircle2 className="w-5 h-5 mr-3 text-emerald-500 shrink-0 mt-0.5" />
+1778-                        <span>Terdaftar secara sah dan memiliki Nomor Registrasi Auditor Halal di <strong>Badan Penyelenggara Jaminan Produk Halal (BPJPH)</strong> Kementerian Agama RI.</span>
+1779-                      </li>
+1780-                      <li className="flex items-start">
+1781-                        <CheckCircle2 className="w-5 h-5 mr-3 text-emerald-500 shrink-0 mt-0.5" />
+1782-                        <span>Memiliki latar belakang pendidikan spesifik di bidang sains yang relevan, seperti Teknologi Pangan, Biologi, Kimia, Pertanian, Peternakan, dan keilmuan serumpun lainnya.</span>
+1783-                      </li>
+1784-                    </ul>
+1785-                  </section>
+1786-
+1787-                  <section>
+1788-                    <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+1789-                      <Award className="w-6 h-6 mr-3 text-emerald-600" />
+1790-                      Tugas dan Tanggung Jawab Utama
+1791-                    </h3>
+1792-                    <div className="grid sm:grid-cols-2 gap-4">
+1793-                      <div className="bg-gray-50 p-4 border border-gray-200 rounded-lg">
+1794-                        <h4 className="font-bold text-emerald-800 mb-2 flex items-center"><Search className="w-4 h-4 mr-2" />Pemeriksaan Material</h4>
+1795-                        <p className="text-sm text-gray-600">Memeriksa secara langsung kehalalan bahan baku, bahan tambahan, dan bahan penolong yang digunakan dalam proses produksi.</p>
+1796-                      </div>
+1797-                      <div className="bg-gray-50 p-4 border border-gray-200 rounded-lg">
+1798-                        <h4 className="font-bold text-emerald-800 mb-2 flex items-center"><Activity className="w-4 h-4 mr-2" />Audit Fasilitas</h4>
+1799-                        <p className="text-sm text-gray-600">Memastikan fasilitas dan peralatan produksi terbebas dari paparan najis tingkat berat, sedang, maupun ringan (mughallazah, mutawassitah, mukhaffafah).</p>
+1800-                      </div>
+1801-                      <div className="bg-gray-50 p-4 border border-gray-200 rounded-lg">
+1802-                        <h4 className="font-bold text-emerald-800 mb-2 flex items-center"><FlaskConical className="w-4 h-4 mr-2" />Uji Laboratorium</h4>
+1803-                        <p className="text-sm text-gray-600">Dalam kondisi ragu (mutasyabihat), auditor berwenang mengambil sampel produk untuk diuji secara empiris di laboratorium afiliasi LPH.</p>
+1804-                      </div>
+1805-                      <div className="bg-gray-50 p-4 border border-gray-200 rounded-lg">
+1806-                        <h4 className="font-bold text-emerald-800 mb-2 flex items-center"><FileEdit className="w-4 h-4 mr-2" />Pelaporan Fakta Mutu</h4>
+1807-                        <p className="text-sm text-gray-600">Menyusun Laporan Hasil Pemeriksaan (LHP) Halal secara mendetail yang akan diserahkan kepada Komisi Fatwa MUI untuk sidang penetapan kehalalan.</p>
+1808-                      </div>
+1809-                    </div>
+1810-                  </section>
+1811-
+1812-                  <section>
+1813-                    <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+1814-                      <BookOpen className="w-6 h-6 mr-3 text-emerald-600" />
+1815-                      Integritas dan Kode Etik
+1816-                    </h3>
+1817-                    <p className="text-gray-700">
+1818-                      Profesi Auditor Halal adalah amanah keagamaan (mas’uliyah syar’iyyah) sekaligus tanggung jawab profesional. Oleh karena itu, LPH Al-Ghazali menjamin bahwa setiap auditornya terikat kuat pada Kode Etik Auditor, yang mengharamkan praktik suap (gratifikasi), benturan kepentingan (conflict of interest), serta membocorkan rahasia formula atau dapur produksi milik pelaku usaha kepada pihak yang tidak berkepentingan.
+1819-                    </p>
+1820-                  </section>
+1821-
+1822-                  <div className="pt-16 mt-12 border-t border-gray-200">
+1823-                    <div className="flex justify-end text-center text-sm">
+1824-                      <div>
+1825-                        <p className="mb-16">Divisi Sumber Daya Manusia</p>
+1826-                        <p className="font-bold underline">Manajer Administrasi LPH</p>
+1827-                        <p>NIP. -</p>
+1828-                      </div>
+1829-                    </div>
+1830-                  </div>
+1831-                </div>

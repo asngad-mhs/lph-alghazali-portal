@@ -302,6 +302,7 @@ function LandingView({ navigateTo, beritaList }: any) {
   const [isKebijakanPdfOpen, setIsKebijakanPdfOpen] = useState(false);
   const [isStrukturPdfOpen, setIsStrukturPdfOpen] = useState(false);
   const [isAuditorPdfOpen, setIsAuditorPdfOpen] = useState(false);
+  const [isSdmPdfOpen, setIsSdmPdfOpen] = useState(false);
 
   const handleFormChange = (e: any) => {
     const { name, value } = e.target;
@@ -410,9 +411,9 @@ function LandingView({ navigateTo, beritaList }: any) {
                   <button onClick={() => setIsAuditorPdfOpen(true)} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
                     <Users className="w-4 h-4 mr-2" /> Auditor Halal
                   </button>
-                  <a href="#profil" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                  <button onClick={() => setIsSdmPdfOpen(true)} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
                     <BookOpen className="w-4 h-4 mr-2" /> SDM Syariah
-                  </a>
+                  </button>
                   <a href="#profil" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center">
                     <Handshake className="w-4 h-4 mr-2" /> Kerjasama
                   </a>
@@ -545,7 +546,7 @@ function LandingView({ navigateTo, beritaList }: any) {
                 <button onClick={() => { setIsKebijakanPdfOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600">Kebijakan Mutu & Sasaran Mutu</button>
                 <button onClick={() => { setIsStrukturPdfOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600">Struktur Organisasi</button>
                 <button onClick={() => { setIsAuditorPdfOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600">Auditor Halal</button>
-                <a href="#profil" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">SDM Syariah</a>
+                <button onClick={() => { setIsSdmPdfOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600">SDM Syariah</button>
                 <a href="#profil" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Kerjasama</a>
               </div>
             </div>
@@ -1835,6 +1836,124 @@ function LandingView({ navigateTo, beritaList }: any) {
             <div className="p-4 bg-gray-50 border-t border-gray-200 rounded-b-xl flex justify-end shrink-0">
               <button 
                 onClick={() => setIsAuditorPdfOpen(false)}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg font-medium shadow-sm transition-colors"
+                type="button"
+              >
+                Tutup Dokumen
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isSdmPdfOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6 overflow-y-auto">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl flex flex-col max-h-full">
+            <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50 rounded-t-xl shrink-0">
+              <div className="flex items-center space-x-2">
+                <FileText className="w-5 h-5 text-gray-500" />
+                <h3 className="font-semibold text-gray-700">Profil_SDM_Syariah_LPH_Al_Ghazali.pdf</h3>
+              </div>
+              <button 
+                onClick={() => setIsSdmPdfOpen(false)} 
+                className="p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-200 transition-colors"
+                title="Tutup"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="p-8 sm:p-12 overflow-y-auto bg-gray-100 flex-1">
+              <div className="bg-white max-w-3xl mx-auto shadow-sm ring-1 ring-gray-900/5 min-h-[600px] p-8 sm:p-12 text-gray-800">
+                <div className="border-b-2 border-emerald-800 pb-6 mb-8 text-center">
+                  <Logo className="h-16 w-16 mx-auto mb-4" />
+                  <h1 className="text-2xl font-bold text-gray-900 uppercase tracking-wide">SUMBER DAYA MANUSIA</h1>
+                  <h2 className="text-xl font-bold text-emerald-700 uppercase tracking-widest mt-1">Tim SDM Syariah LPH Al-Ghazali</h2>
+                </div>
+                
+                <div className="space-y-8 leading-relaxed text-justify">
+                  <div className="bg-emerald-50 p-6 rounded-lg border border-emerald-100 shadow-sm text-center">
+                    <p className="text-lg font-medium text-emerald-900 italic">
+                      "SDM Syariah LPH Al-Ghazali adalah para cendekiawan muslim, ulama, dan pakar fiqih yang menjadi benteng utama dalam memastikan landasan hukum Islam pada setiap aspek produksi yang disertifikasi halal."
+                    </p>
+                  </div>
+
+                  <section>
+                    <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                      <Scale className="w-6 h-6 mr-3 text-emerald-600" />
+                      Kompetensi dan Kualifikasi
+                    </h3>
+                    <p className="mb-4">
+                      SDM Syariah memegang peranan krusial sebagai penyeimbang antara kajian sains teknologi (oleh Auditor Halal) dengan kajian Fiqih Islam. Seluruh tim SDM Syariah kami memiliki profil sebagai berikut:
+                    </p>
+                    <ul className="list-none space-y-3 pl-2 text-gray-700">
+                      <li className="flex items-start">
+                        <CheckCircle2 className="w-5 h-5 mr-3 text-emerald-500 shrink-0 mt-0.5" />
+                        <span>Memiliki latar belakang pendidikan tinggi atau pondok pesantren (tafaqquh fiddin) yang berfokus pada keilmuan <strong>Fiqih Muamalah, Ushul Fiqih, dan syariat Islam</strong>.</span>
+                      </li>
+                      <li className="flex items-start">
+                        <CheckCircle2 className="w-5 h-5 mr-3 text-emerald-500 shrink-0 mt-0.5" />
+                        <span>Terintegrasi dan memiliki rekomendasi atau bersinergi erat dengan <strong>Majelis Ulama Indonesia (MUI)</strong>, baik di tingkat kabupaten/kota maupun provinsi.</span>
+                      </li>
+                      <li className="flex items-start">
+                        <CheckCircle2 className="w-5 h-5 mr-3 text-emerald-500 shrink-0 mt-0.5" />
+                        <span>Memiliki wawasan komprehensif terkait perkembangan fatwa-fatwa DSN-MUI tentang bahan, proses, dan kaidah halal haram kekinian.</span>
+                      </li>
+                    </ul>
+                  </section>
+
+                  <section>
+                    <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                      <Landmark className="w-6 h-6 mr-3 text-emerald-600" />
+                      Ruang Lingkup Tanggung Jawab
+                    </h3>
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <div className="bg-gray-50 p-4 border border-gray-200 rounded-lg">
+                        <h4 className="font-bold text-emerald-800 mb-2 flex items-center"><Scale className="w-4 h-4 mr-2" />Kajian Fiqih Bahan</h4>
+                        <p className="text-sm text-gray-600">Melakukan analisis status hukum (halal/haram/syubhat) terhadap bahan kritis berdasarkan dalil syar'i dan Fatwa MUI terkait.</p>
+                      </div>
+                      <div className="bg-gray-50 p-4 border border-gray-200 rounded-lg">
+                        <h4 className="font-bold text-emerald-800 mb-2 flex items-center"><Search className="w-4 h-4 mr-2" />Validasi Proses</h4>
+                        <p className="text-sm text-gray-600">Terlibat dalam evaluasi Laporan Hasil Pemeriksaan (LHP) untuk memastikan tidak adanya proses penyembelihan yang cacat atau kontaminasi najis pada alur produksi.</p>
+                      </div>
+                      <div className="bg-gray-50 p-4 border border-gray-200 rounded-lg">
+                        <h4 className="font-bold text-emerald-800 mb-2 flex items-center"><ShieldCheck className="w-4 h-4 mr-2" />Pencegahan Syubhat</h4>
+                        <p className="text-sm text-gray-600">Memberikan rekomendasi perbaikan berbasis syariah bagi pelaku usaha jika ditemukan sistem yang berpotensi melanggar syariat Islam.</p>
+                      </div>
+                      <div className="bg-gray-50 p-4 border border-gray-200 rounded-lg">
+                        <h4 className="font-bold text-emerald-800 mb-2 flex items-center"><BookOpen className="w-4 h-4 mr-2" />Edukasi Pelaku Usaha</h4>
+                        <p className="text-sm text-gray-600">Membantu memberikan pemahaman dan kesadaran halal (halal awareness) kepada produsen terkait pandangan Islam dalam menghasilkan asupan thayyib (baik).</p>
+                      </div>
+                    </div>
+                  </section>
+
+                  <section>
+                    <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                      <CheckCircle className="w-6 h-6 mr-3 text-emerald-600" />
+                      Landasan Operasional
+                    </h3>
+                    <p className="text-gray-700">
+                      Sebagai bagian dari LPH yang lahir dalam naungan perguruan tinggi Nahdlatul Ulama (UNUGHA), SDM Syariah Al-Ghazali sangat memegang teguh prinsip <em>Ahlussunnah Wal Jamaah</em> yang moderat (tawassuth), seimbang (tawazun), adil (i'tidal), dan toleran (tasamuh) namun tetap istiqamah dalam menjaga batasan syariat yang qath'i terkait halalan thayyiban.
+                    </p>
+                  </section>
+
+                  <div className="pt-16 mt-12 border-t border-gray-200">
+                    <div className="flex justify-end text-center text-sm">
+                      <div>
+                        <p className="mb-16">Divisi Sumber Daya Manusia</p>
+                        <p className="font-bold underline">Manajer Administrasi LPH</p>
+                        <p>NIP. -</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            
+            <div className="p-4 bg-gray-50 border-t border-gray-200 rounded-b-xl flex justify-end shrink-0">
+              <button 
+                onClick={() => setIsSdmPdfOpen(false)}
                 className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg font-medium shadow-sm transition-colors"
                 type="button"
               >
