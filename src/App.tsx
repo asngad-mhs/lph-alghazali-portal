@@ -304,6 +304,7 @@ function LandingView({ navigateTo, beritaList }: any) {
   const [isAuditorPdfOpen, setIsAuditorPdfOpen] = useState(false);
   const [isSdmPdfOpen, setIsSdmPdfOpen] = useState(false);
   const [isKerjasamaPdfOpen, setIsKerjasamaPdfOpen] = useState(false);
+  const [isPencarianPdfOpen, setIsPencarianPdfOpen] = useState(false);
 
   const handleFormChange = (e: any) => {
     const { name, value } = e.target;
@@ -431,9 +432,9 @@ function LandingView({ navigateTo, beritaList }: any) {
                   <a href="#ruang-lingkup" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
                     <Search className="w-4 h-4 mr-2" /> Ruang Lingkup dan Layanan Pemeriksaan Halal
                   </a>
-                  <a href="#pencarian" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                  <button onClick={() => setIsPencarianPdfOpen(true)} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
                     <CheckCircle className="w-4 h-4 mr-2" /> Pencarian Sertifikasi Halal
-                  </a>
+                  </button>
                   <a href="#daftar-audit" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center">
                     <FileText className="w-4 h-4 mr-2" /> Daftar Audit
                   </a>
@@ -557,7 +558,7 @@ function LandingView({ navigateTo, beritaList }: any) {
               <div className="ml-6 space-y-1 border-l-2 border-emerald-100 pl-3">
                 <a href="#pendaftaran" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Pendaftaran Sertifikasi Halal</a>
                 <a href="#ruang-lingkup" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Ruang Lingkup dan Layanan Pemeriksaan Halal</a>
-                <a href="#pencarian" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Pencarian Sertifikasi Halal</a>
+                <button onClick={() => { setIsPencarianPdfOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600">Pencarian Sertifikasi Halal</button>
                 <a href="#daftar-audit" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Daftar Audit</a>
               </div>
             </div>
@@ -2093,6 +2094,140 @@ function LandingView({ navigateTo, beritaList }: any) {
             <div className="p-4 bg-gray-50 border-t border-gray-200 rounded-b-xl flex justify-end shrink-0">
               <button 
                 onClick={() => setIsKerjasamaPdfOpen(false)}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg font-medium shadow-sm transition-colors"
+                type="button"
+              >
+                Tutup Dokumen
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isPencarianPdfOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6 overflow-y-auto">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl flex flex-col max-h-full">
+            <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50 rounded-t-xl shrink-0">
+              <div className="flex items-center space-x-2">
+                <Search className="w-5 h-5 text-gray-500" />
+                <h3 className="font-semibold text-gray-700">Pencarian_Sertifikasi_Halal_LPH_Al_Ghazali</h3>
+              </div>
+              <button 
+                onClick={() => setIsPencarianPdfOpen(false)} 
+                className="p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-200 transition-colors"
+                title="Tutup"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="p-8 sm:p-12 overflow-y-auto bg-gray-100 flex-1">
+              <div className="bg-white max-w-3xl mx-auto shadow-sm ring-1 ring-gray-900/5 min-h-[600px] p-8 sm:p-12 text-gray-800">
+                <div className="border-b-2 border-emerald-800 pb-6 mb-8 text-center">
+                  <Logo className="h-16 w-16 mx-auto mb-4" />
+                  <h1 className="text-2xl font-bold text-gray-900 uppercase tracking-wide">LAYANAN PUBLIK</h1>
+                  <h2 className="text-xl font-bold text-emerald-700 uppercase tracking-widest mt-1">Pencarian Sertifikasi Halal</h2>
+                </div>
+                
+                <div className="space-y-8 leading-relaxed">
+                  <div className="bg-emerald-50 p-6 rounded-lg border border-emerald-100 shadow-sm text-center">
+                    <p className="text-lg font-medium text-emerald-900 italic">
+                      "Layanan ini difasilitasi oleh LPH Al-Ghazali untuk memberikan kemudahan bagi masyarakat dan pelaku usaha dalam memverifikasi status kehalalan suatu produk secara real-time dan transparan."
+                    </p>
+                  </div>
+
+                  <section>
+                    <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                      <Target className="w-6 h-6 mr-3 text-emerald-600" />
+                      Tujuan Layanan Pencarian
+                    </h3>
+                    <p className="mb-4">
+                      Fitur ini diintegrasikan secara terpusat untuk mewujudkan jaminan kepastian dan kenyamanan konsumen muslim dalam mengonsumsi produk. Melalui portal ini, Anda dapat:
+                    </p>
+                    <ul className="list-none space-y-3 pl-2 text-gray-700">
+                      <li className="flex items-start">
+                        <CheckCircle2 className="w-5 h-5 mr-3 text-emerald-500 shrink-0 mt-0.5" />
+                        <span>Mengecek <strong>Validitas Nomor Ketetapan Halal</strong> atau Nomor Sertifikat Halal yang diterbitkan oleh BPJPH.</span>
+                      </li>
+                      <li className="flex items-start">
+                        <CheckCircle2 className="w-5 h-5 mr-3 text-emerald-500 shrink-0 mt-0.5" />
+                        <span>Melacak riwayat <strong>Proses Pemeriksaan (Tracking)</strong> bagi produk yang sedang diaudit oleh LPH Al-Ghazali.</span>
+                      </li>
+                      <li className="flex items-start">
+                        <CheckCircle2 className="w-5 h-5 mr-3 text-emerald-500 shrink-0 mt-0.5" />
+                        <span>Memastikan kesesuaian antara nama produk, nama pelaku usaha, dan tanggal kedaluwarsa dokumen sertifikasi.</span>
+                      </li>
+                    </ul>
+                  </section>
+
+                  <section className="bg-white p-8 rounded-xl border border-gray-200 shadow-sm mt-8 relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500"></div>
+                    <div className="text-center mb-6">
+                      <h3 className="text-xl font-bold text-emerald-800">Direktori & Verifikasi Produk Halal</h3>
+                      <p className="text-sm text-gray-500 mt-1">Cek Status Produk Anda di bawah ini</p>
+                    </div>
+                    
+                    <div className="flex flex-col md:flex-row gap-3">
+                      <select className="px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none md:w-1/3">
+                        <option value="nama_produk">Nama Produk</option>
+                        <option value="nomor_sertifikat">Nomor Ketetapan Halal</option>
+                        <option value="nama_perusahaan">Nama Perusahaan (PU)</option>
+                      </select>
+                      <input 
+                        type="text" 
+                        placeholder="Masukkan kata kunci pencarian..." 
+                        className="flex-1 px-4 py-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                      />
+                      <button className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center justify-center">
+                        <Search className="w-4 h-4 mr-2" />
+                        Cari
+                      </button>
+                    </div>
+                    <div className="mt-4 text-center text-xs text-gray-500 border-t border-gray-100 pt-4">
+                      *Hasil pencarian terhubung dengan sistem layanan terpadu Badan Penyelenggara Jaminan Produk Halal (BPJPH).
+                    </div>
+                  </section>
+
+                  <section className="bg-gray-50 p-6 rounded-lg mt-8">
+                    <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center">
+                      <ShieldCheck className="w-5 h-5 mr-2 text-emerald-600" />
+                      Status Tahapan Sertifikasi
+                    </h3>
+                    <p className="text-sm text-gray-700 mb-4">
+                      Kami membedakan indikator status pengajuan sebagai berikut:
+                    </p>
+                    <div className="space-y-3">
+                      <div className="flex items-center p-3 bg-white border border-gray-200 rounded-lg shadow-sm">
+                        <div className="w-3 h-3 rounded-full bg-yellow-400 mr-3"></div>
+                        <div>
+                          <p className="text-sm font-bold text-gray-800">Proses Pemeriksaan LPH</p>
+                          <p className="text-xs text-gray-500">Produk/fasilitas sedang dalam tahap audit oleh Tim LPH Al-Ghazali.</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center p-3 bg-white border border-gray-200 rounded-lg shadow-sm">
+                        <div className="w-3 h-3 rounded-full bg-blue-500 mr-3"></div>
+                        <div>
+                          <p className="text-sm font-bold text-gray-800">Menunggu Ketetapan Halal (Sidang Fatwa)</p>
+                          <p className="text-xs text-gray-500">Berkas audit (LHP) sedang disidangkan oleh Komisi Fatwa MUI.</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center p-3 bg-emerald-50 border border-emerald-200 rounded-lg shadow-sm">
+                        <div className="w-3 h-3 rounded-full bg-emerald-500 mr-3"></div>
+                        <div>
+                          <p className="text-sm font-bold text-emerald-800">Sertifikat Halal Terbit (Tervalidasi)</p>
+                          <p className="text-xs text-emerald-700">Produk telah sah memiliki sertifikat halal yang dikeluarkan negara (BPJPH).</p>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+
+                </div>
+              </div>
+            </div>
+            
+            <div className="p-4 bg-gray-50 border-t border-gray-200 rounded-b-xl flex justify-end shrink-0">
+              <button 
+                onClick={() => setIsPencarianPdfOpen(false)}
                 className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg font-medium shadow-sm transition-colors"
                 type="button"
               >
