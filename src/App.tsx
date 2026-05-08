@@ -363,7 +363,7 @@ function LandingView({ navigateTo, beritaList }: any) {
               <div className="flex items-center space-x-3 sm:space-x-4">
                 <Logo className="h-16 w-16 sm:h-24 sm:w-24 drop-shadow-md" />
                 <div className="flex flex-col">
-                  <span className="font-bold text-2xl sm:text-3xl tracking-tight text-gray-900 leading-none mb-1">LPH Al-Ghazali</span>
+                  <span className="font-bold text-2xl sm:text-3xl tracking-tight text-gray-900 leading-none mb-1">LPH AL-GHAZALI</span>
                   <span className="text-sm sm:text-base font-semibold text-emerald-700 tracking-wider">HALAL INDONESIA</span>
                 </div>
               </div>
