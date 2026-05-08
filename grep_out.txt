@@ -1,0 +1,104 @@
+1630-        </div>
+1631-      )}
+1632-
+1633:      {isStrukturPdfOpen && (
+1634-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6 overflow-y-auto">
+1635-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl flex flex-col max-h-full">
+1636-            <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50 rounded-t-xl shrink-0">
+1637-              <div className="flex items-center space-x-2">
+1638-                <FileText className="w-5 h-5 text-gray-500" />
+1639-                <h3 className="font-semibold text-gray-700">Struktur_Organisasi_LPH_Al_Ghazali.pdf</h3>
+1640-              </div>
+1641-              <button 
+1642-                onClick={() => setIsStrukturPdfOpen(false)} 
+1643-                className="p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-200 transition-colors"
+1644-                title="Tutup"
+1645-              >
+1646-                <X className="w-5 h-5" />
+1647-              </button>
+1648-            </div>
+1649-            
+1650-            <div className="p-8 sm:p-12 overflow-y-auto bg-gray-100 flex-1">
+1651-              <div className="bg-white max-w-3xl mx-auto shadow-sm ring-1 ring-gray-900/5 min-h-[600px] p-6 text-center">
+1652-                <div className="border-b-2 border-emerald-800 pb-6 mb-8">
+1653-                  <Logo className="h-16 w-16 mx-auto mb-4" />
+1654-                  <h1 className="text-2xl font-bold text-gray-900 uppercase tracking-wide">STRUKTUR ORGANISASI</h1>
+1655-                  <h2 className="text-xl font-bold text-emerald-700 uppercase tracking-widest mt-1">Lembaga Pemeriksa Halal (LPH) Al-Ghazali</h2>
+1656-                </div>
+1657-                
+1658-                <div className="relative mx-auto mt-10">
+1659-                  {/* Top Level: Direktur/Manajer Puncak */}
+1660-                  <div className="flex justify-center mb-10">
+1661-                    <div className="bg-emerald-700 text-white px-8 py-3 rounded-lg shadow-md border-b-4 border-emerald-900 relative z-10 w-64">
+1662-                      <h3 className="font-bold text-lg">Direktur/Manajer Puncak</h3>
+1663-                      <p className="text-sm text-emerald-100">Penanggung Jawab LPH</p>
+1664-                    </div>
+1665-                  </div>
+1666-                  
+1667-                  {/* Vertical line from top to horizontal line */}
+1668-                  <div className="absolute top-[3.75rem] left-1/2 w-0.5 h-10 bg-gray-400 -translate-x-1/2 z-0"></div>
+1669-                  
+1670-                  {/* Horizontal Line connecting middle layer */}
+1671-                  <div className="absolute top-[6.25rem] left-[15%] right-[15%] h-0.5 bg-gray-400 z-0"></div>
+1672-                  
+1673-                  {/* Middle Level: Manajer Representatif, Manajer Operasional, Manajer Administrasi */}
+1674-                  <div className="flex justify-between px-4 mb-20 relative">
+1675-                    {/* Vertical lines connecting horizontal line to items */}
+1676-                    <div className="absolute top-[-2.5rem] left-[15%] w-0.5 h-10 bg-gray-400 z-0 hidden md:block"></div>
+1677-                    <div className="absolute top-[-2.5rem] left-1/2 w-0.5 h-10 bg-gray-400 -translate-x-1/2 z-0 hidden md:block"></div>
+1678-                    <div className="absolute top-[-2.5rem] right-[15%] w-0.5 h-10 bg-gray-400 z-0 hidden md:block"></div>
+1679-
+1680-                    <div className="bg-white border-2 border-emerald-500 px-4 py-3 rounded-lg shadow-sm w-48 mx-auto md:mx-0 z-10 hidden md:block">
+1681-                      <h4 className="font-bold text-emerald-800 text-sm">Manajer Mutu</h4>
+1682-                      <p className="text-xs text-gray-500">Quality Assurance</p>
+1683-                    </div>
+1684-                    <div className="bg-white border-2 border-emerald-500 px-4 py-3 rounded-lg shadow-sm w-48 mx-auto md:mx-0 z-10 hidden md:block">
+1685-                      <h4 className="font-bold text-emerald-800 text-sm">Manajer Operasional</h4>
+1686-                      <p className="text-xs text-gray-500">Audit & Teknis</p>
+1687-                    </div>
+1688-                    <div className="bg-white border-2 border-emerald-500 px-4 py-3 rounded-lg shadow-sm w-48 mx-auto md:mx-0 z-10 hidden md:block">
+1689-                      <h4 className="font-bold text-emerald-800 text-sm">Manajer Administrasi</h4>
+1690-                      <p className="text-xs text-gray-500">Pelayanan & Keuangan</p>
+1691-                    </div>
+1692-                  </div>
+1693-
+1694-                  {/* Mobile version of middle layer for stacking */}
+1695-                  <div className="flex flex-col space-y-4 md:hidden mb-10 items-center">
+1696-                    <div className="bg-white border-2 border-emerald-500 px-4 py-3 rounded-lg shadow-sm w-64 z-10">
+1697-                      <h4 className="font-bold text-emerald-800 text-sm">Manajer Mutu</h4>
+1698-                    </div>
+1699-                    <div className="bg-white border-2 border-emerald-500 px-4 py-3 rounded-lg shadow-sm w-64 z-10">
+1700-                      <h4 className="font-bold text-emerald-800 text-sm">Manajer Operasional</h4>
+1701-                    </div>
+1702-                    <div className="bg-white border-2 border-emerald-500 px-4 py-3 rounded-lg shadow-sm w-64 z-10">
+1703-                      <h4 className="font-bold text-emerald-800 text-sm">Manajer Administrasi</h4>
+1704-                    </div>
+1705-                  </div>
+1706-
+1707-                  {/* Vertical line from Manajer Operasional to Auditor */}
+1708-                  <div className="absolute bottom-[4.5rem] left-1/2 w-0.5 h-12 bg-gray-400 -translate-x-1/2 z-0 hidden md:block"></div>
+1709-
+1710-                  {/* Bottom Level: Tim Auditor Halal */}
+1711-                  <div className="flex justify-center mt-[-1rem] md:mt-0 relative z-10">
+1712-                    <div className="bg-slate-100 border-2 border-slate-300 px-8 py-4 rounded-lg shadow-inner w-72">
+1713-                      <Users className="w-8 h-8 mx-auto text-slate-500 mb-2" />
+1714-                      <h4 className="font-bold text-slate-800">Tim Auditor Halal</h4>
+1715-                      <p className="text-xs text-slate-500 mt-1">Staf Teknis Pemeriksa & Penguji Lapangan Terakreditasi BNSP/BPJPH</p>
+1716-                    </div>
+1717-                  </div>
+1718-                </div>
+1719-
+1720-              </div>
+1721-            </div>
+1722-            
+1723-            <div className="p-4 bg-gray-50 border-t border-gray-200 rounded-b-xl flex justify-end shrink-0">
+1724-              <button 
+1725-                onClick={() => setIsStrukturPdfOpen(false)}
+1726-                className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg font-medium shadow-sm transition-colors"
+1727-                type="button"
+1728-              >
+1729-                Tutup Dokumen
+1730-              </button>
+1731-            </div>
+1732-          </div>
+1733-        </div>
