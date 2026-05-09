@@ -4,6 +4,24 @@ import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, 
 import { getFirestore, collection, onSnapshot, addDoc, updateDoc, doc, serverTimestamp, deleteDoc, setDoc } from 'firebase/firestore';
 import { Leaf, Home, FileText, LogOut, PlusCircle, Settings, CheckCircle, Clock, Search, Briefcase, FileSignature, UploadCloud, ArrowLeft, ArrowRight, ShieldCheck, Zap, MonitorSmartphone, UserCheck, Newspaper, Edit, Trash2, X, Image as ImageIcon, Route, Coins, ChevronDown, ChevronRight, Calculator, Receipt, CalendarDays, Activity, Video, Link, MapPin, Phone, Mail, Facebook, Twitter, Instagram, Linkedin, History, Target, Award, Network, Users, BookOpen, Handshake, Menu, Scale, Landmark, CheckCircle2, FlaskConical, FileEdit } from 'lucide-react';
 
+const OrgCard = ({ title, name, list, className = "", noHover = false }: any) => (
+    <div className={`flex flex-col bg-white border-2 border-emerald-700 rounded-xl shadow-lg shadow-emerald-900/5 overflow-hidden ring-1 ring-emerald-500/20 ${!noHover ? 'hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-emerald-900/10 hover:border-emerald-600 transition-all duration-300' : ''} ${className}`}>
+        <div className="bg-gradient-to-r from-emerald-800 via-emerald-700 to-emerald-600 p-2.5">
+            <h3 className="font-extrabold text-white text-[11px] text-center leading-tight uppercase tracking-widest drop-shadow-sm">{title}</h3>
+        </div>
+        {(name || list) && (
+            <div className="p-3.5 flex-grow flex flex-col justify-center bg-gradient-to-br from-white to-emerald-50/50">
+                {name && <p className="text-[11px] font-bold text-gray-800 text-center uppercase tracking-wide">{name}</p>}
+                {list && (
+                    <ol className="text-[10px] font-semibold text-gray-700 text-left list-decimal pl-4 space-y-1 m-0 marker:text-emerald-600">
+                        {list.map((item: string, i: number) => <li key={i}>{item}</li>)}
+                    </ol>
+                )}
+            </div>
+        )}
+    </div>
+);
+
 // ==========================================
 // 1. FIREBASE INITIALIZATION (CLOUD SETUP)
 // ==========================================
@@ -301,6 +319,7 @@ function LandingView({ navigateTo, beritaList }: any) {
   const [isVisiMisiPdfOpen, setIsVisiMisiPdfOpen] = useState(false);
   const [isSejarahPdfOpen, setIsSejarahPdfOpen] = useState(false);
   const [isKebijakanPdfOpen, setIsKebijakanPdfOpen] = useState(false);
+  const [isStrukturOrganisasiOpen, setIsStrukturOrganisasiOpen] = useState(false);
     const [isAuditorPdfOpen, setIsAuditorPdfOpen] = useState(false);
   const [isSdmPdfOpen, setIsSdmPdfOpen] = useState(false);
   const [isKerjasamaPdfOpen, setIsKerjasamaPdfOpen] = useState(false);
@@ -410,9 +429,9 @@ function LandingView({ navigateTo, beritaList }: any) {
                   <button onClick={() => setIsKebijakanPdfOpen(true)} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
                     <Award className="w-4 h-4 mr-2" /> Kebijakan Mutu & Sasaran Mutu
                   </button>
-                  <a href="#struktur-organisasi" className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                  <button onClick={() => setIsStrukturOrganisasiOpen(true)} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
                     <Network className="w-4 h-4 mr-2" /> Struktur Organisasi
-                  </a>
+                  </button>
                   <button onClick={() => setIsAuditorPdfOpen(true)} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
                     <Users className="w-4 h-4 mr-2" /> Auditor Halal
                   </button>
@@ -549,7 +568,7 @@ function LandingView({ navigateTo, beritaList }: any) {
                 <button onClick={() => { setIsSejarahPdfOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600">Sejarah dan Latar Belakang</button>
                 <button onClick={() => { setIsVisiMisiPdfOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600">Visi Misi</button>
                 <button onClick={() => { setIsKebijakanPdfOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600">Kebijakan Mutu & Sasaran Mutu</button>
-                <a href="#struktur-organisasi" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Struktur Organisasi</a>
+                <button onClick={() => { setIsStrukturOrganisasiOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600">Struktur Organisasi</button>
                 <button onClick={() => { setIsAuditorPdfOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600">Auditor Halal</button>
                 <button onClick={() => { setIsSdmPdfOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600">SDM Syariah</button>
                 <button onClick={() => { setIsKerjasamaPdfOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600">Kerjasama</button>
@@ -688,169 +707,7 @@ function LandingView({ navigateTo, beritaList }: any) {
       </section>
 
 
-      {/* Struktur Organisasi Section */}
-      <section id="struktur-organisasi" className="py-20 bg-gray-50 border-t border-gray-100">
-        <div className="max-w-[100vw] mx-auto overflow-hidden px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-                <Logo className="h-16 w-16 mx-auto mb-4" />
-                <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-wide mb-2 uppercase">STRUKTUR ORGANISASI</h1>
-                <div className="inline-block bg-emerald-100 px-6 py-2 rounded-full">
-                    <h3 className="text-lg font-semibold text-emerald-700">Lembaga Pemeriksa Halal (LPH) Al-Ghazali</h3>
-                </div>
-            </div>
-            
-            <div className="relative mx-auto mt-10 w-full">
-                <div className="md:hidden text-center text-sm text-gray-500 mb-4 animate-pulse flex items-center justify-center">
-                    <ArrowRight className="w-4 h-4 mr-2" /> Geser untuk melihat struktur lengkap
-                </div>
-                <div className="overflow-x-auto pb-8 scrollbar-thin scrollbar-thumb-emerald-200 scrollbar-track-transparent">
-                    <div className="tree">
-                        <ul>
-                            {/* Level 1: Dewan Pembina */}
-                            <li>
-                                <div className="tree-card card-top">
-                                    <h3 className="font-bold text-lg text-emerald-900">Dewan Pembina LPH</h3>
-                                    <div className="w-full h-px bg-emerald-200 my-2"></div>
-                                    <p className="text-sm font-bold text-emerald-700">Dr. A. Luthfi Hamidi, M.Ag.</p>
-                                </div>
-                                
-                                {/* Level 2: Direktur */}
-                                <ul>
-                                    <li>
-                                        <div className="tree-card card-top">
-                                            <h3 className="font-bold text-lg text-emerald-900">Direktur LPH</h3>
-                                            <div className="w-full h-px bg-emerald-200 my-2"></div>
-                                            <p className="text-sm font-bold text-emerald-700">H. Shoiman Nawawi, S.H.I., M.H.</p>
-                                        </div>
 
-                                        {/* Level 3: Manajer & Komite (Sejajar di bawah Direktur) */}
-                                        <ul>
-                                            {/* Komite Ketidakberpihakan */}
-                                            <li>
-                                                <div className="tree-card card-mid">
-                                                    <h3 className="font-bold text-emerald-800 text-sm">Komite Ketidakberpihakan</h3>
-                                                    <div className="w-full h-px bg-emerald-100 my-2"></div>
-                                                    <ol className="text-xs text-gray-700 text-left list-decimal pl-4 space-y-1">
-                                                        <li>Istikharoh, M.H.</li>
-                                                        <li>Rindrayatni, S.Kep., Ners.</li>
-                                                        <li>Abdul Haq, M.Cs.</li>
-                                                    </ol>
-                                                </div>
-                                            </li>
-
-                                            {/* Komite Banding */}
-                                            <li>
-                                                <div className="tree-card card-mid">
-                                                    <h3 className="font-bold text-emerald-800 text-sm">Komite Banding</h3>
-                                                    <div className="w-full h-px bg-emerald-100 my-2"></div>
-                                                    <p className="text-xs font-semibold text-gray-700 mt-2">Dr. Misbah Khusurur, M.Si.</p>
-                                                </div>
-                                            </li>
-
-                                            {/* Sekretaris */}
-                                            <li>
-                                                <div className="tree-card card-mid">
-                                                    <h3 className="font-bold text-emerald-800 text-sm">Sekretaris</h3>
-                                                    <div className="w-full h-px bg-emerald-100 my-2"></div>
-                                                    <p className="text-xs font-semibold text-gray-700 mt-2">Fathurrohman, S.H.</p>
-                                                </div>
-                                            </li>
-
-                                            {/* Manajer Mutu */}
-                                            <li>
-                                                <div className="tree-card card-mid">
-                                                    <h3 className="font-bold text-emerald-800 text-sm">Manajer Mutu</h3>
-                                                    <div className="w-full h-px bg-emerald-100 my-2"></div>
-                                                    <p className="text-xs font-semibold text-gray-700 mt-2">Rahmatulloh, S.Sy., M.E.</p>
-                                                </div>
-                                            </li>
-
-                                            {/* Manajer Operasional */}
-                                            <li>
-                                                <div className="tree-card card-mid">
-                                                    <h3 className="font-bold text-emerald-800 text-sm">Manajer Operasional</h3>
-                                                    <div className="w-full h-px bg-emerald-100 my-2"></div>
-                                                    <p className="text-xs font-semibold text-gray-700 mt-2">Christian Soolany, S.TP., M.Si.</p>
-                                                </div>
-                                                
-                                                {/* Level 4: Tim Pelaksana (Di bawah Operasional) */}
-                                                <ul>
-                                                    {/* SDM Syariah */}
-                                                    <li>
-                                                        <div className="tree-card card-bot">
-                                                            <h3 className="font-bold text-emerald-700 text-sm">SDM Syariah</h3>
-                                                            <div className="w-full h-px bg-emerald-100 my-2"></div>
-                                                            <ol className="text-xs text-gray-700 text-left list-decimal pl-4 space-y-1">
-                                                                <li>H. Fatah Rosihan Affandi, S.Fil.I., M.M.</li>
-                                                                <li>Syaefudin Zuhri, S.Ag.</li>
-                                                            </ol>
-                                                        </div>
-                                                    </li>
-
-                                                    {/* Auditor Halal */}
-                                                    <li>
-                                                        <div className="tree-card card-bot">
-                                                            <h3 className="font-bold text-emerald-700 text-sm">Auditor Halal</h3>
-                                                            <div className="w-full h-px bg-emerald-100 my-2"></div>
-                                                            <ol className="text-xs text-gray-700 text-left list-decimal pl-4 space-y-1">
-                                                                <li>Siti Khuzaimah, S.T., M.T.</li>
-                                                                <li>dr. Atingul Marifah</li>
-                                                                <li>Anisha Dian Iswahyuni, S.T., M.Sc.</li>
-                                                            </ol>
-                                                        </div>
-                                                    </li>
-
-                                                    {/* Evaluator LPH */}
-                                                    <li>
-                                                        <div className="tree-card card-bot">
-                                                            <h3 className="font-bold text-emerald-700 text-sm">Evaluator LPH</h3>
-                                                            <div className="w-full h-px bg-emerald-100 my-2"></div>
-                                                            <p className="text-xs font-semibold text-gray-700 mt-2">Fathurrohman, S.H.</p>
-                                                        </div>
-                                                    </li>
-
-                                                    {/* Petugas Pengambil Sample */}
-                                                    <li>
-                                                        <div className="tree-card card-bot">
-                                                            <h3 className="font-bold text-emerald-700 text-sm">Petugas Pengambil Sample</h3>
-                                                            <div className="w-full h-px bg-emerald-100 my-2"></div>
-                                                            <ol className="text-xs text-gray-700 text-left list-decimal pl-4 space-y-1">
-                                                                <li>Siti Khuzaimah, S.T., M.T.</li>
-                                                                <li>dr. Atingul Marifah</li>
-                                                                <li>Anisha Dian Iswahyuni, S.T., M.Sc.</li>
-                                                            </ol>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                            </li>
-
-                                            {/* Manajer Keuangan */}
-                                            <li>
-                                                <div className="tree-card card-mid">
-                                                    <h3 className="font-bold text-emerald-800 text-sm">Manajer Keuangan</h3>
-                                                    <div className="w-full h-px bg-emerald-100 my-2"></div>
-                                                    <p className="text-xs font-semibold text-gray-700 mt-2">Siti Khuzaimah, S.T., M.T.</p>
-                                                </div>
-                                            </li>
-
-                                            {/* Pengelola LPH */}
-                                            <li>
-                                                <div className="tree-card card-mid">
-                                                    <h3 className="font-bold text-emerald-800 text-sm">Pengelola LPH</h3>
-                                                    <div className="w-full h-px bg-emerald-100 my-2"></div>
-                                                    <p className="text-xs font-semibold text-gray-700 mt-2">Mukti Ali, S.Pd.</p>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-      </section>
 
 
       {/* Keunggulan / Layanan Section */}
@@ -1707,6 +1564,104 @@ function LandingView({ navigateTo, beritaList }: any) {
               >
                 Tutup Dokumen
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isStrukturOrganisasiOpen && (
+        <div className="fixed inset-0 z-[100] flex items-start justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-8 overflow-y-auto">
+          <div className="bg-white rounded-sm shadow-2xl w-full max-w-[1300px] my-auto relative border border-gray-200">
+            <button 
+              onClick={() => setIsStrukturOrganisasiOpen(false)} 
+              className="absolute top-4 right-4 p-2 z-50 bg-gray-100 rounded-full shadow-sm text-gray-500 hover:text-gray-800 hover:bg-gray-200 transition-colors cursor-pointer"
+              title="Tutup"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="p-8 sm:p-14">
+              {/* Header */}
+              <div className="text-center mb-10 border-b-4 border-emerald-800 pb-8 flex flex-col items-center">
+                  <Logo className="h-20 w-20 mb-4" />
+                  <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 uppercase tracking-widest leading-tight">STRUKTUR ORGANISASI</h1>
+                  <h2 className="text-lg sm:text-xl font-bold text-emerald-700 uppercase tracking-wider mt-2">Lembaga Pemeriksa Halal (LPH) Al-Ghazali</h2>
+              </div>
+
+              {/* Chart Container (Scrollable) */}
+              <div className="w-full overflow-x-auto pb-10 scrollbar-thin scrollbar-thumb-emerald-300 scrollbar-track-transparent">
+                  <div className="min-w-[1150px] flex flex-col items-center pt-4">
+                      
+                      {/* Dewan Pembina */}
+                      <div className="relative flex flex-col items-center">
+                          <OrgCard title="Dewan Pembina LPH" name="Dr. A. Luthfi Hamidi, M.Ag." className="w-[200px]" />
+                          <div className="w-[3px] h-8 bg-emerald-600"></div>
+                      </div>
+
+                      {/* Direktur */}
+                      <div className="relative flex flex-col items-center">
+                          <OrgCard title="Direktur LPH" name="H. Shoiman Nawawi, S.H.I., M.H." className="w-[200px]" />
+                          <div className="w-[3px] h-8 bg-emerald-600"></div>
+                      </div>
+
+                      {/* Level 2 Wrapper (Tengah Dirapatkan) */}
+                      <div className="relative flex justify-center w-full mt-0">
+                          {/* Horizontal Line connecting exactly first and last column centers */}
+                          <div className="absolute top-0 left-[80px] right-[80px] h-[3px] bg-emerald-600"></div>
+                          
+                          <div className="flex justify-between w-full relative pt-8">
+                              
+                              <div className="relative flex flex-col items-center w-[160px]">
+                                  <div className="absolute top-[-32px] w-[3px] h-8 bg-emerald-600"></div>
+                                  <OrgCard title="Komite Ketidakberpihakan" list={["Istikharoh, M.H.", "Rindrayatni, S.Kep., Ners.", "Abdul Haq, M.Cs."]} className="w-[155px]" />
+                              </div>
+
+                              <div className="relative flex flex-col items-center w-[160px]">
+                                  <div className="absolute top-[-32px] w-[3px] h-8 bg-emerald-600"></div>
+                                  <OrgCard title="Komite Banding" name="Dr. Misbah Khusurur, M.Si." className="w-[155px]" />
+                              </div>
+
+                              <div className="relative flex flex-col items-center w-[160px]">
+                                  <div className="absolute top-[-32px] w-[3px] h-8 bg-emerald-600"></div>
+                                  <OrgCard title="Sekretaris" name="Fathurrohman, S.H." className="w-[155px]" />
+                              </div>
+
+                              <div className="relative flex flex-col items-center w-[160px]">
+                                  <div className="absolute top-[-32px] w-[3px] h-8 bg-emerald-600"></div>
+                                  <OrgCard title="Manajer Mutu" name="Rahmatulloh, S.Sy., M.E." className="w-[155px]" />
+                              </div>
+
+                              {/* Manajer Operasional (Root of bottom level ditarik lurus ke bawah) */}
+                              <div className="relative flex flex-col items-center w-[160px]">
+                                  <div className="absolute top-[-32px] w-[3px] h-8 bg-emerald-600"></div>
+                                  <OrgCard title="Manajer Operasional" name="Christian Soolany, S.TP., M.Si." className="w-[155px] z-10" />
+                                  
+                                  <div className="relative w-full flex flex-col items-center pt-8 space-y-6">
+                                      <div className="absolute top-0 bottom-[30px] left-[50%] -ml-[1.5px] w-[3px] bg-emerald-600 z-0"></div>
+                                      
+                                      <OrgCard title="SDM Syariah" list={["H. Fatah Rosihan A., M.M.", "Syaefudin Zuhri, S.Ag."]} className="w-[155px] z-10 relative" />
+                                      <OrgCard title="Auditor Halal" list={["Siti Khuzaimah, S.T., M.T.", "dr. Atingul Marifah", "Anisha Dian I., S.T., M.Sc."]} className="w-[155px] z-10 relative" />
+                                      <OrgCard title="Evaluator LPH" name="Fathurrohman, S.H." className="w-[155px] z-10 relative" />
+                                      <OrgCard title="Petugas Pengambil Sample" list={["Siti Khuzaimah, S.T., M.T.", "dr. Atingul Marifah", "Anisha Dian I., S.T."]} className="w-[155px] z-10 relative" />
+                                  </div>
+                              </div>
+
+                              <div className="relative flex flex-col items-center w-[160px]">
+                                  <div className="absolute top-[-32px] w-[3px] h-8 bg-emerald-600"></div>
+                                  <OrgCard title="Manajer Keuangan" name="Siti Khuzaimah, S.T., M.T." className="w-[155px]" />
+                              </div>
+
+                              <div className="relative flex flex-col items-center w-[160px]">
+                                  <div className="absolute top-[-32px] w-[3px] h-8 bg-emerald-600"></div>
+                                  <OrgCard title="Pengelola LPH" name="Mukti Ali, S.Pd." className="w-[155px]" />
+                              </div>
+                              
+                          </div>
+                      </div>
+
+                  </div>
+              </div>
+
             </div>
           </div>
         </div>
