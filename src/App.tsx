@@ -7,7 +7,8 @@ import { Leaf, Home, FileText, LogOut, PlusCircle, Settings, CheckCircle, Clock,
 // ==========================================
 // 1. FIREBASE INITIALIZATION (CLOUD SETUP)
 // ==========================================
-const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+// @ts-ignore
+const firebaseConfig = typeof window !== 'undefined' && typeof (window as any).__firebase_config !== 'undefined' ? JSON.parse((window as any).__firebase_config) : {
   apiKey: "mock-key",
   authDomain: "mock.firebaseapp.com",
   projectId: "mock-project",
@@ -352,7 +353,7 @@ function LandingView({ navigateTo, beritaList }: any) {
   };
 
   return (
-    <div className="flex flex-col min-h-screen scroll-smooth">
+    <div className="flex flex-col min-h-screen scroll-smooth" style={{ scrollPaddingTop: '160px' }}>
       {/* Navbar */}
       <nav className="fixed w-full bg-white/90 backdrop-blur-md z-50">
         {/* Top Row */}
@@ -698,7 +699,11 @@ function LandingView({ navigateTo, beritaList }: any) {
                 </div>
             </div>
             
-            <div className="relative mx-auto mt-10 overflow-x-auto pb-8">
+            <div className="relative mx-auto mt-10 w-full">
+                <div className="md:hidden text-center text-sm text-gray-500 mb-4 animate-pulse flex items-center justify-center">
+                    <ArrowRight className="w-4 h-4 mr-2" /> Geser untuk melihat struktur lengkap
+                </div>
+                <div className="overflow-x-auto pb-8 scrollbar-thin scrollbar-thumb-emerald-200 scrollbar-track-transparent">
                     <div className="tree">
                         <ul>
                             {/* Level 1: Dewan Pembina */}
@@ -842,6 +847,7 @@ function LandingView({ navigateTo, beritaList }: any) {
                             </li>
                         </ul>
                     </div>
+                </div>
             </div>
         </div>
       </section>
@@ -2627,7 +2633,7 @@ function LandingView({ navigateTo, beritaList }: any) {
 
                   <section>
                     <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
-                      <Image className="w-6 h-6 mr-3 text-emerald-600" />
+                      <ImageIcon className="w-6 h-6 mr-3 text-emerald-600" />
                       Galeri & Laporan Kegiatan Terbaru
                     </h3>
                     

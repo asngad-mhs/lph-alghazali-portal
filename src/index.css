@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 180px;
+}
+
 /* CSS untuk membuat struktur pohon (Tree) */
 .tree-container {
     width: 100%;
@@ -80,6 +85,17 @@
 }
 
 /* Styling Kotak (Card) */
+.scrollbar-thin::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: #a7f3d0;
+    border-radius: 20px;
+}
 .tree-card {
     display: inline-block;
     background: white;
