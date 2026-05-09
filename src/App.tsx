@@ -320,6 +320,8 @@ function LandingView({ navigateTo, beritaList }: any) {
   const [isSejarahPdfOpen, setIsSejarahPdfOpen] = useState(false);
   const [isKebijakanPdfOpen, setIsKebijakanPdfOpen] = useState(false);
   const [isStrukturOrganisasiOpen, setIsStrukturOrganisasiOpen] = useState(false);
+  const [isUndangUndangOpen, setIsUndangUndangOpen] = useState(false);
+  const [isPeraturanPemerintahOpen, setIsPeraturanPemerintahOpen] = useState(false);
     const [isAuditorPdfOpen, setIsAuditorPdfOpen] = useState(false);
   const [isSdmPdfOpen, setIsSdmPdfOpen] = useState(false);
   const [isKerjasamaPdfOpen, setIsKerjasamaPdfOpen] = useState(false);
@@ -491,12 +493,12 @@ function LandingView({ navigateTo, beritaList }: any) {
                   <Scale className="w-4 h-4 mr-1" /> Regulasi <ChevronDown className="w-4 h-4 ml-1" />
                 </button>
                 <div className="absolute top-[80%] left-0 w-72 bg-white border border-gray-100 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 overflow-hidden z-50">
-                  <a href="#regulasi" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                  <button onClick={() => setIsUndangUndangOpen(true)} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
                     <Scale className="w-4 h-4 mr-2 shrink-0" /> <span className="truncate">Undang-undang RI</span>
-                  </a>
-                  <a href="#regulasi" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                  </button>
+                  <button onClick={() => setIsPeraturanPemerintahOpen(true)} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
                     <Landmark className="w-4 h-4 mr-2 shrink-0" /> <span className="truncate">Peraturan Pemerintah</span>
-                  </a>
+                  </button>
                   <a href="#regulasi" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
                     <BookOpen className="w-4 h-4 mr-2 shrink-0" /> <span className="truncate">Keputusan Mentri Agama</span>
                   </a>
@@ -598,8 +600,8 @@ function LandingView({ navigateTo, beritaList }: any) {
             <div className="px-3 py-2">
               <div className="text-sm font-bold text-emerald-600 mb-1 flex items-center"><Scale className="w-4 h-4 mr-2" /> Regulasi</div>
               <div className="ml-6 space-y-1 border-l-2 border-emerald-100 pl-3">
-                <a href="#regulasi" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center py-1.5 text-sm text-gray-600 hover:text-emerald-600"><Scale className="w-4 h-4 mr-2 shrink-0" /> Undang-undang RI</a>
-                <a href="#regulasi" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center py-1.5 text-sm text-gray-600 hover:text-emerald-600"><Landmark className="w-4 h-4 mr-2 shrink-0" /> Peraturan Pemerintah</a>
+                <button onClick={() => { setIsUndangUndangOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left flex items-center py-1.5 text-sm text-gray-600 hover:text-emerald-600"><Scale className="w-4 h-4 mr-2 shrink-0" /> Undang-undang RI</button>
+                <button onClick={() => { setIsPeraturanPemerintahOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left flex items-center py-1.5 text-sm text-gray-600 hover:text-emerald-600"><Landmark className="w-4 h-4 mr-2 shrink-0" /> Peraturan Pemerintah</button>
                 <a href="#regulasi" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center py-1.5 text-sm text-gray-600 hover:text-emerald-600"><BookOpen className="w-4 h-4 mr-2 shrink-0" /> Keputusan Mentri Agama</a>
                 <a href="#regulasi" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center py-1.5 text-sm text-gray-600 hover:text-emerald-600"><FileSignature className="w-4 h-4 mr-2 shrink-0" /> Keputusan Kepala BPJPH</a>
                 <a href="#regulasi" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center py-1.5 text-sm text-gray-600 hover:text-emerald-600"><ShieldCheck className="w-4 h-4 mr-2 shrink-0" /> Peraturan BPOM</a>
@@ -1662,6 +1664,149 @@ function LandingView({ navigateTo, beritaList }: any) {
                   </div>
               </div>
 
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isUndangUndangOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6 overflow-y-auto">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl flex flex-col max-h-full overflow-hidden border border-emerald-100 ring-1 ring-emerald-500/10">
+            <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-100 bg-gradient-to-r from-emerald-50 to-white shrink-0">
+              <div className="flex items-center space-x-4">
+                <div className="bg-emerald-100 p-2.5 rounded-xl shadow-sm border border-emerald-200">
+                    <Scale className="w-7 h-7 text-emerald-700" />
+                </div>
+                <div>
+                    <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight">Undang-Undang RI</h2>
+                    <p className="text-sm text-emerald-600 font-semibold mt-0.5">Regulasi Terkait Jaminan Produk Halal</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setIsUndangUndangOpen(false)} 
+                className="p-2 bg-white rounded-full text-gray-400 hover:text-gray-800 hover:bg-gray-100 transition-colors cursor-pointer border border-gray-200 shadow-sm"
+                title="Tutup"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="p-0 overflow-y-auto w-full h-[600px] flex flex-col bg-gray-50/50">
+              <div className="p-4 sm:p-8 space-y-6">
+                 
+                 {/* Item 1 */}
+                 <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-8 shadow-sm hover:shadow-lg hover:border-emerald-300 transition-all duration-300 group">
+                    <div className="flex flex-col sm:flex-row gap-5 sm:items-start justify-between">
+                        <div className="flex-1">
+                            <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-emerald-700 transition-colors">Undang-Undang Nomor 33 Tahun 2014</h3>
+                            <div className="inline-block bg-emerald-50 border border-emerald-100 px-3 py-1 rounded-md mb-4">
+                                <p className="text-[13px] font-bold text-emerald-700 uppercase tracking-widest">Tentang Jaminan Produk Halal</p>
+                            </div>
+                            <p className="text-sm text-gray-600 leading-relaxed font-medium">
+                                Undang-Undang ini mengatur secara komprehensif mengenai kewajiban bersertifikat halal bagi produk yang masuk, beredar, dan diperdagangkan di wilayah Indonesia, serta penyelenggaraan Jaminan Produk Halal secara keseluruhan.
+                            </p>
+                        </div>
+                        <div className="sm:text-right shrink-0 mt-2 sm:mt-0">
+                            <button className="inline-flex items-center justify-center px-5 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-semibold hover:bg-emerald-700 hover:shadow-md hover:-translate-y-0.5 transition-all w-full sm:w-auto focus:ring-4 focus:ring-emerald-500/20">
+                                <FileText className="w-4 h-4 mr-2" />
+                                Lihat Dokumen
+                            </button>
+                        </div>
+                    </div>
+                 </div>
+
+                 {/* Item 2 */}
+                 <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-8 shadow-sm hover:shadow-lg hover:border-emerald-300 transition-all duration-300 group">
+                    <div className="flex flex-col sm:flex-row gap-5 sm:items-start justify-between">
+                        <div className="flex-1">
+                            <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-emerald-700 transition-colors">Undang-Undang Nomor 6 Tahun 2023</h3>
+                            <div className="inline-block bg-emerald-50 border border-emerald-100 px-3 py-1 rounded-md mb-4">
+                                <p className="text-[13px] font-bold text-emerald-700 uppercase tracking-widest">Penetapan Perppu Cipta Kerja</p>
+                            </div>
+                            <p className="text-sm text-gray-600 leading-relaxed font-medium">
+                                Undang-Undang ini mengubah berbagai ketentuan peraturan perundang-undangan, salah satunya adalah pembaruan terhadap ketentuan dalam UU No 33 Tahun 2014, yang bertujuan untuk percepatan layanan sertifikasi halal, penetapan logo halal, dan pembinaan UMKM.
+                            </p>
+                        </div>
+                        <div className="sm:text-right shrink-0 mt-2 sm:mt-0">
+                            <button className="inline-flex items-center justify-center px-5 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-semibold hover:bg-emerald-700 hover:shadow-md hover:-translate-y-0.5 transition-all w-full sm:w-auto focus:ring-4 focus:ring-emerald-500/20">
+                                <FileText className="w-4 h-4 mr-2" />
+                                Lihat Dokumen
+                            </button>
+                        </div>
+                    </div>
+                 </div>
+
+              </div>
+            </div>
+            
+            <div className="p-4 sm:p-5 border-t border-gray-100 bg-white flex justify-end shrink-0">
+              <button 
+                onClick={() => setIsUndangUndangOpen(false)}
+                className="px-6 py-2.5 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 hover:text-gray-900 transition-colors font-bold cursor-pointer"
+              >
+                Tutup
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isPeraturanPemerintahOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6 overflow-y-auto">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl flex flex-col max-h-full overflow-hidden border border-emerald-100 ring-1 ring-emerald-500/10">
+            <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-100 bg-gradient-to-r from-emerald-50 to-white shrink-0">
+              <div className="flex items-center space-x-4">
+                <div className="bg-emerald-100 p-2.5 rounded-xl shadow-sm border border-emerald-200">
+                    <Landmark className="w-7 h-7 text-emerald-700" />
+                </div>
+                <div>
+                    <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight">Peraturan Pemerintah</h2>
+                    <p className="text-sm text-emerald-600 font-semibold mt-0.5">Regulasi Terkait Jaminan Produk Halal</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setIsPeraturanPemerintahOpen(false)} 
+                className="p-2 bg-white rounded-full text-gray-400 hover:text-gray-800 hover:bg-gray-100 transition-colors cursor-pointer border border-gray-200 shadow-sm"
+                title="Tutup"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="p-0 overflow-y-auto w-full h-[600px] flex flex-col bg-gray-50/50">
+              <div className="p-4 sm:p-8 space-y-6">
+                 
+                 {/* Item 1 */}
+                 <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-8 shadow-sm hover:shadow-lg hover:border-emerald-300 transition-all duration-300 group">
+                    <div className="flex flex-col sm:flex-row gap-5 sm:items-start justify-between">
+                        <div className="flex-1">
+                            <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-emerald-700 transition-colors">Peraturan Pemerintah Nomor 39 Tahun 2021</h3>
+                            <div className="inline-block bg-emerald-50 border border-emerald-100 px-3 py-1 rounded-md mb-4">
+                                <p className="text-[13px] font-bold text-emerald-700 uppercase tracking-widest">Penyelenggaraan Bidang Jaminan Produk Halal</p>
+                            </div>
+                            <p className="text-sm text-gray-600 leading-relaxed font-medium">
+                                Peraturan Pemerintah ini merupakan aturan pelaksanaan dari UU No 33 Tahun 2014, yang mengatur lebih detail mengenai tata cara pendaftaran, sertifikasi, pembinaan, pengawasan, serta peran masyarakat dan pelaku usaha dalam ekosistem jaminan produk halal.
+                            </p>
+                        </div>
+                        <div className="sm:text-right shrink-0 mt-2 sm:mt-0">
+                            <button className="inline-flex items-center justify-center px-5 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-semibold hover:bg-emerald-700 hover:shadow-md hover:-translate-y-0.5 transition-all w-full sm:w-auto focus:ring-4 focus:ring-emerald-500/20">
+                                <FileText className="w-4 h-4 mr-2" />
+                                Lihat Dokumen
+                            </button>
+                        </div>
+                    </div>
+                 </div>
+
+              </div>
+            </div>
+            
+            <div className="p-4 sm:p-5 border-t border-gray-100 bg-white flex justify-end shrink-0">
+              <button 
+                onClick={() => setIsPeraturanPemerintahOpen(false)}
+                className="px-6 py-2.5 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 hover:text-gray-900 transition-colors font-bold cursor-pointer"
+              >
+                Tutup
+              </button>
             </div>
           </div>
         </div>
