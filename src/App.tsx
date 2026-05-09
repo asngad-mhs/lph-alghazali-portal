@@ -324,6 +324,8 @@ function LandingView({ navigateTo, beritaList }: any) {
   const [isPeraturanPemerintahOpen, setIsPeraturanPemerintahOpen] = useState(false);
   const [isKeputusanMenagOpen, setIsKeputusanMenagOpen] = useState(false);
   const [isKeputusanBpjphOpen, setIsKeputusanBpjphOpen] = useState(false);
+  const [isPeraturanBpomOpen, setIsPeraturanBpomOpen] = useState(false);
+  const [isSniOpen, setIsSniOpen] = useState(false);
     const [isAuditorPdfOpen, setIsAuditorPdfOpen] = useState(false);
   const [isSdmPdfOpen, setIsSdmPdfOpen] = useState(false);
   const [isKerjasamaPdfOpen, setIsKerjasamaPdfOpen] = useState(false);
@@ -507,12 +509,12 @@ function LandingView({ navigateTo, beritaList }: any) {
                   <button onClick={() => setIsKeputusanBpjphOpen(true)} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
                     <FileSignature className="w-4 h-4 mr-2 shrink-0" /> <span className="truncate">Keputusan Kepala BPJPH</span>
                   </button>
-                  <a href="#regulasi" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                  <button onClick={() => setIsPeraturanBpomOpen(true)} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
                     <ShieldCheck className="w-4 h-4 mr-2 shrink-0" /> <span className="truncate">Peraturan BPOM</span>
-                  </a>
-                  <a href="#regulasi" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center">
+                  </button>
+                  <button onClick={() => setIsSniOpen(true)} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center">
                     <Award className="w-4 h-4 mr-2 shrink-0" /> <span className="truncate">SNI</span>
-                  </a>
+                  </button>
                 </div>
               </div>
               <div className="relative group shrink-0">
@@ -606,8 +608,8 @@ function LandingView({ navigateTo, beritaList }: any) {
                 <button onClick={() => { setIsPeraturanPemerintahOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left flex items-center py-1.5 text-sm text-gray-600 hover:text-emerald-600"><Landmark className="w-4 h-4 mr-2 shrink-0" /> Peraturan Pemerintah</button>
                 <button onClick={() => { setIsKeputusanMenagOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left flex items-center py-1.5 text-sm text-gray-600 hover:text-emerald-600"><BookOpen className="w-4 h-4 mr-2 shrink-0" /> Keputusan Mentri Agama</button>
                 <button onClick={() => { setIsKeputusanBpjphOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left flex items-center py-1.5 text-sm text-gray-600 hover:text-emerald-600"><FileSignature className="w-4 h-4 mr-2 shrink-0" /> Keputusan Kepala BPJPH</button>
-                <a href="#regulasi" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center py-1.5 text-sm text-gray-600 hover:text-emerald-600"><ShieldCheck className="w-4 h-4 mr-2 shrink-0" /> Peraturan BPOM</a>
-                <a href="#regulasi" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center py-1.5 text-sm text-gray-600 hover:text-emerald-600"><Award className="w-4 h-4 mr-2 shrink-0" /> SNI</a>
+                <button onClick={() => { setIsPeraturanBpomOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left flex items-center py-1.5 text-sm text-gray-600 hover:text-emerald-600"><ShieldCheck className="w-4 h-4 mr-2 shrink-0" /> Peraturan BPOM</button>
+                <button onClick={() => { setIsSniOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left flex items-center py-1.5 text-sm text-gray-600 hover:text-emerald-600"><Award className="w-4 h-4 mr-2 shrink-0" /> SNI</button>
               </div>
             </div>
 
@@ -1947,6 +1949,146 @@ function LandingView({ navigateTo, beritaList }: any) {
             <div className="p-4 sm:p-5 border-t border-gray-100 bg-white flex justify-end shrink-0">
               <button 
                 onClick={() => setIsKeputusanBpjphOpen(false)}
+                className="px-6 py-2.5 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 hover:text-gray-900 transition-colors font-bold cursor-pointer"
+              >
+                Tutup
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isPeraturanBpomOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6 overflow-y-auto">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl flex flex-col max-h-full overflow-hidden border border-emerald-100 ring-1 ring-emerald-500/10">
+            <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-100 bg-gradient-to-r from-emerald-50 to-white shrink-0">
+              <div className="flex items-center space-x-4">
+                <div className="bg-emerald-100 p-2.5 rounded-xl shadow-sm border border-emerald-200">
+                    <ShieldCheck className="w-7 h-7 text-emerald-700" />
+                </div>
+                <div>
+                    <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight">Peraturan BPOM</h2>
+                    <p className="text-sm text-emerald-600 font-semibold mt-0.5">Regulasi Terkait Jaminan Produk Halal</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setIsPeraturanBpomOpen(false)} 
+                className="p-2 bg-white rounded-full text-gray-400 hover:text-gray-800 hover:bg-gray-100 transition-colors cursor-pointer border border-gray-200 shadow-sm"
+                title="Tutup"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="p-0 overflow-y-auto w-full h-[600px] flex flex-col bg-gray-50/50">
+              <div className="p-4 sm:p-8 space-y-6">
+                 
+                 <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-8 shadow-sm hover:shadow-lg hover:border-emerald-300 transition-all duration-300 group">
+                    <div className="flex flex-col sm:flex-row gap-5 sm:items-start justify-between">
+                        <div className="flex-1">
+                            <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-emerald-700 transition-colors">Peraturan BPOM No 31 Tahun 2018</h3>
+                            <div className="inline-block bg-emerald-50 border border-emerald-100 px-3 py-1 rounded-md mb-4">
+                                <p className="text-[13px] font-bold text-emerald-700 uppercase tracking-widest">Label Pangan Olahan</p>
+                            </div>
+                            <p className="text-sm text-gray-600 leading-relaxed font-medium">
+                                Peraturan ini yang berkaitan dengan pencantuman label halal pada pangan olahan yang telah mendapatkan sertifikat halal dari BPJPH dan persetujuan label dari BPOM.
+                            </p>
+                        </div>
+                        <div className="sm:text-right shrink-0 mt-2 sm:mt-0">
+                            <button className="inline-flex items-center justify-center px-5 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-semibold hover:bg-emerald-700 hover:shadow-md hover:-translate-y-0.5 transition-all w-full sm:w-auto focus:ring-4 focus:ring-emerald-500/20">
+                                <FileText className="w-4 h-4 mr-2" />
+                                Lihat Dokumen
+                            </button>
+                        </div>
+                    </div>
+                 </div>
+                 
+              </div>
+            </div>
+            
+            <div className="p-4 sm:p-5 border-t border-gray-100 bg-white flex justify-end shrink-0">
+              <button 
+                onClick={() => setIsPeraturanBpomOpen(false)}
+                className="px-6 py-2.5 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 hover:text-gray-900 transition-colors font-bold cursor-pointer"
+              >
+                Tutup
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isSniOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6 overflow-y-auto">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl flex flex-col max-h-full overflow-hidden border border-emerald-100 ring-1 ring-emerald-500/10">
+            <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-100 bg-gradient-to-r from-emerald-50 to-white shrink-0">
+              <div className="flex items-center space-x-4">
+                <div className="bg-emerald-100 p-2.5 rounded-xl shadow-sm border border-emerald-200">
+                    <Award className="w-7 h-7 text-emerald-700" />
+                </div>
+                <div>
+                    <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight">SNI (Standar Nasional Indonesia)</h2>
+                    <p className="text-sm text-emerald-600 font-semibold mt-0.5">Regulasi Terkait Jaminan Produk Halal</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setIsSniOpen(false)} 
+                className="p-2 bg-white rounded-full text-gray-400 hover:text-gray-800 hover:bg-gray-100 transition-colors cursor-pointer border border-gray-200 shadow-sm"
+                title="Tutup"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="p-0 overflow-y-auto w-full h-[600px] flex flex-col bg-gray-50/50">
+              <div className="p-4 sm:p-8 space-y-6">
+                 
+                 <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-8 shadow-sm hover:shadow-lg hover:border-emerald-300 transition-all duration-300 group">
+                    <div className="flex flex-col sm:flex-row gap-5 sm:items-start justify-between">
+                        <div className="flex-1">
+                            <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-emerald-700 transition-colors">SNI ISO/IEC 17065:2012</h3>
+                            <div className="inline-block bg-emerald-50 border border-emerald-100 px-3 py-1 rounded-md mb-4">
+                                <p className="text-[13px] font-bold text-emerald-700 uppercase tracking-widest">Penilaian Kesesuaian</p>
+                            </div>
+                            <p className="text-sm text-gray-600 leading-relaxed font-medium">
+                                Persyaratan untuk lembaga sertifikasi produk, proses, dan jasa. Standar ini menjadi acuan utama bagi Lembaga Pemeriksa Halal (LPH) dalam menjalankan operasional dan menjamin ketidakberpihakan.
+                            </p>
+                        </div>
+                        <div className="sm:text-right shrink-0 mt-2 sm:mt-0">
+                            <button className="inline-flex items-center justify-center px-5 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-semibold hover:bg-emerald-700 hover:shadow-md hover:-translate-y-0.5 transition-all w-full sm:w-auto focus:ring-4 focus:ring-emerald-500/20">
+                                <FileText className="w-4 h-4 mr-2" />
+                                Lihat Dokumen
+                            </button>
+                        </div>
+                    </div>
+                 </div>
+
+                 <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-8 shadow-sm hover:shadow-lg hover:border-emerald-300 transition-all duration-300 group">
+                    <div className="flex flex-col sm:flex-row gap-5 sm:items-start justify-between">
+                        <div className="flex-1">
+                            <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-emerald-700 transition-colors">SNI 99001:2016</h3>
+                            <div className="inline-block bg-emerald-50 border border-emerald-100 px-3 py-1 rounded-md mb-4">
+                                <p className="text-[13px] font-bold text-emerald-700 uppercase tracking-widest">Sistem Manajemen Halal</p>
+                            </div>
+                            <p className="text-sm text-gray-600 leading-relaxed font-medium">
+                                Standar Sistem Manajemen Halal yang mengintegrasikan prinsip-prinsip syariat Islam dengan standar manajemen mutu yang diakui secara internasional.
+                            </p>
+                        </div>
+                        <div className="sm:text-right shrink-0 mt-2 sm:mt-0">
+                            <button className="inline-flex items-center justify-center px-5 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-semibold hover:bg-emerald-700 hover:shadow-md hover:-translate-y-0.5 transition-all w-full sm:w-auto focus:ring-4 focus:ring-emerald-500/20">
+                                <FileText className="w-4 h-4 mr-2" />
+                                Lihat Dokumen
+                            </button>
+                        </div>
+                    </div>
+                 </div>
+                 
+              </div>
+            </div>
+            
+            <div className="p-4 sm:p-5 border-t border-gray-100 bg-white flex justify-end shrink-0">
+              <button 
+                onClick={() => setIsSniOpen(false)}
                 className="px-6 py-2.5 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 hover:text-gray-900 transition-colors font-bold cursor-pointer"
               >
                 Tutup
