@@ -49,6 +49,79 @@ export default function LPHApp() {
   const [isLoading, setIsLoading] = useState(true);
 
   // ==========================================
+  // DYNAMIC SEO MANAGEMENT
+  // ==========================================
+  useEffect(() => {
+    let title = 'LPH Al-Ghazali - Lembaga Pemeriksa Halal Terpercaya';
+    let metaDescription = 'Portal Cloud LPH Al-Ghazali. Pengajuan sertifikasi halal secara online, transparan, dan profesional sesuai standar regulasi BPJPH dan SNI.';
+
+    switch (currentView) {
+      case 'landing':
+        title = 'Beranda | LPH Al-Ghazali - Registrasi & Sertifikasi Halal Online';
+        metaDescription = 'Portal Utama LPH Al-Ghazali. Menjamin kehalalan produk Anda dengan sertifikasi yang diakui BPJPH dan MUI. Sistem layanan paperless dan terintegrasi SNI.';
+        break;
+      case 'login':
+      case 'login-admin':
+        title = 'Masuk Portal | LPH Al-Ghazali';
+        metaDescription = 'Masuk ke Dashboard LPH Al-Ghazali untuk memantau status pengajuan sertifikat halal Anda secara real-time.';
+        break;
+      case 'pu-dashboard':
+        title = 'Dashboard Pelaku Usaha | LPH Al-Ghazali';
+        metaDescription = 'Pantau progress sertifikasi halal produk Anda secara live melalui dashboard pintar LPH Al-Ghazali.';
+        break;
+      case 'pu-pengajuan':
+        title = 'Form Pengajuan Sertifikasi Halal | LPH Al-Ghazali';
+        metaDescription = 'Isi form pengajuan sertifikasi halal secara online. Langkah mudah dan cepat untuk produk Anda mendapatkan sertifikat halal BPJPH.';
+        break;
+      case 'pu-settings':
+        title = 'Pengaturan Akun | LPH Al-Ghazali';
+        break;
+      case 'admin-dashboard':
+      case 'admin-berita':
+      case 'admin-kegiatan':
+      case 'admin-auditor':
+      case 'admin-settings':
+        title = 'Administrator Platform | LPH Al-Ghazali';
+        metaDescription = 'Control panel untuk internal LPH Al-Ghazali mengelola data, berita, auditor, dan pengajuan secara terpusat.';
+        break;
+      default:
+        break;
+    }
+
+    document.title = title;
+    
+    // Update or create meta description tag
+    let metaDescTag = document.querySelector('meta[name="description"]');
+    if (!metaDescTag) {
+      metaDescTag = document.createElement('meta');
+      metaDescTag.setAttribute('name', 'description');
+      document.head.appendChild(metaDescTag);
+    }
+    metaDescTag.setAttribute('content', metaDescription);
+
+    // Update or create meta title tag
+    let metaTitleTag = document.querySelector('meta[name="title"]');
+    if (!metaTitleTag) {
+      metaTitleTag = document.createElement('meta');
+      metaTitleTag.setAttribute('name', 'title');
+      document.head.appendChild(metaTitleTag);
+    }
+    metaTitleTag.setAttribute('content', title);
+    
+    // Check for OG Title
+    let ogTitleTag = document.querySelector('meta[property="og:title"]');
+    if (ogTitleTag) {
+      ogTitleTag.setAttribute('content', title);
+    }
+    
+    // Check for OG Description
+    let ogDescTag = document.querySelector('meta[property="og:description"]');
+    if (ogDescTag) {
+      ogDescTag.setAttribute('content', metaDescription);
+    }
+  }, [currentView]);
+
+  // ==========================================
   // 2. AUTHENTICATION & DATA FETCHING
   // ==========================================
   useEffect(() => {
