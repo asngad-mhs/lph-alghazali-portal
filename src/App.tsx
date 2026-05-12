@@ -1,17 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signOut } from 'firebase/auth';
-import { getFirestore, collection, onSnapshot, addDoc, updateDoc, doc, serverTimestamp, deleteDoc, setDoc } from 'firebase/firestore';
+import { getFirestore, collection, onSnapshot, getDoc, addDoc, updateDoc, doc, serverTimestamp, deleteDoc, setDoc } from 'firebase/firestore';
 import { Leaf, Home, FileText, LogOut, PlusCircle, Settings, CheckCircle, Clock, Search, Briefcase, FileSignature, UploadCloud, ArrowLeft, ArrowRight, ShieldCheck, Zap, MonitorSmartphone, UserCheck, Newspaper, Edit, Trash2, X, Image as ImageIcon, Route, Coins, ChevronDown, ChevronRight, Calculator, Receipt, CalendarDays, Activity, Video, Link, MapPin, Phone, Mail, Facebook, Twitter, Instagram, Linkedin, History, Target, Award, Network, Users, BookOpen, Handshake, Menu, Scale, Landmark, CheckCircle2, FlaskConical, FileEdit, Globe } from 'lucide-react';
+import CryptoJS from 'crypto-js';
 
-const OrgCard = ({ title, name, list, className = "", noHover = false, allowUpload = false, defaultImages = {} }: any) => {
+const OrgCard = ({ title, name, list, className = "", noHover = false, allowUpload = false, defaultImages = {}, onImageChange }: any) => {
     const [images, setImages] = useState<Record<string, string>>(defaultImages || {});
+
+    // Effect to reflect defaultImages changes
+    useEffect(() => {
+        setImages(defaultImages || {});
+    }, [defaultImages]);
 
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, itemIdentifier: string) => {
         const file = e.target.files?.[0];
         if (file) {
             const url = URL.createObjectURL(file);
             setImages(prev => ({ ...prev, [itemIdentifier]: url }));
+            
+            if (onImageChange) {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    onImageChange(itemIdentifier, reader.result as string);
+                };
+                reader.readAsDataURL(file);
+            }
         }
     };
 
@@ -101,7 +115,7 @@ export default function LPHApp() {
         metaDescription = 'Portal Utama LPH Al-Ghazali. Menjamin kehalalan produk Anda dengan sertifikasi yang diakui BPJPH dan MUI. Sistem layanan paperless dan terintegrasi SNI.';
         break;
       case 'login':
-      case 'login-admin':
+      case 'login-staff':
         title = 'Masuk Portal | LPH Al-Ghazali UNUGHA';
         metaDescription = 'Masuk ke Dashboard LPH Al-Ghazali untuk memantau status pengajuan sertifikat halal Anda secara real-time.';
         break;
@@ -123,6 +137,10 @@ export default function LPHApp() {
       case 'admin-settings':
         title = 'Administrator Platform | LPH Al-Ghazali';
         metaDescription = 'Control panel untuk internal LPH Al-Ghazali mengelola data, berita, auditor, dan pengajuan secara terpusat.';
+        break;
+      case 'auditor-dashboard':
+        title = 'Auditor Platform | LPH Al-Ghazali';
+        metaDescription = 'Panel kerja Auditor LPH Al-Ghazali untuk memeriksa dan memvalidasi data pengajuan halal.';
         break;
       default:
         break;
@@ -221,28 +239,28 @@ export default function LPHApp() {
       }
     ]);
 
-    /* Real Database Fetcher
-    // Fetch Pengajuan
-    const pengajuanRef = collection(db, 'artifacts', appId, 'public', 'data', 'pengajuan_halal');
-    const unsubscribeData = onSnapshot(pengajuanRef, (snapshot) => {
-      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      data.sort((a, b) => b.createdAt - a.createdAt);
-      setPengajuanList(data);
-    });
+    if (firebaseConfig.projectId !== 'mock-project') {
+      // Fetch Pengajuan
+      const pengajuanRef = collection(db, 'artifacts', appId, 'public', 'data', 'pengajuan_halal');
+      const unsubscribeData = onSnapshot(pengajuanRef, (snapshot) => {
+        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        data.sort((a, b) => b.createdAt - a.createdAt);
+        setPengajuanList(data);
+      });
 
-    // Fetch Berita & Artikel
-    const beritaRef = collection(db, 'artifacts', appId, 'public', 'data', 'berita');
-    const unsubscribeBerita = onSnapshot(beritaRef, (snapshot) => {
-      const bData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      bData.sort((a, b) => b.createdAt - a.createdAt);
-      setBeritaList(bData);
-    });
+      // Fetch Berita & Artikel
+      const beritaRef = collection(db, 'artifacts', appId, 'public', 'data', 'berita');
+      const unsubscribeBerita = onSnapshot(beritaRef, (snapshot) => {
+        const bData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        bData.sort((a, b) => b.createdAt - a.createdAt);
+        setBeritaList(bData);
+      });
 
-    return () => {
-        unsubscribeData();
-        unsubscribeBerita();
-    };
-    */
+      return () => {
+          unsubscribeData();
+          unsubscribeBerita();
+      };
+    }
   }, [user]);
 
   // ==========================================
@@ -259,16 +277,17 @@ export default function LPHApp() {
         productName: formData.productName,
         jenisPengajuan: 'Baru',
         status: 'Menunggu Verifikasi',
-        createdAt: Date.now()
+        createdAt: Date.now(),
+        history: [{ status: 'Menunggu Verifikasi', timestamp: Date.now(), catatatan: 'Pengajuan dibuat' }]
       };
       
-      // Mock Save
-      setPengajuanList([newPengajuan, ...pengajuanList]);
+      if (firebaseConfig.projectId !== 'mock-project') {
+        const pengajuanRef = doc(db, 'artifacts', appId, 'public', 'pengajuan_halal', newPengajuan.id);
+        await setDoc(pengajuanRef, newPengajuan);
+      } else {
+        setPengajuanList([newPengajuan, ...pengajuanList]);
+      }
       
-      /* Real Save
-      const pengajuanRef = collection(db, 'artifacts', appId, 'public', 'data', 'pengajuan_halal');
-      await addDoc(pengajuanRef, newPengajuan);
-      */
       setCurrentView('pu-dashboard');
     } catch (error) {
       console.error("Error adding document: ", error);
@@ -276,14 +295,19 @@ export default function LPHApp() {
     }
   };
 
-  const handleUpdateStatus = async (id: string, newStatus: string) => {
+  const handleUpdateStatus = async (id: string, newStatus: string, catatan: string = '') => {
     if (!user) return;
     try {
-      setPengajuanList(pengajuanList.map(p => p.id === id ? { ...p, status: newStatus } : p));
-      /* Real Update
-      const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'pengajuan_halal', id);
-      await updateDoc(docRef, { status: newStatus });
-      */
+      const existingPengajuan = pengajuanList.find(p => p.id === id);
+      const newHistoryEntry = { status: newStatus, timestamp: Date.now(), catatan: catatan || `Status diubah menjadi ${newStatus}` };
+      const updatedHistory = existingPengajuan?.history ? [...existingPengajuan.history, newHistoryEntry] : [newHistoryEntry];
+
+      if (firebaseConfig.projectId !== 'mock-project') {
+        const docRef = doc(db, 'artifacts', appId, 'public', 'pengajuan_halal', id);
+        await updateDoc(docRef, { status: newStatus, history: updatedHistory });
+      } else {
+        setPengajuanList(pengajuanList.map(p => p.id === id ? { ...p, status: newStatus, history: updatedHistory } : p));
+      }
     } catch (error) {
       console.error("Error updating document: ", error);
     }
@@ -360,7 +384,7 @@ export default function LPHApp() {
     <div className="min-h-screen bg-gray-50 font-sans text-gray-800">
       {currentView === 'landing' && <LandingView navigateTo={navigateTo} beritaList={beritaList} />}
       {currentView === 'login' && <AuthView navigateTo={navigateTo} setRole={setUserRole} roleType="pu" />}
-      {currentView === 'login-admin' && <AuthView navigateTo={navigateTo} setRole={setUserRole} roleType="admin" />}
+      {currentView === 'login-staff' && <AuthView navigateTo={navigateTo} setRole={setUserRole} roleType="staff" />}
       
       {currentView === 'pu-dashboard' && (
         <DashboardLayout role="pu" navigateTo={navigateTo} logout={handleLogout} currentView={currentView}>
@@ -383,6 +407,12 @@ export default function LPHApp() {
       {currentView === 'admin-dashboard' && (
         <DashboardLayout role="admin" navigateTo={navigateTo} logout={handleLogout} currentView={currentView}>
           <AdminDashboard data={pengajuanList} updateStatus={handleUpdateStatus} />
+        </DashboardLayout>
+      )}
+
+      {currentView === 'auditor-dashboard' && (
+        <DashboardLayout role="auditor" navigateTo={navigateTo} logout={handleLogout} currentView={currentView}>
+          <AuditorDashboard data={pengajuanList.filter(p => p.status === 'Proses Audit')} updateStatus={handleUpdateStatus} />
         </DashboardLayout>
       )}
 
@@ -418,6 +448,25 @@ export default function LPHApp() {
 // ==========================================
 
 function LandingView({ navigateTo, beritaList }: any) {
+  const [settings, setSettings] = useState<any>(null);
+
+  useEffect(() => {
+    // Fetch settings to display dynamic structure and images
+    const settingsRef = doc(db, 'artifacts', appId, 'public', 'system_settings');
+    const unsubscribe = onSnapshot(settingsRef, (docSnap) => {
+      if (docSnap.exists()) {
+        setSettings(docSnap.data());
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const profilInfo = settings?.profil || {
+      noWa: '085802494252',
+      email: 'lphalghazali@gmail.com',
+      alamat: 'Jl. Kemerdekaan Barat No.12, Kesugihan, Cilacap, Jawa Tengah 53274'
+  };
+
   const [formData, setFormData] = useState({
     provinsi: '',
     kabKota: '',
@@ -524,8 +573,8 @@ function LandingView({ navigateTo, beritaList }: any) {
                 </div>
               </div>
               <div className="flex items-center space-x-2 sm:space-x-4 text-sm mt-1 sm:mt-0">
-                <a href="https://wa.me/6285802494252" target="_blank" rel="noopener noreferrer" className="hidden lg:flex items-center font-medium text-emerald-700 hover:text-emerald-800 transition-colors bg-emerald-100/50 px-3 py-2 rounded-full">
-                  <Phone className="w-4 h-4 mr-1.5" /> 0858 0249 4252
+                <a href={`https://wa.me/62${profilInfo.noWa.replace(/^0+/, '')}`} target="_blank" rel="noopener noreferrer" className="hidden lg:flex items-center font-medium text-emerald-700 hover:text-emerald-800 transition-colors bg-emerald-100/50 px-3 py-2 rounded-full">
+                  <Phone className="w-4 h-4 mr-1.5" /> {profilInfo.noWa}
                 </a>
                 <div className="relative hidden md:block">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -681,9 +730,9 @@ function LandingView({ navigateTo, beritaList }: any) {
             </div>
 
             <div className="flex items-center space-x-2 sm:space-x-4 ml-auto xl:ml-0">
-              <button onClick={() => navigateTo('login-admin')} className="hidden sm:flex opacity-0 hover:opacity-100 focus:opacity-100 text-emerald-600 transition-opacity items-center" title="Admin">
+              <button onClick={() => navigateTo('login-staff')} className="hidden sm:flex opacity-0 hover:opacity-100 focus:opacity-100 text-emerald-600 transition-opacity items-center" title="Staf LPH">
                 <ShieldCheck className="w-5 h-5 mr-1" />
-                <span className="font-medium text-sm">Admin</span>
+                <span className="font-medium text-sm">Staf LPH</span>
               </button>
               <span className="xl:hidden border-l border-gray-200 h-6 mx-1"></span>
               <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="xl:hidden flex items-center text-gray-600 hover:text-emerald-600 transition-colors bg-gray-50 border border-gray-100 p-1.5 rounded-lg shadow-sm">
@@ -767,11 +816,11 @@ function LandingView({ navigateTo, beritaList }: any) {
               <button 
                 onClick={() => {
                   setIsMobileMenuOpen(false);
-                  navigateTo('login-admin');
+                  navigateTo('login-staff');
                 }} 
                 className="w-full flex justify-center items-center px-4 py-2 text-emerald-600 hover:bg-emerald-50 rounded-lg text-sm font-medium border border-emerald-100"
               >
-                <ShieldCheck className="w-4 h-4 mr-2" /> Login Admin
+                <ShieldCheck className="w-4 h-4 mr-2" /> Login Staf LPH
               </button>
             </div>
           </div>
@@ -1383,7 +1432,7 @@ function LandingView({ navigateTo, beritaList }: any) {
                             </div>
                             <div>
                                 <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-1">Call Us</h4>
-                                <p className="text-lg font-medium text-gray-900">085802494252</p>
+                                <p className="text-lg font-medium text-gray-900">{profilInfo.noWa}</p>
                             </div>
                         </div>
                         
@@ -1393,7 +1442,7 @@ function LandingView({ navigateTo, beritaList }: any) {
                             </div>
                             <div>
                                 <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-1">E-mail</h4>
-                                <p className="text-lg font-medium text-gray-900">lphalghazali@gmail.com</p>
+                                <p className="text-lg font-medium text-gray-900">{profilInfo.email}</p>
                             </div>
                         </div>
 
@@ -1404,7 +1453,7 @@ function LandingView({ navigateTo, beritaList }: any) {
                             <div>
                                 <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-1">Address</h4>
                                 <p className="text-base text-gray-900 leading-relaxed">
-                                    Jl. Kemerdekaan Barat No.12, Kesugihan, Cilacap, Jawa Tengah 53274
+                                    {profilInfo.alamat}
                                 </p>
                             </div>
                         </div>
@@ -1507,15 +1556,15 @@ function LandingView({ navigateTo, beritaList }: any) {
                     <ul className="space-y-4 text-sm text-gray-400">
                         <li className="flex items-start group">
                            <span className="mt-1 mr-3 text-emerald-500 group-hover:text-emerald-400 transition-colors"><MapPin className="w-5 h-5" /></span>
-                           <span className="group-hover:text-gray-300 transition-colors">Jl. Kemerdekaan Barat No.12, Kesugihan, Cilacap, Jawa Tengah 53274</span>
+                           <span className="group-hover:text-gray-300 transition-colors">{profilInfo.alamat}</span>
                         </li>
                         <li className="flex items-center group cursor-pointer">
                            <span className="mr-3 text-emerald-500 group-hover:text-emerald-400 transition-colors"><Phone className="w-5 h-5" /></span>
-                           <a href="https://wa.me/6285802494252" target="_blank" rel="noopener noreferrer" className="group-hover:text-gray-300 transition-colors">0858-0249-4252 (WhatsApp)</a>
+                           <a href={`https://wa.me/62${profilInfo.noWa?.replace(/^0+/, '')}`} target="_blank" rel="noopener noreferrer" className="group-hover:text-gray-300 transition-colors">{profilInfo.noWa} (WhatsApp)</a>
                         </li>
                         <li className="flex items-center group cursor-pointer">
                            <span className="mr-3 text-emerald-500 group-hover:text-emerald-400 transition-colors"><Mail className="w-5 h-5" /></span>
-                           <span className="group-hover:text-gray-300 transition-colors">lphalghazali@gmail.com</span>
+                           <span className="group-hover:text-gray-300 transition-colors">{profilInfo.email}</span>
                         </li>
                         <li className="flex items-center group cursor-pointer">
                            <span className="mr-3 text-emerald-500 group-hover:text-emerald-400 transition-colors"><Globe className="w-5 h-5" /></span>
@@ -1784,10 +1833,10 @@ function LandingView({ navigateTo, beritaList }: any) {
                                       
                                       <OrgCard 
                                         title="SDM Syariah" 
-                                        list={["H. Fatah Rosihan A., M.M.", "Syaefudin Zuhri, S.Ag."]} 
+                                        list={settings?.struktur?.sdmSyariah || ["H. Fatah Rosihan A., M.M.", "Syaefudin Zuhri, S.Ag."]} 
                                         className="w-[155px] z-10 relative" 
-                                        allowUpload={true}
-                                        defaultImages={{
+                                        allowUpload={false}
+                                        defaultImages={settings?.struktur?.images || {
                                           "H. Fatah Rosihan A., M.M.": "/fatah.jpg",
                                           "Syaefudin Zuhri, S.Ag.": "/syaefudin.jpg"
                                         }}
@@ -2577,10 +2626,10 @@ function LandingView({ navigateTo, beritaList }: any) {
                     <div className="flex flex-wrap gap-6 justify-center">
                         <OrgCard 
                           title="SDM Syariah" 
-                          list={["H. Fatah Rosihan A., M.M.", "Syaefudin Zuhri, S.Ag."]} 
+                          list={settings?.struktur?.sdmSyariah || ["H. Fatah Rosihan A., M.M.", "Syaefudin Zuhri, S.Ag."]} 
                           className="w-full sm:w-[350px] z-10 relative" 
-                          allowUpload={true} 
-                          defaultImages={{
+                          allowUpload={false} 
+                          defaultImages={settings?.struktur?.images || {
                             "H. Fatah Rosihan A., M.M.": "/fatah.jpg",
                             "Syaefudin Zuhri, S.Ag.": "/syaefudin.jpg"
                           }}
@@ -3446,16 +3495,88 @@ function LandingView({ navigateTo, beritaList }: any) {
 function AuthView({ navigateTo, setRole, roleType = 'pu' }: any) {
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
-  const selectedRole = roleType;
+  const [selectedRole, setSelectedRole] = useState(roleType === 'staff' ? 'admin' : roleType);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
+
+  const handleStaffLogin = async () => {
+    try {
+      let staffList: any[] = [];
+      if (firebaseConfig.projectId !== 'mock-project') {
+        const settingsRef = doc(db, 'artifacts', appId, 'public', 'system_settings');
+        const docSnap = await getDoc(settingsRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          staffList = data.akunStaf || [];
+        }
+      }
+
+      if (staffList.length === 0) {
+        // Fallback default mocked if empty
+        staffList = [
+          { email: 'admin@lphalghazali.com', role: 'Super Admin', status: 'Aktif', passwordHash: CryptoJS.SHA256('Admin123').toString() },
+          { email: 'ahmad.auditor@lphalghazali.com', role: 'Auditor Utama', status: 'Aktif', passwordHash: CryptoJS.SHA256('Audit123').toString() },
+          { email: 'keuangan@lphalghazali.com', role: 'Staf Keuangan', status: 'Aktif', passwordHash: CryptoJS.SHA256('Uang123').toString() }
+        ];
+      }
+
+      const foundUser = staffList.find((s: any) => s.email === email);
+      if (!foundUser) {
+        setErrorMsg('Email tidak ditemukan atau tidak memiliki akses staf.');
+        setLoading(false);
+        return;
+      }
+
+      if (foundUser.status !== 'Aktif') {
+        setErrorMsg('Akun Anda dinonaktifkan.');
+        setLoading(false);
+        return;
+      }
+
+      const inputHash = CryptoJS.SHA256(password).toString();
+      if (inputHash !== foundUser.passwordHash && foundUser.passwordHash) {
+        setErrorMsg('Kata sandi salah.');
+        setLoading(false);
+        return;
+      }
+
+      // Check role mapping
+      let expectedRole = 'pu';
+      if (foundUser.role === 'Super Admin') expectedRole = 'admin';
+      if (foundUser.role === 'Auditor Utama') expectedRole = 'auditor';
+      if (foundUser.role === 'Staf Keuangan') expectedRole = 'admin'; // just example, they might use admin portal
+
+      if (expectedRole !== selectedRole && foundUser.role !== 'Super Admin') {
+          setErrorMsg(`Role ini tidak diperuntukkan bagi ${foundUser.role}. Silahkan pilih role login yang sesuai.`);
+          setLoading(false);
+          return;
+      }
+
+      setRole(expectedRole);
+      navigateTo(expectedRole === 'admin' ? 'admin-dashboard' : 'auditor-dashboard');
+    } catch (e: any) {
+       console.error(e);
+       setErrorMsg('Koneksi database gagal: ' + e.message);
+    }
+    setLoading(false);
+  };
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
     setLoading(true);
-    // Simulate auth delay, logic handled by Firebase Anonymous Auth behind the scenes
+    setErrorMsg('');
+    
+    if (roleType === 'staff') {
+       handleStaffLogin();
+       return;
+    }
+
+    // Simulate auth delay for PU
     setTimeout(() => {
       setLoading(false);
       setRole(selectedRole);
-      navigateTo(selectedRole === 'pu' ? 'pu-dashboard' : 'admin-dashboard');
+      navigateTo('pu-dashboard');
     }, 1000);
   };
 
@@ -3478,22 +3599,36 @@ function AuthView({ navigateTo, setRole, roleType = 'pu' }: any) {
           </div>
 
           <h2 className="text-3xl font-bold text-gray-900 mb-2">{isLogin ? 'Selamat Datang' : 'Buat Akun'}</h2>
-          <p className="text-gray-500 mb-8">Silakan masuk {roleType === 'admin' ? 'sebagai Admin LPH' : 'untuk mengakses sistem cloud'}.</p>
+          <p className="text-gray-500 mb-8">Silakan masuk {roleType === 'staff' ? 'sebagai Staf LPH' : 'untuk mengakses sistem cloud'}.</p>
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            {errorMsg && (
+                <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm border border-red-100 flex items-center">
+                   <CheckCircle className="w-4 h-4 mr-2" /> {errorMsg}
+                </div>
+            )}
             {!isLogin && roleType === 'pu' && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Nama Perusahaan</label>
                 <input type="text" required className="block w-full border-gray-300 rounded-lg border p-3 bg-gray-50 focus:ring-emerald-500 focus:border-emerald-500" placeholder="PT. Nama Usaha" />
               </div>
             )}
+            {roleType === 'staff' && (
+               <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Pilih Role</label>
+                  <select value={selectedRole} onChange={(e) => setSelectedRole(e.target.value)} className="block w-full border-gray-300 rounded-lg border p-3 bg-gray-50 focus:ring-emerald-500 focus:border-emerald-500">
+                     <option value="admin">Admin Pusat</option>
+                     <option value="auditor">Auditor Halal</option>
+                  </select>
+               </div>
+            )}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{roleType === 'admin' ? 'Email Admin' : 'Email / ID SIHALAL'}</label>
-              <input type="text" required className="block w-full border-gray-300 rounded-lg border p-3 bg-gray-50 focus:ring-emerald-500 focus:border-emerald-500" placeholder="nama@email.com" />
+              <label className="block text-sm font-medium text-gray-700 mb-1">{roleType === 'staff' ? 'Email Staf' : 'Email / ID SIHALAL'}</label>
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="block w-full border-gray-300 rounded-lg border p-3 bg-gray-50 focus:ring-emerald-500 focus:border-emerald-500" placeholder="nama@email.com" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Kata Sandi</label>
-              <input type="password" required className="block w-full border-gray-300 rounded-lg border p-3 bg-gray-50 focus:ring-emerald-500 focus:border-emerald-500" placeholder="••••••••" />
+              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required className="block w-full border-gray-300 rounded-lg border p-3 bg-gray-50 focus:ring-emerald-500 focus:border-emerald-500" placeholder="••••••••" />
             </div>
 
             <button type="submit" disabled={loading} className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 disabled:opacity-70 transition-colors">
@@ -3517,6 +3652,11 @@ function AuthView({ navigateTo, setRole, roleType = 'pu' }: any) {
 
 function DashboardLayout({ children, role, navigateTo, logout, currentView }: any) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const isInternal = role === 'admin' || role === 'auditor';
+  const roleName = role === 'admin' ? 'Admin Pusat' : (role === 'auditor' ? 'Auditor Halal' : 'Pelaku Usaha');
+  const roleInitial = role === 'admin' ? 'AD' : (role === 'auditor' ? 'AU' : 'PU');
+  const roleTitle = role === 'admin' ? 'Admin' : (role === 'auditor' ? 'Auditor' : 'Portal PU');
+  const portalTitle = isInternal ? 'Sistem Manajemen LPH' : 'Portal Pelaku Usaha';
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50">
@@ -3529,26 +3669,26 @@ function DashboardLayout({ children, role, navigateTo, logout, currentView }: an
       )}
 
       {/* Sidebar */}
-      <aside className={`fixed md:static inset-y-0 left-0 w-64 ${role === 'admin' ? 'bg-slate-900 text-slate-300' : 'bg-white text-gray-600 shadow-md'} flex flex-col z-50 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 transition-transform duration-300 ease-in-out`}>
-        <div className={`h-16 flex items-center justify-between px-6 border-b shrink-0 ${role === 'admin' ? 'border-slate-800 bg-slate-950 text-white' : 'border-gray-200 text-emerald-600'}`}>
+      <aside className={`fixed md:static inset-y-0 left-0 w-64 ${isInternal ? 'bg-slate-900 text-slate-300' : 'bg-white text-gray-600 shadow-md'} flex flex-col z-50 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 transition-transform duration-300 ease-in-out`}>
+        <div className={`h-16 flex items-center justify-between px-6 border-b shrink-0 ${isInternal ? 'border-slate-800 bg-slate-950 text-white' : 'border-gray-200 text-emerald-600'}`}>
           <div className="flex items-center">
-            <Logo className={`h-8 w-8 mr-2 ${role === 'admin' ? 'bg-white p-0.5 rounded' : ''}`} />
-            <span className="font-bold text-xl">LPH {role === 'admin' ? 'Admin' : 'Portal'}</span>
+            <Logo className={`h-8 w-8 mr-2 ${isInternal ? 'bg-white p-0.5 rounded' : ''}`} />
+            <span className="font-bold text-xl">LPH {role === 'pu' ? 'Portal' : 'Staf'}</span>
           </div>
           <button onClick={() => setIsSidebarOpen(false)} className="md:hidden">
             <X className="w-6 h-6" />
           </button>
         </div>
         
-        <div className={`p-4 text-center border-b shrink-0 ${role === 'admin' ? 'border-slate-800' : 'border-gray-200'}`}>
-            <div className={`w-12 h-12 rounded-full mx-auto flex items-center justify-center text-xl font-bold mb-2 ${role === 'admin' ? 'bg-emerald-600 text-white' : 'bg-emerald-100 text-emerald-600'}`}>
-                {role === 'admin' ? 'AD' : 'PU'}
+        <div className={`p-4 text-center border-b shrink-0 ${isInternal ? 'border-slate-800' : 'border-gray-200'}`}>
+            <div className={`w-12 h-12 rounded-full mx-auto flex items-center justify-center text-xl font-bold mb-2 ${isInternal ? 'bg-emerald-600 text-white' : 'bg-emerald-100 text-emerald-600'}`}>
+                {roleInitial}
             </div>
-            <p className={`font-semibold ${role === 'admin' ? 'text-white' : 'text-gray-800'}`}>{role === 'admin' ? 'Admin Pusat' : 'Pelaku Usaha'}</p>
+            <p className={`font-semibold ${isInternal ? 'text-white' : 'text-gray-800'}`}>{roleName}</p>
         </div>
 
         <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
-          <button onClick={() => { navigateTo(role === 'admin' ? 'admin-dashboard' : 'pu-dashboard'); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView.includes('dashboard') ? (role === 'admin' ? 'bg-emerald-600 text-white' : 'bg-emerald-100 text-emerald-700 font-medium') : (role === 'admin' ? 'hover:bg-slate-800' : 'hover:bg-emerald-50')}`}>
+          <button onClick={() => { navigateTo(role === 'admin' ? 'admin-dashboard' : (role === 'auditor' ? 'auditor-dashboard' : 'pu-dashboard')); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView.includes('dashboard') ? (isInternal ? 'bg-emerald-600 text-white' : 'bg-emerald-100 text-emerald-700 font-medium') : (isInternal ? 'hover:bg-slate-800' : 'hover:bg-emerald-50')}`}>
             <Home className="w-5 h-5 mr-3" /> Dashboard
           </button>
           
@@ -3572,13 +3712,13 @@ function DashboardLayout({ children, role, navigateTo, logout, currentView }: an
             </>
           )}
 
-          <button onClick={() => { if (role === 'admin') { navigateTo('admin-settings'); } else { navigateTo('pu-settings'); } setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'admin-settings' && role === 'admin' ? 'bg-emerald-600 text-white font-medium' : currentView === 'pu-settings' && role === 'pu' ? 'bg-emerald-100 text-emerald-700 font-medium' : role === 'admin' ? 'hover:bg-slate-800 hover:text-white' : 'hover:bg-emerald-50 hover:text-emerald-600'}`}>
+          <button onClick={() => { if (role === 'admin') { navigateTo('admin-settings'); } else if (role === 'auditor') { navigateTo('auditor-dashboard'); } else { navigateTo('pu-settings'); } setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'admin-settings' && role === 'admin' ? 'bg-emerald-600 text-white font-medium' : currentView === 'pu-settings' && role === 'pu' ? 'bg-emerald-100 text-emerald-700 font-medium' : isInternal ? 'hover:bg-slate-800 hover:text-white' : 'hover:bg-emerald-50 hover:text-emerald-600'}`}>
             <Settings className="w-5 h-5 mr-3" /> Pengaturan
           </button>
         </nav>
         
-        <div className={`p-4 border-t shrink-0 ${role === 'admin' ? 'border-slate-800' : 'border-gray-200'}`}>
-          <button onClick={logout} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${role === 'admin' ? 'text-red-400 hover:bg-red-500/10' : 'text-red-500 hover:bg-red-50'}`}>
+        <div className={`p-4 border-t shrink-0 ${isInternal ? 'border-slate-800' : 'border-gray-200'}`}>
+          <button onClick={logout} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${isInternal ? 'text-red-400 hover:bg-red-500/10' : 'text-red-500 hover:bg-red-50'}`}>
             <LogOut className="w-5 h-5 mr-3" /> Keluar
           </button>
         </div>
@@ -3592,10 +3732,10 @@ function DashboardLayout({ children, role, navigateTo, logout, currentView }: an
               <Menu className="w-6 h-6" />
             </button>
             <h2 className="text-lg font-bold text-gray-800 hidden sm:block">
-              {role === 'admin' ? 'Sistem Manajemen LPH' : 'Portal Pelaku Usaha'}
+              {portalTitle}
             </h2>
             <h2 className="text-lg font-bold text-gray-800 sm:hidden">
-              {role === 'admin' ? 'Admin' : 'Portal PU'}
+              {roleTitle}
             </h2>
           </div>
           <div className="flex items-center space-x-2 sm:space-x-4">
@@ -3604,9 +3744,9 @@ function DashboardLayout({ children, role, navigateTo, logout, currentView }: an
             </div>
             <div className="flex items-center space-x-2 pl-2 sm:pl-4 sm:border-l border-gray-200 cursor-pointer hover:bg-gray-50 p-1.5 sm:p-2 rounded-lg transition-colors">
                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-sm">
-                  {role === 'admin' ? 'A' : 'P'}
+                  {roleInitial.charAt(0)}
                </div>
-               <span className="text-sm font-medium text-gray-700 hidden sm:block">{role === 'admin' ? 'Admin' : 'Profil PU'}</span>
+               <span className="text-sm font-medium text-gray-700 hidden sm:block">{roleName}</span>
             </div>
           </div>
         </header>
@@ -3623,8 +3763,16 @@ function DashboardLayout({ children, role, navigateTo, logout, currentView }: an
 // ==========================================
 
 function PUDashboard({ data, navigateTo }: any) {
+  const [historyModalOpen, setHistoryModalOpen] = useState(false);
+  const [activeHistory, setActiveHistory] = useState<any>(null);
+
+  const handleOpenHistory = (item: any) => {
+    setActiveHistory(item);
+    setHistoryModalOpen(true);
+  };
+
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="max-w-6xl mx-auto relative">
       <div className="flex justify-between items-center mb-8">
         <div>
           <h2 className="text-2xl font-bold text-gray-800">Dashboard Anda</h2>
@@ -3665,6 +3813,7 @@ function PUDashboard({ data, navigateTo }: any) {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">No. Registrasi / Waktu</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Perusahaan & Produk</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status Real-time</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Aksi</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -3681,12 +3830,53 @@ function PUDashboard({ data, navigateTo }: any) {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <StatusBadge status={item.status} />
                   </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-right">
+                    <button onClick={() => handleOpenHistory(item)} className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg transition-colors font-medium">Buka Riwayat & Catatan</button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         )}
       </div>
+
+      {historyModalOpen && activeHistory && (
+         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/50 backdrop-blur-sm">
+            <div className="bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden flex flex-col max-h-[80vh]">
+               <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50 shrink-0">
+                  <h3 className="font-bold text-gray-900">Riwayat Perubahan Status</h3>
+                  <button onClick={() => setHistoryModalOpen(false)} className="text-gray-400 hover:text-gray-600"><X className="w-5 h-5"/></button>
+               </div>
+               <div className="p-6 overflow-y-auto grow">
+                  <div className="mb-6">
+                     <p className="text-sm text-gray-500 mb-1">Registrasi: <span className="font-bold text-gray-900">{activeHistory.nomorRegistrasi}</span></p>
+                     <p className="text-sm text-gray-500">Pelaku Usaha: <span className="font-bold text-gray-900">{activeHistory.companyName}</span></p>
+                  </div>
+                  <div className="space-y-4">
+                     {activeHistory.history && activeHistory.history.length > 0 ? (
+                        activeHistory.history.map((h: any, i: number) => (
+                           <div key={i} className="flex gap-4">
+                              <div className="flex flex-col items-center">
+                                 <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 mt-1.5 shrink-0"></div>
+                                 {i < activeHistory.history.length - 1 && <div className="w-0.5 h-full bg-gray-200 mt-1"></div>}
+                              </div>
+                              <div className="pb-4">
+                                 <div className="flex items-center gap-2 mb-1">
+                                    <span className="text-sm font-semibold text-gray-900">{h.status}</span>
+                                    <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">{new Date(h.timestamp).toLocaleString('id-ID')}</span>
+                                 </div>
+                                 <p className="text-sm text-gray-600">{h.catatan}</p>
+                              </div>
+                           </div>
+                        ))
+                     ) : (
+                        <p className="text-sm text-gray-500 text-center py-4 bg-gray-50 rounded-lg">Tidak ada riwayat untuk pengajuan ini.</p>
+                     )}
+                  </div>
+               </div>
+            </div>
+         </div>
+      )}
     </div>
   );
 }
@@ -3963,11 +4153,42 @@ function PUSettings({ navigateTo }: any) {
 // ==========================================
 
 function AdminDashboard({ data, updateStatus }: any) {
+  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newStatus, setNewStatus] = useState('');
+  const [catatan, setCatatan] = useState('');
+
+  const [historyModalOpen, setHistoryModalOpen] = useState(false);
+  const [activeHistory, setActiveHistory] = useState<any>(null);
+
+  const handleOpenUpdateModal = (item: any) => {
+    setSelectedItem(item);
+    setNewStatus(item.status);
+    setCatatan('');
+    setIsModalOpen(true);
+  };
+
+  const handleSubmitUpdate = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (selectedItem) {
+      updateStatus(selectedItem.id, newStatus, catatan);
+      setIsModalOpen(false);
+      setSelectedItem(null);
+    }
+  };
+
+  const handleOpenHistory = (item: any) => {
+    setActiveHistory(item);
+    setHistoryModalOpen(true);
+  };
+
   return (
-    <div className="max-w-full">
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900">Panel Sinkronisasi Data</h2>
-        <p className="text-gray-500 text-sm mt-1">Perubahan status di sini akan langsung terlihat oleh Pelaku Usaha via Cloud.</p>
+    <div className="max-w-full relative">
+      <div className="mb-8 flex justify-between items-end">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">Panel Sinkronisasi Data</h2>
+          <p className="text-gray-500 text-sm mt-1">Perubahan status di sini akan langsung terlihat oleh Pelaku Usaha via Cloud.</p>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-8">
@@ -3999,7 +4220,7 @@ function AdminDashboard({ data, updateStatus }: any) {
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Reg / Waktu</th>
                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Pelaku Usaha / Produk</th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Status Cloud</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Status Saat Ini</th>
                 <th className="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase">Aksi Admin</th>
               </tr>
             </thead>
@@ -4018,16 +4239,10 @@ function AdminDashboard({ data, updateStatus }: any) {
                      <StatusBadge status={item.status} />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">
-                    <select 
-                      value={item.status}
-                      onChange={(e) => updateStatus(item.id, e.target.value)}
-                      className="text-sm border-gray-300 rounded-md shadow-sm focus:ring-emerald-500 focus:border-emerald-500 p-1 bg-gray-50"
-                    >
-                      <option value="Menunggu Verifikasi">Menunggu Verifikasi</option>
-                      <option value="Menunggu Pembayaran">Menunggu Pembayaran</option>
-                      <option value="Proses Audit">Proses Audit</option>
-                      <option value="Selesai">Selesai (Terbit LHP)</option>
-                    </select>
+                    <div className="flex justify-end gap-2">
+                       <button onClick={() => handleOpenHistory(item)} className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-2.5 py-1.5 rounded transition-colors font-medium">Riwayat</button>
+                       <button onClick={() => handleOpenUpdateModal(item)} className="text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-2.5 py-1.5 rounded transition-colors font-medium border border-emerald-200">Ubah Status</button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -4042,6 +4257,262 @@ function AdminDashboard({ data, updateStatus }: any) {
           </table>
         </div>
       </div>
+
+      {isModalOpen && selectedItem && (
+         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/50 backdrop-blur-sm">
+            <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
+               <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                  <h3 className="font-bold text-gray-900">Perbarui Status Pengajuan</h3>
+                  <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600"><X className="w-5 h-5"/></button>
+               </div>
+               <form onSubmit={handleSubmitUpdate} className="p-6">
+                  <div className="mb-4">
+                     <label className="block text-sm font-medium text-gray-700 mb-1">Status Baru</label>
+                     <select 
+                        value={newStatus}
+                        onChange={(e) => setNewStatus(e.target.value)}
+                        className="w-full border-gray-300 rounded-lg p-2.5 bg-white focus:ring-emerald-500 focus:border-emerald-500 border text-sm"
+                     >
+                        <option value="Menunggu Verifikasi">Menunggu Verifikasi</option>
+                        <option value="Menunggu Pembayaran">Menunggu Pembayaran</option>
+                        <option value="Proses Audit">Proses Audit</option>
+                        <option value="Selesai">Selesai (Terbit LHP)</option>
+                     </select>
+                  </div>
+                  <div className="mb-6">
+                     <label className="block text-sm font-medium text-gray-700 mb-1">Catatan Tambahan (Opsional)</label>
+                     <textarea 
+                        value={catatan}
+                        onChange={(e) => setCatatan(e.target.value)}
+                        placeholder="Contoh: Dokumen NIB kurang lengkap..."
+                        className="w-full border-gray-300 rounded-lg p-2.5 border text-sm focus:ring-emerald-500 focus:border-emerald-500"
+                        rows={3}
+                     ></textarea>
+                  </div>
+                  <div className="flex justify-end gap-3">
+                     <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium text-sm transition-colors">Batal</button>
+                     <button type="submit" className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 font-medium text-sm shadow-sm transition-colors">Simpan Perubahan</button>
+                  </div>
+               </form>
+            </div>
+         </div>
+      )}
+
+      {historyModalOpen && activeHistory && (
+         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/50 backdrop-blur-sm">
+            <div className="bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden flex flex-col max-h-[80vh]">
+               <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50 shrink-0">
+                  <h3 className="font-bold text-gray-900">Riwayat Perubahan Status</h3>
+                  <button onClick={() => setHistoryModalOpen(false)} className="text-gray-400 hover:text-gray-600"><X className="w-5 h-5"/></button>
+               </div>
+               <div className="p-6 overflow-y-auto grow">
+                  <div className="mb-6">
+                     <p className="text-sm text-gray-500 mb-1">Registrasi: <span className="font-bold text-gray-900">{activeHistory.nomorRegistrasi}</span></p>
+                     <p className="text-sm text-gray-500">Pelaku Usaha: <span className="font-bold text-gray-900">{activeHistory.companyName}</span></p>
+                  </div>
+                  <div className="space-y-4">
+                     {activeHistory.history && activeHistory.history.length > 0 ? (
+                        activeHistory.history.map((h: any, i: number) => (
+                           <div key={i} className="flex gap-4">
+                              <div className="flex flex-col items-center">
+                                 <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 mt-1.5 shrink-0"></div>
+                                 {i < activeHistory.history.length - 1 && <div className="w-0.5 h-full bg-gray-200 mt-1"></div>}
+                              </div>
+                              <div className="pb-4">
+                                 <div className="flex items-center gap-2 mb-1">
+                                    <span className="text-sm font-semibold text-gray-900">{h.status}</span>
+                                    <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">{new Date(h.timestamp).toLocaleString('id-ID')}</span>
+                                 </div>
+                                 <p className="text-sm text-gray-600">{h.catatan}</p>
+                              </div>
+                           </div>
+                        ))
+                     ) : (
+                        <p className="text-sm text-gray-500 text-center py-4 bg-gray-50 rounded-lg">Tidak ada riwayat untuk pengajuan ini.</p>
+                     )}
+                  </div>
+               </div>
+            </div>
+         </div>
+      )}
+    </div>
+  );
+}
+
+// ==========================================
+// AUDITOR VIEW
+// ==========================================
+function AuditorDashboard({ data, updateStatus }: any) {
+  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newStatus, setNewStatus] = useState('');
+  const [catatan, setCatatan] = useState('');
+
+  const [historyModalOpen, setHistoryModalOpen] = useState(false);
+  const [activeHistory, setActiveHistory] = useState<any>(null);
+
+  const handleOpenUpdateModal = (item: any) => {
+    setSelectedItem(item);
+    setNewStatus(item.status);
+    setCatatan('');
+    setIsModalOpen(true);
+  };
+
+  const handleSubmitUpdate = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (selectedItem) {
+      updateStatus(selectedItem.id, newStatus, catatan);
+      setIsModalOpen(false);
+      setSelectedItem(null);
+    }
+  };
+
+  const handleOpenHistory = (item: any) => {
+    setActiveHistory(item);
+    setHistoryModalOpen(true);
+  };
+
+  return (
+    <div className="max-w-full relative">
+      <div className="mb-8">
+        <h2 className="text-2xl font-bold text-gray-900">Data Audit Berjalan</h2>
+        <p className="text-gray-500 text-sm mt-1">Daftar pengajuan yang ditugaskan kepada Anda untuk dilakukan audit halal.</p>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm border-l-4 border-l-blue-500">
+            <p className="text-sm font-medium text-gray-500">Menunggu Tindakan (Proses Audit)</p>
+            <p className="text-2xl font-bold text-gray-900 mt-1">{data.filter((d: any) => d.status === 'Proses Audit').length}</p>
+        </div>
+        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm border-l-4 border-l-emerald-500">
+            <p className="text-sm font-medium text-gray-500">Selesai (LHP Terbit)</p>
+            <p className="text-2xl font-bold text-gray-900 mt-1">{data.filter((d: any) => d.status === 'Selesai' || d.status === 'LHP Terbit').length}</p>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden mb-8">
+        <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-gray-50">
+            <h3 className="font-bold text-gray-800">Daftar Pengajuan untuk Diaudit</h3>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-white">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Reg / Waktu</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Pelaku Usaha / Produk</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Status</th>
+                <th className="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase">Aksi LHP</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {data.map((item: any) => (
+                <tr key={item.id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-bold text-gray-900">{item.nomorRegistrasi}</div>
+                    <div className="text-xs text-gray-500">{new Date(item.createdAt).toLocaleString('id-ID')}</div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="text-sm font-medium text-gray-900">{item.companyName}</div>
+                    <div className="text-xs text-gray-500">{item.productName}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                     <StatusBadge status={item.status} />
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-right">
+                    <div className="flex justify-end gap-2">
+                       <button onClick={() => handleOpenHistory(item)} className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-2.5 py-1.5 rounded transition-colors font-medium">Riwayat</button>
+                       <button onClick={() => handleOpenUpdateModal(item)} className="text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-2.5 py-1.5 rounded transition-colors font-medium border border-emerald-200">Ubah Status</button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+              {data.length === 0 && (
+                <tr>
+                  <td colSpan={4} className="px-6 py-8 text-center text-gray-500">
+                    Tidak ada pengajuan yang perlu diaudit.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {isModalOpen && selectedItem && (
+         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/50 backdrop-blur-sm">
+            <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
+               <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                  <h3 className="font-bold text-gray-900">Perbarui Status LHP</h3>
+                  <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600"><X className="w-5 h-5"/></button>
+               </div>
+               <form onSubmit={handleSubmitUpdate} className="p-6">
+                  <div className="mb-4">
+                     <label className="block text-sm font-medium text-gray-700 mb-1">Pilih Status Baru</label>
+                     <select 
+                        value={newStatus}
+                        onChange={(e) => setNewStatus(e.target.value)}
+                        className="w-full border-gray-300 rounded-lg p-2.5 bg-white focus:ring-emerald-500 focus:border-emerald-500 border text-sm"
+                     >
+                        <option value="Proses Audit">Proses Audit</option>
+                        <option value="Selesai">Selesai (Terbit LHP)</option>
+                     </select>
+                  </div>
+                  <div className="mb-6">
+                     <label className="block text-sm font-medium text-gray-700 mb-1">Catatan Audit Tambahan (Opsional)</label>
+                     <textarea 
+                        value={catatan}
+                        onChange={(e) => setCatatan(e.target.value)}
+                        placeholder="Contoh: Dokumen NIB kurang lengkap..."
+                        className="w-full border-gray-300 rounded-lg p-2.5 border text-sm focus:ring-emerald-500 focus:border-emerald-500"
+                        rows={3}
+                     ></textarea>
+                  </div>
+                  <div className="flex justify-end gap-3">
+                     <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium text-sm transition-colors">Batal</button>
+                     <button type="submit" className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 font-medium text-sm shadow-sm transition-colors">Simpan Perubahan</button>
+                  </div>
+               </form>
+            </div>
+         </div>
+      )}
+
+      {historyModalOpen && activeHistory && (
+         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/50 backdrop-blur-sm">
+            <div className="bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden flex flex-col max-h-[80vh]">
+               <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50 shrink-0">
+                  <h3 className="font-bold text-gray-900">Riwayat Laporan</h3>
+                  <button onClick={() => setHistoryModalOpen(false)} className="text-gray-400 hover:text-gray-600"><X className="w-5 h-5"/></button>
+               </div>
+               <div className="p-6 overflow-y-auto grow">
+                  <div className="mb-6">
+                     <p className="text-sm text-gray-500 mb-1">Registrasi: <span className="font-bold text-gray-900">{activeHistory.nomorRegistrasi}</span></p>
+                     <p className="text-sm text-gray-500">Pelaku Usaha: <span className="font-bold text-gray-900">{activeHistory.companyName}</span></p>
+                  </div>
+                  <div className="space-y-4">
+                     {activeHistory.history && activeHistory.history.length > 0 ? (
+                        activeHistory.history.map((h: any, i: number) => (
+                           <div key={i} className="flex gap-4">
+                              <div className="flex flex-col items-center">
+                                 <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 mt-1.5 shrink-0"></div>
+                                 {i < activeHistory.history.length - 1 && <div className="w-0.5 h-full bg-gray-200 mt-1"></div>}
+                              </div>
+                              <div className="pb-4">
+                                 <div className="flex items-center gap-2 mb-1">
+                                    <span className="text-sm font-semibold text-gray-900">{h.status}</span>
+                                    <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">{new Date(h.timestamp).toLocaleString('id-ID')}</span>
+                                 </div>
+                                 <p className="text-sm text-gray-600">{h.catatan}</p>
+                              </div>
+                           </div>
+                        ))
+                     ) : (
+                        <p className="text-sm text-gray-500 text-center py-4 bg-gray-50 rounded-lg">Tidak ada riwayat untuk pengajuan ini.</p>
+                     )}
+                  </div>
+               </div>
+            </div>
+         </div>
+      )}
     </div>
   );
 }
@@ -4550,6 +5021,13 @@ function AdminSettings() {
       email: 'lphalghazali@gmail.com',
       noWa: '085802494252'
     },
+    struktur: {
+      sdmSyariah: ["H. Fatah Rosihan A., M.M.", "Syaefudin Zuhri, S.Ag."],
+      images: {
+        "H. Fatah Rosihan A., M.M.": "/fatah.jpg",
+        "Syaefudin Zuhri, S.Ag.": "/syaefudin.jpg"
+      }
+    },
     sistem: {
       whatsappBot: true,
       emailNotif: true,
@@ -4581,6 +5059,11 @@ function AdminSettings() {
       { role: 'Super Admin', desc: 'Akses penuh ke semua modul konfigurasi dan master data.', status: 'Aktif' },
       { role: 'Auditor Utama', desc: 'Terbitkan laporan LHP, kelola data audit & plotting.', status: 'Aktif' },
       { role: 'Staf Keuangan', desc: 'Validasi pembayaran tarif layanan oleh PU.', status: 'Aktif' }
+    ],
+    akunStaf: [
+      { nama: 'Admin Pusat', email: 'admin@lphalghazali.com', role: 'Super Admin', status: 'Aktif', passwordHash: CryptoJS.SHA256('Admin123').toString() },
+      { nama: 'Ahmad Auditor', email: 'ahmad.auditor@lphalghazali.com', role: 'Auditor Utama', status: 'Aktif', passwordHash: CryptoJS.SHA256('Audit123').toString() },
+      { nama: 'Siti Keuangan', email: 'keuangan@lphalghazali.com', role: 'Staf Keuangan', status: 'Aktif', passwordHash: CryptoJS.SHA256('Uang123').toString() }
     ]
   };
 
@@ -4592,7 +5075,14 @@ function AdminSettings() {
     const unsubscribe = onSnapshot(settingsRef, (docSnap) => {
       if (docSnap.exists()) {
         const data = docSnap.data();
-        setSettings(prev => ({ ...prev, ...data }));
+        setSettings(prev => ({ 
+           ...prev, 
+           ...data,
+           profil: { ...prev.profil, ...(data.profil || {}) },
+           struktur: { ...prev.struktur, ...(data.struktur || {}) },
+           sistem: { ...prev.sistem, ...(data.sistem || {}) },
+           integrasi: { ...prev.integrasi, ...(data.integrasi || {}) },
+        }));
       }
     });
     return () => unsubscribe();
@@ -4603,14 +5093,13 @@ function AdminSettings() {
     try {
       const settingsRef = doc(db, 'artifacts', appId, 'public', 'system_settings');
       await setDoc(settingsRef, settings, { merge: true });
-    } catch (error) {
-      console.error('Error saving settings:', error);
-    }
-    
-    setTimeout(() => {
       setIsSaving(false);
       alert("Pengaturan Sistem berhasil disimpan ke Cloud Database!");
-    }, 800);
+    } catch (error) {
+      console.error('Error saving settings:', error);
+      setIsSaving(false);
+      alert("Gagal menyimpan pengaturan.");
+    }
   };
 
   const handleChange = (category: string, field: string, value: any) => {
@@ -4625,6 +5114,7 @@ function AdminSettings() {
 
   const tabs = [
     { id: 'profil', label: 'Profil Lembaga', icon: Landmark },
+    { id: 'struktur', label: 'Struktur Organisasi', icon: Network },
     { id: 'akses', label: 'Hak Akses & Role', icon: Users },
     { id: 'master', label: 'Master Data', icon: BookOpen },
     { id: 'sistem', label: 'Sistem & Notifikasi', icon: MonitorSmartphone },
@@ -4702,6 +5192,84 @@ function AdminSettings() {
               </div>
             </div>
           )}
+          {activeTab === 'struktur' && (
+            <div className="p-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-2">Struktur Organisasi (SDM Syariah)</h3>
+              <p className="text-sm text-gray-500 mb-6">Kelola susunan anggota dan foto profil SDM Syariah.</p>
+              
+              <div className="grid md:grid-cols-2 gap-8">
+                  <div className="space-y-4">
+                      <h4 className="font-semibold text-gray-800">Daftar SDM Syariah</h4>
+                      {(settings.struktur?.sdmSyariah || []).map((person: string, idx: number) => (
+                          <div key={idx} className="flex gap-2">
+                              <input 
+                                  type="text" 
+                                  value={person} 
+                                  onChange={(e) => {
+                                      const newSet = [...(settings.struktur?.sdmSyariah || [])];
+                                      newSet[idx] = e.target.value;
+                                      
+                                      // If the name changes, copy the image mapping over (best effort)
+                                      const newImages = { ...(settings.struktur?.images || {}) };
+                                      if (settings.struktur?.images?.[person] && !newImages[e.target.value]) {
+                                        newImages[e.target.value] = settings.struktur.images[person];
+                                      }
+
+                                      handleChange('struktur', 'sdmSyariah', newSet);
+                                      handleChange('struktur', 'images', newImages);
+                                  }}
+                                  className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500" 
+                                  placeholder="Nama anggota"
+                              />
+                              <button
+                                  type="button"
+                                  onClick={() => {
+                                      const newSet = [...(settings.struktur?.sdmSyariah || [])];
+                                      newSet.splice(idx, 1);
+                                      handleChange('struktur', 'sdmSyariah', newSet);
+                                  }}
+                                  className="p-2 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors"
+                              >
+                                  <Trash2 className="w-4 h-4" />
+                              </button>
+                          </div>
+                      ))}
+                      <button
+                          type="button"
+                          onClick={() => {
+                              const newSet = [...(settings.struktur?.sdmSyariah || []), ""];
+                              handleChange('struktur', 'sdmSyariah', newSet);
+                          }}
+                          className="flex items-center text-sm font-medium text-emerald-600 hover:text-emerald-700"
+                      >
+                          <PlusCircle className="w-4 h-4 mr-1" /> Tambah Anggota
+                      </button>
+                      <div className="bg-blue-50 p-3 rounded-md border border-blue-100 flex items-start mt-4">
+                          <CheckCircle2 className="w-5 h-5 text-blue-500 mr-2 shrink-0 mt-0.5" />
+                          <p className="text-sm text-blue-800">
+                             Simpan perubahan terlebih dahulu sebelum memperbarui foto pada kartu di sebelah kanan.
+                          </p>
+                      </div>
+                  </div>
+
+                  <div className="flex flex-col items-center p-8 bg-gray-50 rounded-xl border border-gray-200">
+                    <OrgCard 
+                      title="SDM Syariah" 
+                      list={settings.struktur?.sdmSyariah || []} 
+                      className="w-full sm:w-[350px] relative" 
+                      allowUpload={true} 
+                      defaultImages={settings.struktur?.images || {}}
+                      onImageChange={(identifier: string, base64Data: string) => {
+                          handleChange('struktur', 'images', {
+                              ...(settings.struktur?.images || {}),
+                              [identifier]: base64Data
+                          });
+                      }}
+                    />
+                  </div>
+              </div>
+            </div>
+          )}
           {activeTab === 'akses' && (
              <div className="p-6">
                 <h3 className="text-lg font-bold text-gray-900 mb-2">Hak Akses & Role</h3>
@@ -4742,6 +5310,43 @@ function AdminSettings() {
                   const newRoles = [...settings.roles, { role: 'Role Baru', desc: 'Deskripsi Role', status: 'Aktif' }];
                   setSettings(prev => ({ ...prev, roles: newRoles }));
                 }} className="mt-5 text-sm text-emerald-600 font-semibold hover:text-emerald-700 flex items-center bg-emerald-50 px-3 py-2 rounded-lg transition-colors"><PlusCircle className="w-4 h-4 mr-1.5" /> Tambah Role Baru</button>
+
+                <div className="mt-10 mb-2">
+                   <h3 className="text-lg font-bold text-gray-900">Daftar Akun Staf (Contoh Hak Akses)</h3>
+                   <p className="text-sm text-gray-500">Gunakan contoh akun di bawah ini pada simulasi <strong className="font-semibold text-emerald-600">Login Staf LPH</strong> dengan memilih "Pilih Role" yang sesuai untuk melihat perbedaan level akses.</p>
+                </div>
+                <div className="border border-gray-200 rounded-lg overflow-x-auto">
+                   <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-50">
+                         <tr>
+                            <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Nama & Email Simulasi</th>
+                            <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Kredensial Login</th>
+                            <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Pilih Role Login</th>
+                            <th className="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Status Akses</th>
+                         </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                         {(settings.akunStaf || []).map((akun: any, idx: number) => (
+                           <tr key={idx} className="hover:bg-gray-50">
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                 <div className="text-sm font-semibold text-gray-900">{akun.nama}</div>
+                                 <div className="text-sm text-emerald-600">{akun.email}</div>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                 <span className="bg-gray-100 border border-gray-200 rounded px-2 py-1 font-mono text-xs select-all">Pwd: {akun.email.includes('admin') ? 'Admin123' : (akun.email.includes('auditor') ? 'Audit123' : 'Uang123')}</span>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                 <span className="px-2.5 py-1 inline-flex text-xs font-semibold rounded bg-gray-100 text-gray-800 border border-gray-200">{akun.role === 'Super Admin' ? 'Admin Pusat' : (akun.role === 'Auditor Utama' ? 'Auditor Halal' : 'Staf Keuangan')}</span>
+                                 <span className="ml-2 text-xs text-gray-400">sebagai {akun.role}</span>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-emerald-600 font-medium">
+                                {akun.status}
+                              </td>
+                           </tr>
+                         ))}
+                      </tbody>
+                   </table>
+                </div>
              </div>
           )}
           {activeTab === 'master' && (
