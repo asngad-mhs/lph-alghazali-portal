@@ -4,23 +4,63 @@ import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, 
 import { getFirestore, collection, onSnapshot, addDoc, updateDoc, doc, serverTimestamp, deleteDoc, setDoc } from 'firebase/firestore';
 import { Leaf, Home, FileText, LogOut, PlusCircle, Settings, CheckCircle, Clock, Search, Briefcase, FileSignature, UploadCloud, ArrowLeft, ArrowRight, ShieldCheck, Zap, MonitorSmartphone, UserCheck, Newspaper, Edit, Trash2, X, Image as ImageIcon, Route, Coins, ChevronDown, ChevronRight, Calculator, Receipt, CalendarDays, Activity, Video, Link, MapPin, Phone, Mail, Facebook, Twitter, Instagram, Linkedin, History, Target, Award, Network, Users, BookOpen, Handshake, Menu, Scale, Landmark, CheckCircle2, FlaskConical, FileEdit, Globe } from 'lucide-react';
 
-const OrgCard = ({ title, name, list, className = "", noHover = false }: any) => (
-    <div className={`flex flex-col bg-white border-2 border-emerald-700 rounded-xl shadow-lg shadow-emerald-900/5 overflow-hidden ring-1 ring-emerald-500/20 ${!noHover ? 'hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-emerald-900/10 hover:border-emerald-600 transition-all duration-300' : ''} ${className}`}>
-        <div className="bg-gradient-to-r from-emerald-800 via-emerald-700 to-emerald-600 p-2.5">
-            <h3 className="font-extrabold text-white text-[11px] text-center leading-tight uppercase tracking-widest drop-shadow-sm">{title}</h3>
-        </div>
-        {(name || list) && (
-            <div className="p-3.5 flex-grow flex flex-col justify-center bg-gradient-to-br from-white to-emerald-50/50">
-                {name && <p className="text-[11px] font-bold text-gray-800 text-center uppercase tracking-wide">{name}</p>}
-                {list && (
-                    <ol className="text-[10px] font-semibold text-gray-700 text-left list-decimal pl-4 space-y-1 m-0 marker:text-emerald-600">
-                        {list.map((item: string, i: number) => <li key={i}>{item}</li>)}
-                    </ol>
-                )}
+const OrgCard = ({ title, name, list, className = "", noHover = false, allowUpload = false, defaultImages = {} }: any) => {
+    const [images, setImages] = useState<Record<string, string>>(defaultImages || {});
+
+    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, itemIdentifier: string) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const url = URL.createObjectURL(file);
+            setImages(prev => ({ ...prev, [itemIdentifier]: url }));
+        }
+    };
+
+    const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+        e.currentTarget.style.display = 'none';
+    };
+
+    return (
+        <div className={`flex flex-col bg-white border-2 border-emerald-700 rounded-xl shadow-lg shadow-emerald-900/5 overflow-hidden ring-1 ring-emerald-500/20 ${!noHover ? 'hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-emerald-900/10 hover:border-emerald-600 transition-all duration-300' : ''} ${className}`}>
+            <div className="bg-gradient-to-r from-emerald-800 via-emerald-700 to-emerald-600 p-2.5">
+                <h3 className="font-extrabold text-white text-[11px] text-center leading-tight uppercase tracking-widest drop-shadow-sm">{title}</h3>
             </div>
-        )}
-    </div>
-);
+            {(name || list) && (
+                <div className="p-3.5 flex-grow flex flex-col justify-center bg-gradient-to-br from-white to-emerald-50/50">
+                    {name && (
+                        <div className="flex flex-col items-center mb-2 last:mb-0 group relative">
+                            {images[name] && <img src={images[name]} alt={name} onError={handleImageError} className="w-12 h-12 rounded-full object-cover mb-1 border border-emerald-200" />}
+                            <p className="text-[11px] font-bold text-gray-800 text-center uppercase tracking-wide">{name}</p>
+                            {allowUpload && (
+                                <label className="text-[8px] text-emerald-600 cursor-pointer mt-0.5 hover:underline flex items-center bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <UploadCloud className="w-2.5 h-2.5 mr-0.5" /> Foto Profil
+                                    <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, name)} />
+                                </label>
+                            )}
+                        </div>
+                    )}
+                    {list && (
+                        <ol className="text-[10px] font-semibold text-gray-700 text-left list-decimal pl-4 space-y-3 m-0 marker:text-emerald-600">
+                            {list.map((item: string, i: number) => (
+                                <li key={i} className="pl-1 group relative">
+                                    <div className="flex flex-col items-start w-full">
+                                        <span>{item}</span>
+                                        {images[item] && <img src={images[item]} alt={item} onError={handleImageError} className="mt-1 w-12 h-12 rounded-full object-cover border border-emerald-200" />}
+                                        {allowUpload && (
+                                            <label className="text-[8px] text-emerald-600 cursor-pointer mt-1 hover:underline flex items-center bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <UploadCloud className="w-2.5 h-2.5 mr-0.5" /> Foto Profil
+                                                <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, item)} />
+                                            </label>
+                                        )}
+                                    </div>
+                                </li>
+                            ))}
+                        </ol>
+                    )}
+                </div>
+            )}
+        </div>
+    );
+};
 
 // ==========================================
 // 1. FIREBASE INITIALIZATION (CLOUD SETUP)
@@ -1743,7 +1783,17 @@ function LandingView({ navigateTo, beritaList }: any) {
                                       <div className="absolute top-0 bottom-[30px] left-[50%] -ml-[1.5px] w-[3px] bg-emerald-600 z-0"></div>
                                       
                                       <OrgCard title="SDM Syariah" list={["H. Fatah Rosihan A., M.M.", "Syaefudin Zuhri, S.Ag."]} className="w-[155px] z-10 relative" />
-                                      <OrgCard title="Auditor Halal" list={["Siti Khuzaimah, S.T., M.T.", "dr. Atingul Marifah", "Anisha Dian I., S.T., M.Sc."]} className="w-[155px] z-10 relative" />
+                                      <OrgCard 
+                                        title="Auditor Halal" 
+                                        list={["Siti Khuzaimah, S.T., M.T.", "dr. Atingul Marifah", "Anisha Dian I., S.T., M.Sc."]} 
+                                        className="w-[155px] z-10 relative" 
+                                        allowUpload={true}
+                                        defaultImages={{
+                                          "Siti Khuzaimah, S.T., M.T.": "/siti.jpg",
+                                          "dr. Atingul Marifah": "/atingul.jpg",
+                                          "Anisha Dian I., S.T., M.Sc.": "/anisha.jpg"
+                                        }}
+                                      />
                                       <OrgCard title="Evaluator LPH" name="Fathurrohman, S.H." className="w-[155px] z-10 relative" />
                                       <OrgCard title="Petugas Pengambil Sample" list={["Siti Khuzaimah, S.T., M.T.", "dr. Atingul Marifah", "Anisha Dian I., S.T."]} className="w-[155px] z-10 relative" />
                                   </div>
@@ -2370,6 +2420,26 @@ function LandingView({ navigateTo, beritaList }: any) {
                     <p className="text-gray-700">
                       Profesi Auditor Halal adalah amanah keagamaan (mas’uliyah syar’iyyah) sekaligus tanggung jawab profesional. Oleh karena itu, LPH Al-Ghazali menjamin bahwa setiap auditornya terikat kuat pada Kode Etik Auditor, yang mengharamkan praktik suap (gratifikasi), benturan kepentingan (conflict of interest), serta membocorkan rahasia formula atau dapur produksi milik pelaku usaha kepada pihak yang tidak berkepentingan.
                     </p>
+                  </section>
+
+                  <section className="mt-8 pt-8 border-t border-emerald-100">
+                    <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center justify-center">
+                      <Users className="w-6 h-6 mr-3 text-emerald-600" />
+                      Auditor Halal lph Al-Ghazali
+                    </h3>
+                    <div className="flex flex-wrap gap-6 justify-center">
+                        <OrgCard 
+                          title="Auditor Halal" 
+                          list={["Siti Khuzaimah, S.T., M.T.", "dr. Atingul Marifah", "Anisha Dian I., S.T., M.Sc."]} 
+                          className="w-full sm:w-[350px] z-10 relative" 
+                          allowUpload={true} 
+                          defaultImages={{
+                            "Siti Khuzaimah, S.T., M.T.": "/siti.jpg",
+                            "dr. Atingul Marifah": "/atingul.jpg",
+                            "Anisha Dian I., S.T., M.Sc.": "/anisha.jpg"
+                          }}
+                        />
+                    </div>
                   </section>
 
                   <div className="pt-16 mt-12 border-t border-gray-200">
