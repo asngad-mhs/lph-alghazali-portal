@@ -52,17 +52,17 @@ export default function LPHApp() {
   // DYNAMIC SEO MANAGEMENT
   // ==========================================
   useEffect(() => {
-    let title = 'LPH Al-Ghazali - Lembaga Pemeriksa Halal Terpercaya';
+    let title = 'LPH Al-Ghazali UNUGHA - Lembaga Pemeriksa Halal Terpercaya';
     let metaDescription = 'Portal Cloud LPH Al-Ghazali. Pengajuan sertifikasi halal secara online, transparan, dan profesional sesuai standar regulasi BPJPH dan SNI.';
 
     switch (currentView) {
       case 'landing':
-        title = 'Beranda | LPH Al-Ghazali - Registrasi & Sertifikasi Halal Online';
+        title = 'Beranda | LPH Al-Ghazali UNUGHA - Registrasi & Sertifikasi Halal Online';
         metaDescription = 'Portal Utama LPH Al-Ghazali. Menjamin kehalalan produk Anda dengan sertifikasi yang diakui BPJPH dan MUI. Sistem layanan paperless dan terintegrasi SNI.';
         break;
       case 'login':
       case 'login-admin':
-        title = 'Masuk Portal | LPH Al-Ghazali';
+        title = 'Masuk Portal | LPH Al-Ghazali UNUGHA';
         metaDescription = 'Masuk ke Dashboard LPH Al-Ghazali untuk memantau status pengajuan sertifikat halal Anda secara real-time.';
         break;
       case 'pu-dashboard':
@@ -491,7 +491,7 @@ function LandingView({ navigateTo, beritaList }: any) {
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <Search className="h-4 w-4 text-emerald-600" />
                   </div>
-                  <input type="text" placeholder="Pencarian..." className="pl-9 pr-4 py-2 w-48 sm:w-56 border border-emerald-200 rounded-full text-sm focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 bg-white transition-all shadow-sm" />
+                  <input id="lph-alghazali-app-search" type="text" placeholder="Cari di LPH Al-Ghazali..." className="pl-9 pr-4 py-2 w-48 sm:w-56 border border-emerald-200 rounded-full text-sm focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 bg-white transition-all shadow-sm" />
                 </div>
                 <button className="md:hidden text-emerald-700 p-2 hover:bg-emerald-100 rounded-full transition-colors">
                   <Search className="w-5 h-5" />
@@ -2626,7 +2626,151 @@ function LandingView({ navigateTo, beritaList }: any) {
                     </p>
                   </section>
 
-                  <div className="pt-16 mt-12 border-t border-gray-200">
+                  <div className="mb-6 border-t border-gray-200 pt-8 mt-10">
+                    <h3 className="text-xl font-bold text-gray-900 mb-2 flex items-center">
+                      <FileSignature className="w-6 h-6 mr-3 text-emerald-600" />
+                      Dokumen Surat Perjanjian Kerjasama (Contoh PKS)
+                    </h3>
+                    <p className="text-sm text-gray-600 mb-6">Berikut adalah salinan dokumen Surat Perjanjian Kerjasama antara LPH Al-Ghazali dengan mitra balai pengujian sebagai formulir referensi.</p>
+                    
+                    <div className="border border-gray-300 shadow-md p-6 sm:p-12 bg-white text-gray-800 text-sm font-serif">
+                      <div className="text-center font-bold mb-8">
+                        <h3 className="text-lg uppercase">SURAT PERJANJIAN KERJASAMA</h3>
+                        <p className="mb-2">ANTARA</p>
+                        <h4 className="text-base uppercase">LPH AL GHAZALI</h4>
+                        <p className="mb-2 mt-2">DENGAN</p>
+                        <h4 className="text-base uppercase">BALAI PENGUJIAN DAN SERTIFIKASI MUTU BARANG (BPSMB) SURAKARTA</h4>
+                        <p className="mb-2 mt-2">TENTANG</p>
+                        <h4 className="text-base uppercase">PENGUJIAN LABORATORIUM</h4>
+                        <p className="mt-4 font-normal">Nomor : 001/SPK-LAB/IV/2026</p>
+                        <p className="font-normal">Nomor : ----/----/---/---</p>
+                      </div>
+                      
+                      <div className="text-justify space-y-4">
+                        <p>Pada hari ini Rabu, tanggal Dua Puluh Lima bulan Februari tahun Dua ribu dua puluh enam (25-02-2026), Bertempat di Kantor masing-masing di bawah ini :</p>
+                        
+                        <ol className="list-decimal pl-5 space-y-4">
+                          <li>
+                            <strong>Shoiman Nawawi</strong> : Direktur LPH AL GHAZALI dalam hal ini bertindak untuk dan atas nama LPH AL GHAZALI yang berkedudukan di Jl. Kemerdekaan Barat No. 17 Desa Kesugihan Kidul<br/>
+                            Kec. Kesugihan, Jawa tengah 53274<br/>
+                            Selanjutnya disebut <strong>PIHAK PERTAMA</strong>.
+                          </li>
+                          <li>
+                            <strong>Sri Supadmi Rahayu, SP., MM</strong> : Kepala Balai Pengujian dan Sertifikasi Mutu Barang (BPSMB) Surakarta dalam hal ini bertindak untuk dan atas nama Balai Pengujian Sertifikasi Mutu Barang (BPSMB) Surakarta yang berkedudukan di Jl. Pajang Kartasura Km.8, Pajang, Pabelan, Kec. Kartasura, Kabupaten Sukoharjo, Jawa Tengah<br/>
+                            Selanjutnya disebut <strong>PIHAK KEDUA</strong>.
+                          </li>
+                        </ol>
+
+                        <p className="pt-2"><strong>PIHAK PERTAMA</strong> dan <strong>PIHAK KEDUA</strong> secara bersama-sama disebut <strong>PARA PIHAK</strong>. <strong>PARA PIHAK</strong> terlebih dahulu menerangkan hal-hal sebagai berikut :</p>
+                        <ol className="list-decimal pl-5 space-y-2">
+                          <li>Bahwa <strong>PIHAK PERTAMA</strong> sebagai lembaga pemeriksa halal (LPH) bermaksud akan menyerahkan pekerjaan uji produk kepada <strong>PIHAK KEDUA</strong> sesuai dengan ruang lingkup yang disepakati.</li>
+                          <li><strong>PIHAK KEDUA</strong> sebagai Laboratorium Penguji yang dianggap mampu dan cakap sebagai pelaksana pekerjaan dimaksud dalam butir 1 (satu) diatas.</li>
+                        </ol>
+
+                        <p className="pt-2">Berdasarkan hal-hal tersebut diatas, <strong>PARA PIHAK</strong> sepakat untuk membuat Perjanjian Kerjasama tentang Pengujian Produk Pada Kegiatan yang ada di LPH AL GHAZALI selanjutnya disebut sebagai Perjanjian Kerjasama) dengan ketentuan sebagai berikut:</p>
+
+                        <div className="text-center font-bold mt-8 mb-4">Pasal 1<br/>MAKSUD DAN TUJUAN</div>
+                        <ol className="list-[lower-alpha] pl-5 space-y-2">
+                          <li>Maksud Perjanjian Kerjasama ini adalah mensinergikan sumber daya yang dimiliki oleh <strong>PARA PIHAK</strong> sebagai pedoman bagi <strong>PARA PIHAK</strong> dalam melaksanakan Perjanjian Kerjasama ini.</li>
+                          <li>Tujuan Perjanjian Kerjasama ini adalah untuk mendukung kelancaran pelaksanaan kegiatan Pengujian Produk yang ada di LPH AL GHAZALI.</li>
+                        </ol>
+
+                        <div className="text-center font-bold mt-8 mb-4">Pasal 2<br/>RUANG LINGKUP</div>
+                        <p>Ruang lingkup Perjanjian Kerjasama ini adalah :</p>
+                        <ol className="list-[lower-alpha] pl-5 space-y-2">
+                          <li>Melakukan Kerjasama Pengujian Produk oleh <strong>PIHAK KEDUA</strong> mencakup lingkup makanan dan minuman.</li>
+                          <li>Kegiatan lain yang disetujui <strong>PARA PIHAK</strong>.</li>
+                        </ol>
+
+                        <div className="text-center font-bold mt-8 mb-4">Pasal 3<br/>PELAKSANAAN PEKERJAAN</div>
+                        <ol className="list-[lower-alpha] pl-5 space-y-2">
+                          <li><strong>PIHAK PERTAMA</strong> akan memberikan setiap rincian pekerjaan kepada <strong>PIHAK KEDUA</strong> yang berisi spesifikasi produk yang akan diuji, parameter uji, informasi jangka waktu pelaksanaan uji dan biaya uji yang sudah disepakati oleh <strong>PARA PIHAK</strong>.</li>
+                          <li>Setiap pekerjaan akan dituangkan dalam bentuk Kontrak Perjanjian yang merupakan bagian yang tidak terpisahkan dari Perjanjian ini.</li>
+                        </ol>
+
+                        <div className="text-center font-bold mt-8 mb-4">Pasal 4<br/>MASA BERLAKU</div>
+                        <ol className="list-[lower-alpha] pl-5 space-y-2">
+                          <li>Surat Perjanjian Kerjasama ini berlaku untuk jangka waktu 2 (dua) tahun terhitung sejak ditandatangani dan dapat diperpanjang sesuai dengan kesepakatan tertulis <strong>PARA PIHAK</strong>;</li>
+                          <li>Surat Perjanjian Kerjasama ini dapat diakhiri sebelum berakhir masa berlakunya atas kesepakatan tertulis <strong>PARA PIHAK</strong>;</li>
+                          <li>Dalam hal salah satu pihak berkeinginan untuk mengakhiri Surat Perjanjian Kerjasama ini sebelum jangka waktu berakhir sebagaimana dimaksud pada pasal 3 (tiga) ayat 2 (dua) maka <strong>PARA PIHAK</strong> tersebut harus saling memberitahukan secara tertulis selambat-lambatnya 1 (satu) bulan sebelum rencana pengakhiran;</li>
+                          <li>Dengan diakhiri Perjanjian kerjasama ini tidak menghilangkan hak dan kewajiban para pihak yang belum terpenuhi yang timbul sebelumnya</li>
+                          <li>Perjanjian kerjasama ini akan di evaluasi setiap 1 tahun sekali.</li>
+                        </ol>
+
+                        <div className="text-center font-bold mt-8 mb-4">Pasal 5<br/>PEMBIAYAAN</div>
+                        <ol className="list-decimal pl-5 space-y-2">
+                          <li>Biaya uji akan diatur dan disepakati dalam setiap Kontrak Pengujian sesuai syarat dan ketentuan harga yang berlaku di <strong>PIHAK KEDUA</strong>.</li>
+                          <li><strong>PIHAK KEDUA</strong> akan memberikan tagihan yang harus dibayarkan oleh <strong>PIHAK PERTAMA</strong> untuk setiap pekerjaan.</li>
+                        </ol>
+
+                        <div className="text-center font-bold mt-8 mb-4">Pasal 6<br/>CARA PEMBAYARAN</div>
+                        <ol className="list-[lower-alpha] pl-5 space-y-2">
+                          <li><strong>PIHAK KEDUA</strong> akan memberikan tagihan yang harus dibayarkan oleh <strong>PIHAK PERTAMA</strong> setelah laporan hasil pengujian diterbitkan</li>
+                          <li><strong>PIHAK PERTAMA</strong> segera melakukan pembayaran kepada <strong>PIHAK KEDUA</strong> dalam jangka waktu maksimal 15 (lima belas) hari kerja terhitung sejak tanggal diterbitkanya tagihan</li>
+                          <li>Pembayaran atas biaya uji dapat dilaksanakan oleh <strong>PIHAK PERTAMA</strong> kepada <strong>PIHAK KEDUA</strong> dengan transfer atau cash.</li>
+                          <li>Keterlambatan pembayaran yang diakibatkan <strong>PIHAK PERTAMA</strong> sebagai mana diatur poin b menimbulkan hak bagi <strong>PIHAK KEDUA</strong> untuk menahan dan tidak menyerahkan dokumen laporan hasil pengujian.</li>
+                        </ol>
+
+                        <div className="text-center font-bold mt-8 mb-4">Pasal 7<br/>PENAMBAHAN ATAU PENGURANGAN PEKERJAAN</div>
+                        <ol className="list-[lower-alpha] pl-5 space-y-2">
+                          <li>Penambahan atau pengurangan setiap Pekerjaan yang akan diuji hanya dapat dilakukan dalam jangka waktu paling lama 1 x 24 jam setelah disepakatinya Kontrak Pengujian;</li>
+                          <li><strong>PIHAK PERTAMA</strong> dapat secara tertulis memberitahukan penambahan atau pengurangan Pekerjaan tersebut kepada <strong>PIHAK KEDUA</strong>.</li>
+                        </ol>
+
+                        <div className="text-center font-bold mt-8 mb-4">Pasal 8<br/>KERAHASIAAN</div>
+                        <p><strong>PARA PIHAK</strong> berkewajiban menjamin dan menjaga kerahasiaan atas setiap data, keterangan dan segala informasi baik secara langsung maupun tidak langsung yang timbul dari pekerjaan ini, kecuali hal-hal yang memerlukan milik umum atau di buka berdasarkan ketentuan hukum.</p>
+
+                        <div className="text-center font-bold mt-8 mb-4">Pasal 9<br/>KEWAJIBAN DAN TANGGUNG JAWAB</div>
+                        <ol className="list-decimal pl-5 space-y-2">
+                          <li><strong>PIHAK KEDUA</strong> berkewajiban menyelesaikan setiap Pekerjaan yang diminta oleh <strong>PIHAK PERTAMA</strong> sebagaimana tertuang dalam setiap Kontrak Pengujian.</li>
+                          <li><strong>PIHAK KEDUA</strong> berkewajiban menerbitkan Laporan Hasil Pengujian Laboratorium kepada <strong>PIHAK PERTAMA</strong>.</li>
+                          <li><strong>PIHAK PERTAMA</strong> berkewajiban membayar biaya atas setiap Pekerjaan pengujian yang selesai dilaksanakan sesuai dengan dokumen Tagihan yang diberikan oleh <strong>PIHAK KEDUA</strong>.</li>
+                          <li><strong>PIHAK KEDUA</strong> berhak menerima pembayaran dari <strong>PIHAK PERTAMA</strong> atas setiap Pekerjaan yang telah selesai sesuai dengan dokumen Tagihan yang diberikan kepada <strong>PIHAK PERTAMA</strong>.</li>
+                          <li><strong>PIHAK KEDUA</strong> berhak menahan dan tidak menyerahkan dokumen Laporan Hasil Pengujian setiap pekerjaan berikutnya jika terjadi keterlambatan pembayaran.</li>
+                          <li><strong>PIHAK PERTAMA</strong> wajib mengikuti segala peraturan dan persyaratan teknis laboratorium dari <strong>PIHAK KEDUA</strong>.</li>
+                        </ol>
+
+                        <div className="text-center font-bold mt-8 mb-4">Pasal 10<br/>ADDENDUM</div>
+                        <p>Segala perubahan dan atau tambahan terhadap isi Surat Perjanjian Kerjasama ini hanya dapat dilakukan dengan kesepakatan tertulis oleh <strong>PARA PIHAK</strong> dan akan dituangkan dalam suatu ADDENDUM yang merupakan bagian yang tidak terpisahkan dari Perjanjian Kerjasama ini.</p>
+
+                        <div className="text-center font-bold mt-8 mb-4">Pasal 11<br/>PENYELESAIAN SENGKETA</div>
+                        <ol className="list-[lower-alpha] pl-5 space-y-2">
+                          <li>Setiap sengketa yang timbul dari penafsiran atau pelaksanaan Surat Perjanjian Kerjasama ini sejauh mungkin diselesaikan secara damai melalui musyawarah mufakat <strong>PARA PIHAK</strong>;</li>
+                          <li>Apabila musyawarah tersebut pada ayat (1) pasal ini tidak menghasilkan kata sepakat tentang penyelesaian perselisihan, maka <strong>PARA PIHAK</strong> sepakat untuk menyerahkan seluruh sengketa kepada Pengadilan Negeri Semarang untuk diselesaikan pada tingkat pertama dan akhir.</li>
+                        </ol>
+
+                        <div className="text-center font-bold mt-8 mb-4">Pasal 12<br/>KEADAAN DARURAT/KAHAR (FORCE MAJEURE)</div>
+                        <ol className="list-[lower-alpha] pl-5 space-y-2">
+                          <li>Hal-hal yang termasuk keadaan kahar adalah bencana alam (gempa bumi, banjir, badai/topan, gunung meletus, petir, kebakaran, penyakit epidemic, peperangan, huru hara, pemogokan, pemberontakan, kebangkrutan/likuidasi, ketentuan/peraturan pemerintah yang secara langsung mempengaruhi pelaksanaan perjanjian ini dan hal-hal yang terjadi diluar kendali <strong>PARA PIHAK</strong></li>
+                          <li>Apabila terjadi keadaan memaksa <strong>PIHAK KEDUA</strong> harus memberitahukan kepada <strong>PIHAK PERTAMA</strong> secara tertulis paling lambat 7 (tujuh) hari kerja sejak terjadinya keadaan memaksa disertai bukti-bukti yang sah;</li>
+                          <li>Dalam hal pemberitahuan dalam keadaan kahar sebagaimana dimaksud dalam pasal ini, <strong>PIHAK</strong> yang mengalaminya dapat dapat mengajukan permohonan perpanjangan waktu pelaksanaan kewajibanya kepada <strong>PIHAK</strong> lainnya;</li>
+                          <li><strong>PIHAK</strong> yang menerima pemberitahuan kahar, dalam jangka waktu 7 hari kelender terhitung sejak diterimanya permohonan perpanjangan waktu, wajib memberikan jawaban secara tertulis mengenai permohonan dimaksud kepada <strong>PIHAK</strong> lainnya;</li>
+                          <li>Apabila dalam jangka waktu sebagaimana dimaksud dalam poin d diatas, <strong>PIHAK</strong> yang menerima pemberitahuan tidak memberikan jawaban terhadap permohonan perpanjangan waktu, maka <strong>PIHAK</strong> tersebut dianggap telah memberikan persetujuan terhadap permohonan dimaksud.</li>
+                        </ol>
+
+                        <p className="mt-8 pt-4">Surat Perjanjian Kerjasama ini dibuat dengan itikad baik dari <strong>PARA PIHAK</strong> dalam rangkap 2 (dua) asli yang masing-masing bermaterai dan berkekuatan hukum yang sama dan setiap pihak mendapatkan 1 (satu) rangkap asli untuk dapat dilaksanakan dengan penuh tanggung jawab, dan mulai berlaku pada tanggal sebagaimana disebutkan pada awal Perjanjian Kerjasama ini.</p>
+                        
+                        <div className="flex flex-col md:flex-row justify-between items-center text-center mt-16 mb-8 gap-12 md:gap-0">
+                          <div className="w-full md:w-1/2">
+                            <p className="font-bold mb-2">PIHAK PERTAMA</p>
+                            <p className="font-bold mb-2">Lembaga Pemeriksa Halal AL GHAZALI</p>
+                            <div className="h-32"></div>
+                            <p className="font-bold underline">Shoiman Nawawi.</p>
+                            <p>Direktur LPH</p>
+                          </div>
+                          <div className="w-full md:w-1/2">
+                            <p className="font-bold mb-2">PIHAK KEDUA</p>
+                            <p className="font-bold mb-2">Balai Pengujian Sertifikasi Mutu Barang Surakarta,</p>
+                            <div className="h-32"></div>
+                            <p className="font-bold underline">SRI SUPADMI RAHAYU, SP., MM</p>
+                            <p>Kepala</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-8 mt-12 border-t border-gray-200">
                     <div className="flex justify-between items-end text-sm text-gray-600">
                       <div>
                         Dokumen: Profil_Mitra_v1.0
