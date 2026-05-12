@@ -450,6 +450,24 @@ function LandingView({ navigateTo, beritaList }: any) {
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(num);
   };
 
+  const changeLanguage = (lang: string) => {
+    if (lang === 'id') {
+      document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+      document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname}`;
+      window.location.reload();
+      return;
+    }
+    const select = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+    if (select) {
+      select.value = lang;
+      select.dispatchEvent(new Event('change'));
+    } else {
+      document.cookie = `googtrans=/id/${lang}; path=/`;
+      document.cookie = `googtrans=/id/${lang}; path=/; domain=${window.location.hostname}`;
+      window.location.reload();
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen scroll-smooth" style={{ scrollPaddingTop: '160px' }}>
       {/* Navbar */}
@@ -478,6 +496,14 @@ function LandingView({ navigateTo, beritaList }: any) {
                 <button className="md:hidden text-emerald-700 p-2 hover:bg-emerald-100 rounded-full transition-colors">
                   <Search className="w-5 h-5" />
                 </button>
+                <div className="flex items-center space-x-2 mr-2 bg-white/50 backdrop-blur-sm px-2 py-1 rounded-full border border-emerald-100">
+                  <button onClick={() => changeLanguage('id')} className="p-1 rounded-full hover:bg-emerald-100 transition-colors shadow-sm bg-white border border-gray-100" title="Bahasa Indonesia">
+                    <img src="https://flagcdn.com/w40/id.png" alt="ID" className="w-5 h-5 object-cover rounded-full" />
+                  </button>
+                  <button onClick={() => changeLanguage('en')} className="p-1 rounded-full hover:bg-emerald-100 transition-colors shadow-sm bg-white border border-gray-100" title="English">
+                    <img src="https://flagcdn.com/w40/gb.png" alt="EN" className="w-5 h-5 object-cover rounded-full" />
+                  </button>
+                </div>
                 <button onClick={() => navigateTo('login')} className="flex items-center bg-emerald-600 text-white px-4 sm:px-6 py-2 rounded-full font-medium hover:bg-emerald-700 shadow-md hover:shadow-lg transition-all text-sm">
                   <LogOut className="w-4 h-4 sm:mr-1.5 rotate-180" /> <span className="hidden sm:inline">Masuk Portal</span>
                 </button>
@@ -618,12 +644,6 @@ function LandingView({ navigateTo, beritaList }: any) {
               <button onClick={() => navigateTo('login-admin')} className="hidden sm:flex opacity-0 hover:opacity-100 focus:opacity-100 text-emerald-600 transition-opacity items-center" title="Admin">
                 <ShieldCheck className="w-5 h-5 mr-1" />
                 <span className="font-medium text-sm">Admin</span>
-              </button>
-              <button className="flex items-center bg-gray-50 p-1.5 sm:p-2 rounded-lg border border-gray-100 transition-colors shadow-sm hover:shadow" title="Indonesia (ID)">
-                <div className="w-6 h-4 sm:w-7 sm:h-5 rounded-sm overflow-hidden border border-gray-200 flex flex-col shadow-inner">
-                  <div className="w-full h-1/2 bg-[#FF0000]"></div>
-                  <div className="w-full h-1/2 bg-white"></div>
-                </div>
               </button>
               <span className="xl:hidden border-l border-gray-200 h-6 mx-1"></span>
               <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="xl:hidden flex items-center text-gray-600 hover:text-emerald-600 transition-colors bg-gray-50 border border-gray-100 p-1.5 rounded-lg shadow-sm">
