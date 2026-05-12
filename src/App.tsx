@@ -1782,7 +1782,15 @@ function LandingView({ navigateTo, beritaList }: any) {
                                   <div className="relative w-full flex flex-col items-center pt-8 space-y-6">
                                       <div className="absolute top-0 bottom-[30px] left-[50%] -ml-[1.5px] w-[3px] bg-emerald-600 z-0"></div>
                                       
-                                      <OrgCard title="SDM Syariah" list={["H. Fatah Rosihan A., M.M.", "Syaefudin Zuhri, S.Ag."]} className="w-[155px] z-10 relative" />
+                                      <OrgCard 
+                                        title="SDM Syariah" 
+                                        list={["H. Fatah Rosihan A., M.M.", "Syaefudin Zuhri, S.Ag."]} 
+                                        className="w-[155px] z-10 relative" 
+                                        allowUpload={true}
+                                        defaultImages={{
+                                          "H. Fatah Rosihan A., M.M.": "/fatah.jpg"
+                                        }}
+                                      />
                                       <OrgCard 
                                         title="Auditor Halal" 
                                         list={["Siti Khuzaimah, S.T., M.T.", "dr. Atingul Marifah", "Anisha Dian I., S.T., M.Sc."]} 
@@ -2558,6 +2566,24 @@ function LandingView({ navigateTo, beritaList }: any) {
                     <p className="text-gray-700">
                       Sebagai bagian dari LPH yang lahir dalam naungan perguruan tinggi Nahdlatul Ulama (UNUGHA), SDM Syariah Al-Ghazali sangat memegang teguh prinsip <em>Ahlussunnah Wal Jamaah</em> yang moderat (tawassuth), seimbang (tawazun), adil (i'tidal), dan toleran (tasamuh) namun tetap istiqamah dalam menjaga batasan syariat yang qath'i terkait halalan thayyiban.
                     </p>
+                  </section>
+
+                  <section className="mt-8 pt-8 border-t border-emerald-100">
+                    <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center justify-center">
+                      <Users className="w-6 h-6 mr-3 text-emerald-600" />
+                      SDM Syariah lph Al-Ghazali
+                    </h3>
+                    <div className="flex flex-wrap gap-6 justify-center">
+                        <OrgCard 
+                          title="SDM Syariah" 
+                          list={["H. Fatah Rosihan A., M.M.", "Syaefudin Zuhri, S.Ag."]} 
+                          className="w-full sm:w-[350px] z-10 relative" 
+                          allowUpload={true} 
+                          defaultImages={{
+                            "H. Fatah Rosihan A., M.M.": "/fatah.jpg"
+                          }}
+                        />
+                    </div>
                   </section>
 
                   <div className="pt-16 mt-12 border-t border-gray-200">
