@@ -1788,7 +1788,8 @@ function LandingView({ navigateTo, beritaList }: any) {
                                         className="w-[155px] z-10 relative" 
                                         allowUpload={true}
                                         defaultImages={{
-                                          "H. Fatah Rosihan A., M.M.": "/fatah.jpg"
+                                          "H. Fatah Rosihan A., M.M.": "/fatah.jpg",
+                                          "Syaefudin Zuhri, S.Ag.": "/syaefudin.jpg"
                                         }}
                                       />
                                       <OrgCard 
@@ -2580,7 +2581,8 @@ function LandingView({ navigateTo, beritaList }: any) {
                           className="w-full sm:w-[350px] z-10 relative" 
                           allowUpload={true} 
                           defaultImages={{
-                            "H. Fatah Rosihan A., M.M.": "/fatah.jpg"
+                            "H. Fatah Rosihan A., M.M.": "/fatah.jpg",
+                            "Syaefudin Zuhri, S.Ag.": "/syaefudin.jpg"
                           }}
                         />
                     </div>
