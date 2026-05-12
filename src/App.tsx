@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signOut } from 'firebase/auth';
 import { getFirestore, collection, onSnapshot, addDoc, updateDoc, doc, serverTimestamp, deleteDoc, setDoc } from 'firebase/firestore';
-import { Leaf, Home, FileText, LogOut, PlusCircle, Settings, CheckCircle, Clock, Search, Briefcase, FileSignature, UploadCloud, ArrowLeft, ArrowRight, ShieldCheck, Zap, MonitorSmartphone, UserCheck, Newspaper, Edit, Trash2, X, Image as ImageIcon, Route, Coins, ChevronDown, ChevronRight, Calculator, Receipt, CalendarDays, Activity, Video, Link, MapPin, Phone, Mail, Facebook, Twitter, Instagram, Linkedin, History, Target, Award, Network, Users, BookOpen, Handshake, Menu, Scale, Landmark, CheckCircle2, FlaskConical, FileEdit } from 'lucide-react';
+import { Leaf, Home, FileText, LogOut, PlusCircle, Settings, CheckCircle, Clock, Search, Briefcase, FileSignature, UploadCloud, ArrowLeft, ArrowRight, ShieldCheck, Zap, MonitorSmartphone, UserCheck, Newspaper, Edit, Trash2, X, Image as ImageIcon, Route, Coins, ChevronDown, ChevronRight, Calculator, Receipt, CalendarDays, Activity, Video, Link, MapPin, Phone, Mail, Facebook, Twitter, Instagram, Linkedin, History, Target, Award, Network, Users, BookOpen, Handshake, Menu, Scale, Landmark, CheckCircle2, FlaskConical, FileEdit, Globe } from 'lucide-react';
 
 const OrgCard = ({ title, name, list, className = "", noHover = false }: any) => (
     <div className={`flex flex-col bg-white border-2 border-emerald-700 rounded-xl shadow-lg shadow-emerald-900/5 overflow-hidden ring-1 ring-emerald-500/20 ${!noHover ? 'hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-emerald-900/10 hover:border-emerald-600 transition-all duration-300' : ''} ${className}`}>
@@ -1456,6 +1456,10 @@ function LandingView({ navigateTo, beritaList }: any) {
                         <li className="flex items-center group cursor-pointer">
                            <span className="mr-3 text-emerald-500 group-hover:text-emerald-400 transition-colors"><Mail className="w-5 h-5" /></span>
                            <span className="group-hover:text-gray-300 transition-colors">lphalghazali@gmail.com</span>
+                        </li>
+                        <li className="flex items-center group cursor-pointer">
+                           <span className="mr-3 text-emerald-500 group-hover:text-emerald-400 transition-colors"><Globe className="w-5 h-5" /></span>
+                           <a href="https://halal.unugha.ac.id" target="_blank" rel="noopener noreferrer" className="group-hover:text-gray-300 transition-colors">halal.unugha.ac.id</a>
                         </li>
                         <li className="flex items-start group">
                            <span className="mt-1 mr-3 text-emerald-500 group-hover:text-emerald-400 transition-colors"><Clock className="w-5 h-5" /></span>
