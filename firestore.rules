@@ -30,10 +30,8 @@ service cloud.firestore {
 
     match /artifacts/{appId}/public/pengajuan_halal/{pengajuanId} {
       allow create: if isSignedIn() && incoming().userId == request.auth.uid;
-      // You can only view your own or if you're staff (we'll just loosely allow staff by checking if they are not in the 'pu' collection, or simply allow list if isSignedIn since this is early setup)
-      // Note: A strict rule would be:
-      allow read: if isSignedIn() && (existing().userId == request.auth.uid || request.auth.token.email_verified == true || request.auth.uid != null); // Loose for now to allow staff
-      allow update: if isSignedIn() && (existing().userId == request.auth.uid || request.auth.uid != null);
+      allow read: if isSignedIn(); // Let client filter for now to avoid permission denied on full collection query
+      allow update: if isSignedIn(); // Allows staff and PU to update
       allow delete: if isSignedIn() && existing().userId == request.auth.uid;
     }
 
