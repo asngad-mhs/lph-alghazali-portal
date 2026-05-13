@@ -6,12 +6,9 @@ import { Leaf, Home, FileText, LogOut, PlusCircle, Settings, CheckCircle, Clock,
 import CryptoJS from 'crypto-js';
 
 const OrgCard = ({ title, name, list, className = "", noHover = false, allowUpload = false, defaultImages = {}, onImageChange }: any) => {
-    const [images, setImages] = useState<Record<string, string>>(defaultImages || {});
+    const [images, setImages] = useState<Record<string, string>>({});
 
-    // Effect to reflect defaultImages changes
-    useEffect(() => {
-        setImages(defaultImages || {});
-    }, [defaultImages]);
+    const getImage = (identifier: string) => images[identifier] || defaultImages[identifier];
 
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, itemIdentifier: string) => {
         const file = e.target.files?.[0];
@@ -42,7 +39,7 @@ const OrgCard = ({ title, name, list, className = "", noHover = false, allowUplo
                 <div className="p-3.5 flex-grow flex flex-col justify-center bg-gradient-to-br from-white to-emerald-50/50">
                     {name && (
                         <div className="flex flex-col items-center mb-2 last:mb-0 group relative">
-                            {images[name] && <img src={images[name]} alt={name} onError={handleImageError} className="w-12 h-12 rounded-full object-cover mb-1 border border-emerald-200" />}
+                            {getImage(name) && <img src={getImage(name)} alt={name} onError={handleImageError} className="w-12 h-12 rounded-full object-cover mb-1 border border-emerald-200" />}
                             <p className="text-[11px] font-bold text-gray-800 text-center uppercase tracking-wide">{name}</p>
                             {allowUpload && (
                                 <label className="text-[8px] text-emerald-600 cursor-pointer mt-0.5 hover:underline flex items-center bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -58,7 +55,7 @@ const OrgCard = ({ title, name, list, className = "", noHover = false, allowUplo
                                 <li key={i} className="pl-1 group relative">
                                     <div className="flex flex-col items-start w-full">
                                         <span>{item}</span>
-                                        {images[item] && <img src={images[item]} alt={item} onError={handleImageError} className="mt-1 w-12 h-12 rounded-full object-cover border border-emerald-200" />}
+                                        {getImage(item) && <img src={getImage(item)} alt={item} onError={handleImageError} className="mt-1 w-12 h-12 rounded-full object-cover border border-emerald-200" />}
                                         {allowUpload && (
                                             <label className="text-[8px] text-emerald-600 cursor-pointer mt-1 hover:underline flex items-center bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100 opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <UploadCloud className="w-2.5 h-2.5 mr-0.5" /> Foto Profil
@@ -258,19 +255,23 @@ export default function LPHApp() {
 
     if (firebaseConfig.projectId !== 'mock-project') {
       // Fetch Pengajuan
-      const pengajuanRef = collection(db, 'artifacts', appId, 'public', 'pengajuan_halal');
+      const pengajuanRef = collection(db, 'artifacts', appId, 'public', 'data', 'pengajuan_halal');
       const unsubscribeData = onSnapshot(pengajuanRef, (snapshot) => {
-        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as any[];
         data.sort((a, b) => b.createdAt - a.createdAt);
         setPengajuanList(data);
+      }, (error) => {
+        handleFirestoreError(error, OperationType.GET, 'artifacts/{appId}/public/data/pengajuan_halal');
       });
 
       // Fetch Berita & Artikel
-      const beritaRef = collection(db, 'artifacts', appId, 'public', 'berita');
+      const beritaRef = collection(db, 'artifacts', appId, 'public', 'data', 'berita');
       const unsubscribeBerita = onSnapshot(beritaRef, (snapshot) => {
-        const bData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const bData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as any[];
         bData.sort((a, b) => b.createdAt - a.createdAt);
         setBeritaList(bData);
+      }, (error) => {
+        handleFirestoreError(error, OperationType.GET, 'artifacts/{appId}/public/data/berita');
       });
 
       return () => {
@@ -299,7 +300,7 @@ export default function LPHApp() {
       };
       
       if (firebaseConfig.projectId !== 'mock-project') {
-        const pengajuanRef = doc(db, 'artifacts', appId, 'public', 'pengajuan_halal', newPengajuan.id);
+        const pengajuanRef = doc(db, 'artifacts', appId, 'public', 'data', 'pengajuan_halal', newPengajuan.id);
         await setDoc(pengajuanRef, newPengajuan);
       } else {
         setPengajuanList([newPengajuan, ...pengajuanList]);
@@ -320,7 +321,7 @@ export default function LPHApp() {
       const updatedHistory = existingPengajuan?.history ? [...existingPengajuan.history, newHistoryEntry] : [newHistoryEntry];
 
       if (firebaseConfig.projectId !== 'mock-project') {
-        const docRef = doc(db, 'artifacts', appId, 'public', 'pengajuan_halal', id);
+        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'pengajuan_halal', id);
         await updateDoc(docRef, { status: newStatus, history: updatedHistory });
       } else {
         setPengajuanList(pengajuanList.map(p => p.id === id ? { ...p, status: newStatus, history: updatedHistory } : p));
@@ -336,7 +337,7 @@ export default function LPHApp() {
     try {
       const newBerita = { ...formData, createdAt: Date.now(), id: Math.random().toString(36).substr(2, 9) };
       setBeritaList([newBerita, ...beritaList]);
-      const beritaRef = collection(db, 'artifacts', appId, 'public', 'berita');
+      const beritaRef = collection(db, 'artifacts', appId, 'public', 'data', 'berita');
       await addDoc(beritaRef, { ...formData, createdAt: Date.now() });
     } catch (error) {
       console.error("Error adding berita: ", error);
@@ -348,7 +349,7 @@ export default function LPHApp() {
     if (!user) return;
     try {
       setBeritaList(beritaList.map(b => b.id === id ? { ...b, ...formData, updatedAt: Date.now() } : b));
-      const docRef = doc(db, 'artifacts', appId, 'public', 'berita', id);
+      const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'berita', id);
       await updateDoc(docRef, { ...formData, updatedAt: Date.now() });
     } catch (error) {
       console.error("Error updating berita: ", error);
@@ -361,7 +362,7 @@ export default function LPHApp() {
     if (window.confirm("Apakah Anda yakin ingin menghapus berita ini?")) {
         try {
           setBeritaList(beritaList.filter(b => b.id !== id));
-          const docRef = doc(db, 'artifacts', appId, 'public', 'berita', id);
+          const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'berita', id);
           await deleteDoc(docRef);
         } catch (error) {
         console.error("Error deleting berita: ", error);
@@ -468,6 +469,8 @@ function LandingView({ navigateTo, beritaList }: any) {
       if (docSnap.exists()) {
         setSettings(docSnap.data());
       }
+    }, (error) => {
+        handleFirestoreError(error, OperationType.GET, 'artifacts/{appId}/public/system_settings');
     });
     return () => unsubscribe();
   }, []);
@@ -3567,8 +3570,10 @@ function AuthView({ navigateTo, setRole, roleType = 'pu' }: any) {
       setRole(expectedRole);
       try {
          await signInAnonymously(auth);
-      } catch (authError) {
-         console.warn("Could not sign in anonymously as staff", authError);
+      } catch (authError: any) {
+         if (authError.code !== 'auth/operation-not-allowed') {
+             console.warn("Could not sign in anonymously as staff", authError);
+         }
       }
       navigateTo(expectedRole === 'admin' ? 'admin-dashboard' : 'auditor-dashboard');
     } catch (e: any) {
@@ -3607,8 +3612,10 @@ function AuthView({ navigateTo, setRole, roleType = 'pu' }: any) {
        setRole('pu');
        navigateTo('pu-dashboard');
     } catch (e: any) {
-       console.error("Auth error:", e);
-       setErrorMsg(e.code === 'auth/operation-not-allowed' ? 'Silakan gunakan login Google, atau aktifkan Email/Password sign-in di Firebase Console.' : (e.message || 'Gagal login/registrasi.'));
+       if (e.code !== 'auth/operation-not-allowed') {
+           console.error("Auth error:", e);
+       }
+       setErrorMsg(e.code === 'auth/operation-not-allowed' ? 'Silakan gunakan tombol "Masuk dengan Google" di bawah, karena Email/Password tidak diaktifkan.' : (e.message || 'Gagal login/registrasi.'));
     } finally {
        setLoading(false);
     }
@@ -5154,6 +5161,8 @@ function AdminSettings() {
            integrasi: { ...prev.integrasi, ...(data.integrasi || {}) },
         }));
       }
+    }, (error) => {
+        handleFirestoreError(error, OperationType.GET, 'artifacts/{appId}/public/system_settings');
     });
     return () => unsubscribe();
   }, []);

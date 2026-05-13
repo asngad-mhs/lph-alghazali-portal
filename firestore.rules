@@ -17,22 +17,25 @@ service cloud.firestore {
       return request.resource.data;
     }
 
-    // Since we don't have Admin SDK, anyone authenticated using an admin email can be an admin
-    // Or we allow arbitrary reads from system_settings for authentication
+    match /artifacts/{appId}/{document=**} {
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+
     match /artifacts/{appId}/public/system_settings {
-      allow read: if true; // Allows the local client to check admin hashes
-      allow write: if isSignedIn(); // We'll assume any signed in admin can write
+      allow read: if true;
+      allow write: if isSignedIn();
     }
 
     match /users/{userId} {
       allow read, write: if isSignedIn() && request.auth.uid == userId;
     }
 
-    match /artifacts/{appId}/public/pengajuan_halal/{pengajuanId} {
-      allow create: if isSignedIn() && incoming().userId == request.auth.uid;
-      allow read: if isSignedIn(); // Let client filter for now to avoid permission denied on full collection query
-      allow update: if isSignedIn(); // Allows staff and PU to update
-      allow delete: if isSignedIn() && existing().userId == request.auth.uid;
+    match /artifacts/{appId}/public/data/pengajuan_halal/{pengajuanId} {
+      allow read: if true; 
+      allow create: if isSignedIn();
+      allow update: if isSignedIn(); 
+      allow delete: if isSignedIn();
     }
 
     match /artifacts/{appId}/public/data/berita/{beritaId} {
