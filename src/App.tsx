@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { initializeApp } from 'firebase/app';
-import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signOut } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInAnonymously, onAuthStateChanged, signOut, updateProfile } from 'firebase/auth';
 import { getFirestore, collection, onSnapshot, getDoc, addDoc, updateDoc, doc, serverTimestamp, deleteDoc, setDoc } from 'firebase/firestore';
 import { Leaf, Home, FileText, LogOut, PlusCircle, Settings, CheckCircle, Clock, Search, Briefcase, FileSignature, UploadCloud, ArrowLeft, ArrowRight, ShieldCheck, Zap, MonitorSmartphone, UserCheck, Newspaper, Edit, Trash2, X, Image as ImageIcon, Route, Coins, ChevronDown, ChevronRight, Calculator, Receipt, CalendarDays, Activity, Video, Link, MapPin, Phone, Mail, Facebook, Twitter, Instagram, Linkedin, History, Target, Award, Network, Users, BookOpen, Handshake, Menu, Scale, Landmark, CheckCircle2, FlaskConical, FileEdit, Globe } from 'lucide-react';
 import CryptoJS from 'crypto-js';
@@ -76,21 +76,58 @@ const OrgCard = ({ title, name, list, className = "", noHover = false, allowUplo
     );
 };
 
-// ==========================================
-// 1. FIREBASE INITIALIZATION (CLOUD SETUP)
-// ==========================================
-// @ts-ignore
-const firebaseConfig = typeof window !== 'undefined' && typeof (window as any).__firebase_config !== 'undefined' ? JSON.parse((window as any).__firebase_config) : {
-  apiKey: "mock-key",
-  authDomain: "mock.firebaseapp.com",
-  projectId: "mock-project",
-  storageBucket: "mock.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "1:123456789:web:abcdef"
-};
+enum OperationType {
+  CREATE = 'create',
+  UPDATE = 'update',
+  DELETE = 'delete',
+  LIST = 'list',
+  GET = 'get',
+  WRITE = 'write',
+}
+
+interface FirestoreErrorInfo {
+  error: string;
+  operationType: OperationType;
+  path: string | null;
+  authInfo: {
+    userId?: string | null;
+    email?: string | null;
+    emailVerified?: boolean | null;
+    isAnonymous?: boolean | null;
+    tenantId?: string | null;
+    providerInfo?: {
+      providerId?: string | null;
+      email?: string | null;
+    }[];
+  }
+}
+
+function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null) {
+  const errInfo: FirestoreErrorInfo = {
+    error: error instanceof Error ? error.message : String(error),
+    authInfo: {
+      userId: auth.currentUser?.uid,
+      email: auth.currentUser?.email,
+      emailVerified: auth.currentUser?.emailVerified,
+      isAnonymous: auth.currentUser?.isAnonymous,
+      tenantId: auth.currentUser?.tenantId,
+      providerInfo: auth.currentUser?.providerData?.map(provider => ({
+        providerId: provider.providerId,
+        email: provider.email,
+      })) || []
+    },
+    operationType,
+    path
+  };
+  console.error('Firestore Error: ', JSON.stringify(errInfo));
+  throw new Error(JSON.stringify(errInfo));
+}
+
+import firebaseConfig from '../firebase-applet-config.json';
+
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app);
+export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
 // @ts-ignore
 const appId = typeof __app_id !== 'undefined' ? __app_id : 'lph-alghazali-app';
 
@@ -183,33 +220,13 @@ export default function LPHApp() {
   // 2. AUTHENTICATION & DATA FETCHING
   // ==========================================
   useEffect(() => {
-    const initAuth = async () => {
-      try {
-        // @ts-ignore
-        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-          // @ts-ignore
-          await signInWithCustomToken(auth, __initial_auth_token);
-        } else {
-          // Use mock login for preview
-          // await signInAnonymously(auth);
-        }
-      } catch (error) {
-        console.error("Auth error:", error);
-      }
-    };
-    initAuth();
+    setIsLoading(true);
 
-    // Mock an initial user to see dashboard logic
-    setUser({ uid: 'mock-user-123' });
-    setIsLoading(false);
-
-    /* Real Auth Listener (disabled for preview if no actual firebase)
     const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       setIsLoading(false);
     });
     return () => unsubscribeAuth();
-    */
   }, []);
 
   useEffect(() => {
@@ -241,7 +258,7 @@ export default function LPHApp() {
 
     if (firebaseConfig.projectId !== 'mock-project') {
       // Fetch Pengajuan
-      const pengajuanRef = collection(db, 'artifacts', appId, 'public', 'data', 'pengajuan_halal');
+      const pengajuanRef = collection(db, 'artifacts', appId, 'public', 'pengajuan_halal');
       const unsubscribeData = onSnapshot(pengajuanRef, (snapshot) => {
         const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         data.sort((a, b) => b.createdAt - a.createdAt);
@@ -249,7 +266,7 @@ export default function LPHApp() {
       });
 
       // Fetch Berita & Artikel
-      const beritaRef = collection(db, 'artifacts', appId, 'public', 'data', 'berita');
+      const beritaRef = collection(db, 'artifacts', appId, 'public', 'berita');
       const unsubscribeBerita = onSnapshot(beritaRef, (snapshot) => {
         const bData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         bData.sort((a, b) => b.createdAt - a.createdAt);
@@ -319,10 +336,8 @@ export default function LPHApp() {
     try {
       const newBerita = { ...formData, createdAt: Date.now(), id: Math.random().toString(36).substr(2, 9) };
       setBeritaList([newBerita, ...beritaList]);
-      /* Real Add
-      const beritaRef = collection(db, 'artifacts', appId, 'public', 'data', 'berita');
+      const beritaRef = collection(db, 'artifacts', appId, 'public', 'berita');
       await addDoc(beritaRef, { ...formData, createdAt: Date.now() });
-      */
     } catch (error) {
       console.error("Error adding berita: ", error);
       alert("Gagal menyimpan berita ke cloud.");
@@ -333,10 +348,8 @@ export default function LPHApp() {
     if (!user) return;
     try {
       setBeritaList(beritaList.map(b => b.id === id ? { ...b, ...formData, updatedAt: Date.now() } : b));
-      /* Real Update
-      const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'berita', id);
+      const docRef = doc(db, 'artifacts', appId, 'public', 'berita', id);
       await updateDoc(docRef, { ...formData, updatedAt: Date.now() });
-      */
     } catch (error) {
       console.error("Error updating berita: ", error);
       alert("Gagal memperbarui berita.");
@@ -348,10 +361,8 @@ export default function LPHApp() {
     if (window.confirm("Apakah Anda yakin ingin menghapus berita ini?")) {
         try {
           setBeritaList(beritaList.filter(b => b.id !== id));
-          /* Real Delete
-          const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'berita', id);
+          const docRef = doc(db, 'artifacts', appId, 'public', 'berita', id);
           await deleteDoc(docRef);
-          */
         } catch (error) {
         console.error("Error deleting berita: ", error);
         alert("Gagal menghapus berita.");
@@ -3554,6 +3565,11 @@ function AuthView({ navigateTo, setRole, roleType = 'pu' }: any) {
       }
 
       setRole(expectedRole);
+      try {
+         await signInAnonymously(auth);
+      } catch (authError) {
+         console.warn("Could not sign in anonymously as staff", authError);
+      }
       navigateTo(expectedRole === 'admin' ? 'admin-dashboard' : 'auditor-dashboard');
     } catch (e: any) {
        console.error(e);
@@ -3562,7 +3578,7 @@ function AuthView({ navigateTo, setRole, roleType = 'pu' }: any) {
     setLoading(false);
   };
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     setLoading(true);
     setErrorMsg('');
@@ -3572,12 +3588,30 @@ function AuthView({ navigateTo, setRole, roleType = 'pu' }: any) {
        return;
     }
 
-    // Simulate auth delay for PU
-    setTimeout(() => {
-      setLoading(false);
-      setRole(selectedRole);
-      navigateTo('pu-dashboard');
-    }, 1000);
+    try {
+       if (isLogin) {
+          await signInWithEmailAndPassword(auth, email, password);
+       } else {
+          const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+          // Optional: Add to users collection using handleFirestoreError
+          try {
+             await setDoc(doc(db, 'users', userCredential.user.uid), {
+                email: email,
+                role: 'pu',
+                createdAt: Date.now()
+             });
+          } catch (firestoreError) {
+             console.error("Error creating user doc:", firestoreError);
+          }
+       }
+       setRole('pu');
+       navigateTo('pu-dashboard');
+    } catch (e: any) {
+       console.error("Auth error:", e);
+       setErrorMsg(e.message || 'Gagal login/registrasi.');
+    } finally {
+       setLoading(false);
+    }
   };
 
   return (
