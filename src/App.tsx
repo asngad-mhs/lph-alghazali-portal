@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInAnonymously, onAuthStateChanged, signOut, updateProfile, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { getFirestore, collection, onSnapshot, getDoc, addDoc, updateDoc, doc, serverTimestamp, deleteDoc, setDoc } from 'firebase/firestore';
+import { getFirestore, collection, onSnapshot, getDoc, addDoc, updateDoc, doc, serverTimestamp, deleteDoc, setDoc, query, where } from 'firebase/firestore';
 import { Leaf, Home, FileText, LogOut, PlusCircle, Settings, CheckCircle, Clock, Search, Briefcase, FileSignature, UploadCloud, ArrowLeft, ArrowRight, ShieldCheck, Zap, MonitorSmartphone, UserCheck, Newspaper, Edit, Trash2, X, Image as ImageIcon, Route, Coins, ChevronDown, ChevronRight, Calculator, Receipt, CalendarDays, Activity, Video, Link, MapPin, Phone, Mail, Facebook, Twitter, Instagram, Linkedin, History, Target, Award, Network, Users, BookOpen, Handshake, Menu, Scale, Landmark, CheckCircle2, FlaskConical, FileEdit, Globe } from 'lucide-react';
 import CryptoJS from 'crypto-js';
 
@@ -219,8 +219,26 @@ export default function LPHApp() {
   useEffect(() => {
     setIsLoading(true);
 
-    const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
+    const unsubscribeAuth = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        let role = 'pu';
+        if (firebaseConfig.projectId !== 'mock-project') {
+           try {
+             const userDocRef = doc(db, 'users', currentUser.uid);
+             const userDocSnap = await getDoc(userDocRef);
+             if (userDocSnap.exists()) {
+               role = userDocSnap.data().role || 'pu';
+             }
+           } catch(e) {
+             console.error("Error fetching user role", e);
+           }
+        }
+        setUserRole(role);
+        setUser(currentUser);
+      } else {
+        setUserRole('pu');
+        setUser(null);
+      }
       setIsLoading(false);
     });
     return () => unsubscribeAuth();
@@ -256,11 +274,16 @@ export default function LPHApp() {
     if (firebaseConfig.projectId !== 'mock-project') {
       // Fetch Pengajuan
       const pengajuanRef = collection(db, 'artifacts', appId, 'public', 'data', 'pengajuan_halal');
-      const unsubscribeData = onSnapshot(pengajuanRef, (snapshot) => {
-        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as any[];
+      let q = pengajuanRef as any;
+      if (userRole === 'pu') {
+        q = query(pengajuanRef, where('userId', '==', user.uid));
+      }
+
+      const unsubscribeData = onSnapshot(q, (snapshot: any) => {
+        const data = snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() })) as any[];
         data.sort((a, b) => b.createdAt - a.createdAt);
         setPengajuanList(data);
-      }, (error) => {
+      }, (error: any) => {
         handleFirestoreError(error, OperationType.GET, 'artifacts/{appId}/public/data/pengajuan_halal');
       });
 
@@ -279,7 +302,7 @@ export default function LPHApp() {
           unsubscribeBerita();
       };
     }
-  }, [user]);
+  }, [user, userRole]);
 
   // ==========================================
   // 3. CLOUD ACTIONS (WRITE TO FIRESTORE)
@@ -3516,71 +3539,90 @@ function AuthView({ navigateTo, setRole, roleType = 'pu' }: any) {
 
   const handleStaffLogin = async () => {
     try {
-      let staffList: any[] = [];
-      if (firebaseConfig.projectId !== 'mock-project') {
-        const settingsRef = doc(db, 'artifacts', appId, 'public', 'system_settings');
-        const docSnap = await getDoc(settingsRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          staffList = data.akunStaf || [];
+      setLoading(true);
+      setErrorMsg('');
+
+      let userCredential;
+      try {
+        userCredential = await signInWithEmailAndPassword(auth, email, password);
+      } catch (authError: any) {
+        if (authError.code === 'auth/user-not-found' || authError.code === 'auth/invalid-credential') {
+            // Auto-create example staff accounts
+            const EXAMPLE_STAFF: Record<string, string> = {
+              'admin@lphalghazali.com': 'admin',
+              'auditor@lphalghazali.com': 'auditor'
+            };
+            
+            if (EXAMPLE_STAFF[email]) {
+               try {
+                   userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                   const roleAssigned = EXAMPLE_STAFF[email];
+                   await setDoc(doc(db, 'users', userCredential.user.uid), {
+                       email: email,
+                       role: roleAssigned,
+                       createdAt: Date.now()
+                   });
+               } catch (createErr: any) {
+                   throw authError;
+               }
+            } else {
+               throw authError; // Not an example staff, bubble up error
+            }
+        } else {
+            throw authError;
         }
       }
 
-      if (staffList.length === 0) {
-        // Fallback default mocked if empty
-        staffList = [
-          { email: 'admin@lphalghazali.com', role: 'Super Admin', status: 'Aktif', passwordHash: CryptoJS.SHA256('Admin123').toString() },
-          { email: 'ahmad.auditor@lphalghazali.com', role: 'Auditor Utama', status: 'Aktif', passwordHash: CryptoJS.SHA256('Audit123').toString() },
-          { email: 'keuangan@lphalghazali.com', role: 'Staf Keuangan', status: 'Aktif', passwordHash: CryptoJS.SHA256('Uang123').toString() }
-        ];
-      }
-
-      const foundUser = staffList.find((s: any) => s.email === email);
-      if (!foundUser) {
-        setErrorMsg('Email tidak ditemukan atau tidak memiliki akses staf.');
-        setLoading(false);
-        return;
-      }
-
-      if (foundUser.status !== 'Aktif') {
-        setErrorMsg('Akun Anda dinonaktifkan.');
-        setLoading(false);
-        return;
-      }
-
-      const inputHash = CryptoJS.SHA256(password).toString();
-      if (inputHash !== foundUser.passwordHash && foundUser.passwordHash) {
-        setErrorMsg('Kata sandi salah.');
-        setLoading(false);
-        return;
-      }
-
-      // Check role mapping
-      let expectedRole = 'pu';
-      if (foundUser.role === 'Super Admin') expectedRole = 'admin';
-      if (foundUser.role === 'Auditor Utama') expectedRole = 'auditor';
-      if (foundUser.role === 'Staf Keuangan') expectedRole = 'admin'; // just example, they might use admin portal
-
-      if (expectedRole !== selectedRole && foundUser.role !== 'Super Admin') {
-          setErrorMsg(`Role ini tidak diperuntukkan bagi ${foundUser.role}. Silahkan pilih role login yang sesuai.`);
-          setLoading(false);
-          return;
-      }
-
-      setRole(expectedRole);
-      try {
-         await signInAnonymously(auth);
-      } catch (authError: any) {
-         if (authError.code !== 'auth/operation-not-allowed') {
-             console.warn("Could not sign in anonymously as staff", authError);
+      // Verify the role in DB
+      let roleToSet = selectedRole;
+      if (firebaseConfig.projectId !== 'mock-project') {
+         const userDocRef = doc(db, 'users', userCredential.user.uid);
+         const userDocSnap = await getDoc(userDocRef);
+         
+         if (userDocSnap.exists()) {
+            const userData = userDocSnap.data();
+            if (userData.role === 'admin' || userData.role === 'auditor') {
+               roleToSet = userData.role;
+               if (selectedRole === 'admin' && userData.role !== 'admin') {
+                   throw new Error("Anda tidak memiliki akses sebagai Admin Pusat.");
+               }
+               if (selectedRole === 'auditor' && userData.role !== 'auditor' && userData.role !== 'admin') {
+                   throw new Error("Anda tidak memiliki akses sebagai Auditor.");
+               }
+            } else {
+               throw new Error("Akun ini bukan merupakan akun Staf/Admin.");
+            }
+         } else {
+            // Ensure example staff data exists in database
+            if (email === 'admin@lphalghazali.com' || email === 'auditor@lphalghazali.com') {
+                const roleAssigned = email === 'admin@lphalghazali.com' ? 'admin' : 'auditor';
+                await setDoc(userDocRef, {
+                    email: email,
+                    role: roleAssigned,
+                    createdAt: Date.now()
+                });
+                roleToSet = roleAssigned;
+            } else {
+                throw new Error("Data Role Admin tidak ditemukan di database.");
+            }
          }
       }
-      navigateTo(expectedRole === 'admin' ? 'admin-dashboard' : 'auditor-dashboard');
+
+      setRole(roleToSet);
+      navigateTo(roleToSet === 'admin' ? 'admin-dashboard' : 'auditor-dashboard');
+      
     } catch (e: any) {
-       console.error(e);
-       setErrorMsg('Koneksi database gagal: ' + e.message);
+       console.error("Staff Login Error:", e);
+       if (e.code === 'auth/operation-not-allowed') {
+         setErrorMsg('Fitur masuk dengan Email belum diaktifkan. Silakan aktifkan di Firebase Console.');
+       } else if (e.code === 'auth/user-not-found' || e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') {
+         setErrorMsg('Email atau kata sandi admin salah.');
+       } else {
+         setErrorMsg(e.message || 'Gagal masuk. Periksa kembali data Anda.');
+       }
+    } finally {
+       setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleSubmit = async (e: any) => {
@@ -3598,7 +3640,6 @@ function AuthView({ navigateTo, setRole, roleType = 'pu' }: any) {
           await signInWithEmailAndPassword(auth, email, password);
        } else {
           const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-          // Optional: Add to users collection using handleFirestoreError
           try {
              await setDoc(doc(db, 'users', userCredential.user.uid), {
                 email: email,
@@ -3612,10 +3653,16 @@ function AuthView({ navigateTo, setRole, roleType = 'pu' }: any) {
        setRole('pu');
        navigateTo('pu-dashboard');
     } catch (e: any) {
-       if (e.code !== 'auth/operation-not-allowed') {
-           console.error("Auth error:", e);
+       console.error("Auth error:", e);
+       if (e.code === 'auth/operation-not-allowed') {
+         setErrorMsg('Fitur masuk dengan Email belum diaktifkan. Silakan aktifkan Email/Password di Firebase Console.');
+       } else if (e.code === 'auth/user-not-found' || e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') {
+         setErrorMsg('Email atau kata sandi yang Anda masukkan salah.');
+       } else if (e.code === 'auth/email-already-in-use') {
+         setErrorMsg('Email ini sudah terdaftar. Silakan pilih "Sudah punya akun? Masuk di sini".');
+       } else {
+         setErrorMsg(e.message || 'Gagal masuk. Periksa kembali data Anda.');
        }
-       setErrorMsg(e.code === 'auth/operation-not-allowed' ? 'Silakan gunakan tombol "Masuk dengan Google" di bawah, karena Email/Password tidak diaktifkan.' : (e.message || 'Gagal login/registrasi.'));
     } finally {
        setLoading(false);
     }
@@ -3632,8 +3679,17 @@ function AuthView({ navigateTo, setRole, roleType = 'pu' }: any) {
         <p className="text-emerald-200 text-sm">&copy; 2026 LPH Al-Ghazali</p>
       </div>
 
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 bg-white">
-        <div className="w-full max-w-md">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 bg-white relative">
+        <button 
+          onClick={() => navigateTo('landing')}
+          className="absolute top-6 left-6 flex items-center text-gray-500 hover:text-emerald-600 transition-colors"
+          type="button"
+        >
+          <ArrowLeft className="w-5 h-5 mr-1" />
+          <span className="text-sm font-medium">Kembali</span>
+        </button>
+
+        <div className="w-full max-w-md mt-6 lg:mt-0">
           <div className="lg:hidden flex items-center justify-center mb-8">
             <Logo className="h-12 w-12 mr-2" />
             <h1 className="text-2xl font-bold text-emerald-600">LPH Al-Ghazali</h1>
@@ -3645,7 +3701,7 @@ function AuthView({ navigateTo, setRole, roleType = 'pu' }: any) {
           <form onSubmit={handleSubmit} className="space-y-6">
             {errorMsg && (
                 <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm border border-red-100 flex items-center">
-                   <CheckCircle className="w-4 h-4 mr-2" /> {errorMsg}
+                   <X className="w-4 h-4 mr-2 shrink-0" /> {errorMsg}
                 </div>
             )}
             {!isLogin && roleType === 'pu' && (
@@ -3676,41 +3732,6 @@ function AuthView({ navigateTo, setRole, roleType = 'pu' }: any) {
               {loading ? 'Memproses...' : (isLogin ? 'Masuk ke Dashboard' : 'Daftar Sekarang')}
             </button>
             
-            {roleType === 'pu' && (
-               <>
-                  <div className="relative mt-6">
-                    <div className="absolute inset-0 flex items-center">
-                      <div className="w-full border-t border-gray-300"></div>
-                    </div>
-                    <div className="relative flex justify-center text-sm">
-                      <span className="px-2 bg-white text-gray-500">Atau lanjutkan dengan</span>
-                    </div>
-                  </div>
-                  
-                  <button 
-                     type="button" 
-                     onClick={async () => {
-                        try {
-                           const provider = new GoogleAuthProvider();
-                           await signInWithPopup(auth, provider);
-                           setRole('pu');
-                           navigateTo('pu-dashboard');
-                        } catch (err: any) {
-                           setErrorMsg(err.message);
-                        }
-                     }}
-                     className="w-full flex items-center justify-center py-3 px-4 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors"
-                  >
-                     <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
-                        <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-                     </svg>
-                     Google Account
-                  </button>
-               </>
-            )}
           </form>
 
           {roleType === 'pu' && (
@@ -3718,6 +3739,13 @@ function AuthView({ navigateTo, setRole, roleType = 'pu' }: any) {
               <p className="text-sm text-gray-600">
                 {isLogin ? 'Belum punya akun? ' : 'Sudah punya akun? '}
                 <button onClick={() => setIsLogin(!isLogin)} className="font-bold text-emerald-600 hover:text-emerald-500">{isLogin ? 'Daftar di sini' : 'Masuk di sini'}</button>
+              </p>
+            </div>
+          )}
+          {roleType === 'staff' && (
+            <div className="mt-8 text-center">
+              <p className="text-sm text-gray-600">
+                Hubungi administrator jika Anda lupa kata sandi.
               </p>
             </div>
           )}

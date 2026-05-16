@@ -1,14 +1,71 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /artifacts/{document=**} {
-      allow read, write: if true;
+    
+    function isSignedIn() {
+      return request.auth != null;
     }
-    match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+    
+    function getRole() {
+      return exists(/databases/$(database)/documents/users/$(request.auth.uid)) 
+        ? get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role 
+        : null;
     }
+    
+    function isStaff() {
+      let role = getRole();
+      return role == 'admin' || role == 'auditor';
+    }
+    
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
     match /{document=**} {
-      allow read, write: if request.auth != null;
+      allow read, write: if false;
+    }
+
+    match /artifacts/{appId} {
+      // System Settings
+      match /public/system_settings {
+        allow read: if true;
+        allow write: if isSignedIn() && isStaff();
+      }
+      
+      // Berita
+      match /public/data/berita/{beritaId} {
+        allow read: if true;
+        allow write: if isSignedIn() && isStaff();
+      }
+      
+      // Pengajuan Halal
+      match /public/data/pengajuan_halal/{pengajuanId} {
+        // PU only reads their own. Staff reads all.
+        allow read: if isSignedIn() && (
+          isStaff() || 
+          resource.data.userId == request.auth.uid
+        );
+        
+        allow create: if isSignedIn();
+        // Allow PU to update their own, or Staff to update
+        allow update: if isSignedIn() && (
+          isStaff() || 
+          resource.data.userId == request.auth.uid
+        );
+        
+        allow delete: if isSignedIn() && isStaff();
+      }
+    }
+    
+    match /users/{userId} {
+      // Users can read their own data.
+      allow get: if isSignedIn() && isOwner(userId);
+      // Let PU create their own profile, but enforce role='pu'. Staff roles created by admin.
+      allow create: if isSignedIn() && isOwner(userId) && (
+        request.resource.data.role == 'pu' || 
+        (request.resource.data.role in ['admin', 'auditor'] && request.auth.token.email in ['admin@lphalghazali.com', 'auditor@lphalghazali.com'])
+      );
+      allow update: if isSignedIn() && isOwner(userId) && request.resource.data.role == resource.data.role; // Prevent role escalation
     }
   }
 }
