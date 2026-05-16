@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInAnonymously, onAuthStateChanged, signOut, updateProfile, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail } from 'firebase/auth';
-import { getFirestore, collection, onSnapshot, getDoc, addDoc, updateDoc, doc, serverTimestamp, deleteDoc, setDoc, query, where } from 'firebase/firestore';
+import { getFirestore, initializeFirestore, collection, onSnapshot, getDoc, addDoc, updateDoc, doc, serverTimestamp, deleteDoc, setDoc, query, where } from 'firebase/firestore';
 import { Leaf, Home, FileText, LogOut, PlusCircle, Settings, CheckCircle, Clock, Search, Briefcase, FileSignature, UploadCloud, ArrowLeft, ArrowRight, ShieldCheck, Zap, MonitorSmartphone, UserCheck, Newspaper, Edit, Trash2, X, Image as ImageIcon, Route, Coins, ChevronDown, ChevronRight, Calculator, Receipt, CalendarDays, Activity, Video, Link, MapPin, Phone, Mail, Facebook, Twitter, Instagram, Linkedin, History, Target, Award, Network, Users, BookOpen, Handshake, Menu, Scale, Landmark, CheckCircle2, FlaskConical, FileEdit, Globe, Key } from 'lucide-react';
 import CryptoJS from 'crypto-js';
 
@@ -117,24 +117,35 @@ function handleFirestoreError(error: unknown, operationType: OperationType, path
     path
   };
   console.error('Firestore Error: ', JSON.stringify(errInfo));
-  // DO NOT THROW HERE. Throwing inside an async callback (like onSnapshot) crashes the Firebase inner loop.
+  // If we catch a permission error here, we should probably set an error state instead of crashing.
 }
 
 import firebaseConfig from '../firebase-applet-config.json';
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+export const db = initializeFirestore(app, {
+  experimentalAutoDetectLongPolling: true,
+  forceLongPolling: true,
+}, firebaseConfig.firestoreDatabaseId);
 // @ts-ignore
-const appId = typeof __app_id !== 'undefined' ? __app_id : 'lph-alghazali-app';
+const currentAppId = typeof __app_id !== 'undefined' ? __app_id : 'lph-alghazali-app';
 
 export default function LPHApp() {
   const [user, setUser] = useState<any>(null);
-  const [currentView, setCurrentView] = useState('landing'); // landing, login, pu-dashboard, pu-pengajuan, admin-dashboard, admin-berita
-  const [userRole, setUserRole] = useState('pu'); // 'pu' atau 'admin'
+  const [currentView, setCurrentView] = useState('landing');
+  const [userRole, setUserRole] = useState('pu');
   const [pengajuanList, setPengajuanList] = useState<any[]>([]);
   const [beritaList, setBeritaList] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Connection Test - Removed to avoid potential race conditions and SDK assertion failures
+  useEffect(() => {
+    // Basic initialization log
+    if (firebaseConfig.projectId !== 'mock-project') {
+       console.log("Firebase initialized for project:", firebaseConfig.projectId);
+    }
+  }, []);
 
   // ==========================================
   // DYNAMIC SEO MANAGEMENT
@@ -225,16 +236,28 @@ export default function LPHApp() {
         if (firebaseConfig.projectId !== 'mock-project') {
            try {
              const userDocRef = doc(db, 'users', currentUser.uid);
-             const userDocSnap = await getDoc(userDocRef);
+             let userDocSnap = null;
+             try {
+               userDocSnap = await getDoc(userDocRef);
+             } catch (getErr) {
+               console.warn("Permission restricted or document missing on user doc fetch:", getErr);
+             }
              
-             if (userDocSnap.exists()) {
+             if (userDocSnap && userDocSnap.exists()) {
                role = userDocSnap.data().role || 'pu';
+               // Explicit staff upgrade check: Only upgrade if email is staff but role is PU
+               const staffEmails = ['admin@lphalghazali.com', 'auditor@lphalghazali.com', 'editor@lphalghazali.com', 'staf@lphalghazali.com', 'asngad@mhs.unugha.ac.id'];
+               if (role === 'pu' && currentUser.email && staffEmails.includes(currentUser.email)) {
+                  role = currentUser.email.split('@')[0] === 'asngad' ? 'admin' : currentUser.email.split('@')[0];
+                  await updateDoc(userDocRef, { role: role });
+               }
              } else {
-               // Auto-create profile if missing
-               role = (currentUser.email === 'admin@lphalghazali.com' || currentUser.email === 'auditor@lphalghazali.com') 
-                 ? currentUser.email.split('@')[0] 
+               // Determine initial role
+               const staffEmails = ['admin@lphalghazali.com', 'auditor@lphalghazali.com', 'editor@lphalghazali.com', 'staf@lphalghazali.com', 'asngad@mhs.unugha.ac.id'];
+               role = (currentUser.email && staffEmails.includes(currentUser.email)) 
+                 ? (currentUser.email.split('@')[0] === 'asngad' ? 'admin' : currentUser.email.split('@')[0]) 
                  : 'pu';
-                 
+                  
                await setDoc(userDocRef, {
                  name: currentUser.displayName || currentUser.email?.split('@')[0] || 'User',
                  email: currentUser.email,
@@ -243,11 +266,13 @@ export default function LPHApp() {
                });
              }
            } catch(e) {
-             console.error("Error fetching user role", e);
-             // If fetching fails, fallback to check email just in case
-             role = (currentUser.email === 'admin@lphalghazali.com' || currentUser.email === 'auditor@lphalghazali.com') 
-                 ? currentUser.email.split('@')[0] 
-                 : 'pu';
+             console.error("Error fetching/syncing user profile:", e);
+             // Safety fallback roles based on email
+             if (currentUser.email === 'admin@lphalghazali.com') role = 'admin';
+             else if (currentUser.email === 'auditor@lphalghazali.com') role = 'auditor';
+             else if (currentUser.email === 'editor@lphalghazali.com') role = 'editor';
+             else if (currentUser.email === 'staf@lphalghazali.com') role = 'staf';
+             else role = 'pu';
            }
         }
         setUserRole(role);
@@ -290,7 +315,7 @@ export default function LPHApp() {
 
     if (firebaseConfig.projectId !== 'mock-project') {
       // Fetch Pengajuan
-      const pengajuanRef = collection(db, 'artifacts', appId, 'public', 'data', 'pengajuan_halal');
+      const pengajuanRef = collection(db, 'artifacts', currentAppId, 'public', 'data', 'pengajuan_halal');
       let q = pengajuanRef as any;
       if (userRole === 'pu') {
         q = query(pengajuanRef, where('userId', '==', user.uid));
@@ -301,17 +326,17 @@ export default function LPHApp() {
         data.sort((a, b) => b.createdAt - a.createdAt);
         setPengajuanList(data);
       }, (error: any) => {
-        handleFirestoreError(error, OperationType.GET, 'artifacts/{appId}/public/data/pengajuan_halal');
+        handleFirestoreError(error, OperationType.GET, `artifacts/${currentAppId}/public/data/pengajuan_halal`);
       });
 
       // Fetch Berita & Artikel
-      const beritaRef = collection(db, 'artifacts', appId, 'public', 'data', 'berita');
+      const beritaRef = collection(db, 'artifacts', currentAppId, 'public', 'data', 'berita');
       const unsubscribeBerita = onSnapshot(beritaRef, (snapshot) => {
         const bData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as any[];
         bData.sort((a, b) => b.createdAt - a.createdAt);
         setBeritaList(bData);
       }, (error) => {
-        handleFirestoreError(error, OperationType.GET, 'artifacts/{appId}/public/data/berita');
+        handleFirestoreError(error, OperationType.GET, `artifacts/${currentAppId}/public/data/berita`);
       });
 
       return () => {
@@ -340,7 +365,7 @@ export default function LPHApp() {
       };
       
       if (firebaseConfig.projectId !== 'mock-project') {
-        const pengajuanRef = doc(db, 'artifacts', appId, 'public', 'data', 'pengajuan_halal', newPengajuan.id);
+        const pengajuanRef = doc(db, 'artifacts', currentAppId, 'public', 'data', 'pengajuan_halal', newPengajuan.id);
         await setDoc(pengajuanRef, newPengajuan);
       } else {
         setPengajuanList([newPengajuan, ...pengajuanList]);
@@ -361,7 +386,7 @@ export default function LPHApp() {
       const updatedHistory = existingPengajuan?.history ? [...existingPengajuan.history, newHistoryEntry] : [newHistoryEntry];
 
       if (firebaseConfig.projectId !== 'mock-project') {
-        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'pengajuan_halal', id);
+        const docRef = doc(db, 'artifacts', currentAppId, 'public', 'data', 'pengajuan_halal', id);
         await updateDoc(docRef, { status: newStatus, history: updatedHistory });
       } else {
         setPengajuanList(pengajuanList.map(p => p.id === id ? { ...p, status: newStatus, history: updatedHistory } : p));
@@ -377,7 +402,7 @@ export default function LPHApp() {
     try {
       const newBerita = { ...formData, createdAt: Date.now(), id: Math.random().toString(36).substr(2, 9) };
       setBeritaList([newBerita, ...beritaList]);
-      const beritaRef = collection(db, 'artifacts', appId, 'public', 'data', 'berita');
+      const beritaRef = collection(db, 'artifacts', currentAppId, 'public', 'data', 'berita');
       await addDoc(beritaRef, { ...formData, createdAt: Date.now() });
     } catch (error) {
       console.error("Error adding berita: ", error);
@@ -389,7 +414,7 @@ export default function LPHApp() {
     if (!user) return;
     try {
       setBeritaList(beritaList.map(b => b.id === id ? { ...b, ...formData, updatedAt: Date.now() } : b));
-      const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'berita', id);
+      const docRef = doc(db, 'artifacts', currentAppId, 'public', 'data', 'berita', id);
       await updateDoc(docRef, { ...formData, updatedAt: Date.now() });
     } catch (error) {
       console.error("Error updating berita: ", error);
@@ -402,7 +427,7 @@ export default function LPHApp() {
     if (window.confirm("Apakah Anda yakin ingin menghapus berita ini?")) {
         try {
           setBeritaList(beritaList.filter(b => b.id !== id));
-          const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'berita', id);
+          const docRef = doc(db, 'artifacts', currentAppId, 'public', 'data', 'berita', id);
           await deleteDoc(docRef);
         } catch (error) {
         console.error("Error deleting berita: ", error);
@@ -504,13 +529,17 @@ function LandingView({ navigateTo, beritaList }: any) {
 
   useEffect(() => {
     // Fetch settings to display dynamic structure and images
-    const settingsRef = doc(db, 'artifacts', appId, 'public', 'system_settings');
+    const settingsRef = doc(db, 'artifacts', currentAppId, 'public', 'system_settings');
     const unsubscribe = onSnapshot(settingsRef, (docSnap) => {
-      if (docSnap.exists()) {
-        setSettings(docSnap.data());
+      try {
+        if (docSnap && docSnap.exists()) {
+          setSettings(docSnap.data());
+        }
+      } catch (err) {
+        console.error("Error in settings snapshot listener:", err);
       }
     }, (error) => {
-        handleFirestoreError(error, OperationType.GET, 'artifacts/{appId}/public/system_settings');
+        handleFirestoreError(error, OperationType.GET, `artifacts/${currentAppId}/public/system_settings`);
     });
     return () => unsubscribe();
   }, []);
@@ -5241,7 +5270,7 @@ function AdminSettings() {
 
   useEffect(() => {
     // Fetch from Firebase
-    const settingsRef = doc(db, 'artifacts', appId, 'public', 'system_settings');
+    const settingsRef = doc(db, 'artifacts', currentAppId, 'public', 'system_settings');
     const unsubscribe = onSnapshot(settingsRef, (docSnap) => {
       if (docSnap.exists()) {
         const data = docSnap.data();
@@ -5255,7 +5284,7 @@ function AdminSettings() {
         }));
       }
     }, (error) => {
-        handleFirestoreError(error, OperationType.GET, 'artifacts/{appId}/public/system_settings');
+        handleFirestoreError(error, OperationType.GET, `artifacts/${currentAppId}/public/system_settings`);
     });
     return () => unsubscribe();
   }, []);
@@ -5263,7 +5292,7 @@ function AdminSettings() {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const settingsRef = doc(db, 'artifacts', appId, 'public', 'system_settings');
+      const settingsRef = doc(db, 'artifacts', currentAppId, 'public', 'system_settings');
       await setDoc(settingsRef, settings, { merge: true });
       setIsSaving(false);
       alert("Pengaturan Sistem berhasil disimpan ke Cloud Database!");

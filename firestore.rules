@@ -2,63 +2,66 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
+    // 0. Global Safety Net
     match /{document=**} {
       allow read, write: if false;
     }
 
+    // --- Helper Functions ---
     function isSignedIn() {
       return request.auth != null;
     }
 
+    // Unified staff check
     function isStaff() {
-      return exists(/databases/$(database)/documents/users/$(request.auth.uid)) && (
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'auditor', 'editor', 'staf']
-      );
+      return isSignedIn() && 
+             (request.auth.token.email in [
+               'admin@lphalghazali.com', 
+               'auditor@lphalghazali.com', 
+               'editor@lphalghazali.com', 
+               'staf@lphalghazali.com',
+               'asngad@mhs.unugha.ac.id'
+             ] || (
+               exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+               get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('role', 'pu') in ['admin', 'auditor', 'editor', 'staf']
+             ));
     }
 
     function isOwner(userId) {
-      return request.auth != null && request.auth.uid == userId;
+      return isSignedIn() && request.auth.uid == userId;
     }
 
-    function incoming() {
-      return request.resource.data;
-    }
+    // --- Collection Matches ---
 
-    function existing() {
-      return resource.data;
-    }
-
+    // 1. Users Collection
     match /users/{userId} {
-      // Users can get their own doc. Staff can list/get all users.
-      allow get: if isOwner(userId) || (isSignedIn() && isStaff());
-      allow list: if isSignedIn() && isStaff();
-      allow create: if isOwner(userId) && (
-        incoming().role == 'pu' || 
-        (incoming().role == 'admin' && request.auth.token.email == 'admin@lphalghazali.com') ||
-        (incoming().role == 'auditor' && request.auth.token.email == 'auditor@lphalghazali.com') ||
-        (incoming().role == 'editor' && request.auth.token.email == 'editor@lphalghazali.com') ||
-        (incoming().role == 'staf' && request.auth.token.email == 'staf@lphalghazali.com')
-      );
-      allow update: if isOwner(userId) && incoming().role == existing().role;
-      allow delete: if false;
+      allow get: if isOwner(userId) || isStaff();
+      allow list: if isStaff();
+      
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId) || isStaff();
+      allow delete: if isStaff();
     }
 
+    // 2. Artifacts & Public Data
     match /artifacts/{appId} {
+      allow get: if true; 
+
       match /public/system_settings {
         allow read: if true;
-        allow write: if isSignedIn() && isStaff();
+        allow write: if isStaff();
       }
-      
+
       match /public/data/berita/{beritaId} {
         allow read: if true;
-        allow write: if isSignedIn() && isStaff();
+        allow write: if isStaff();
       }
-      
+
       match /public/data/pengajuan_halal/{pengajuanId} {
-        allow read: if isSignedIn() && (isStaff() || resource.data.userId == request.auth.uid);
-        allow create: if isSignedIn() && incoming().userId == request.auth.uid;
-        allow update: if isSignedIn() && (isStaff() || (existing().userId == request.auth.uid && incoming().userId == existing().userId));
-        allow delete: if isSignedIn() && isStaff();
+        allow read: if isStaff() || (isSignedIn() && resource.data.userId == request.auth.uid);
+        allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+        allow update: if isStaff() || (isSignedIn() && resource.data.userId == request.auth.uid);
+        allow delete: if isStaff();
       }
     }
   }

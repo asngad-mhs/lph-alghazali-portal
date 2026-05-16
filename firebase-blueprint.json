@@ -1,0 +1,84 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile data",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "role": { "type": "string", "enum": ["pu", "admin", "auditor", "editor", "staf"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "email", "role"]
+    },
+    "PengajuanHalal": {
+      "title": "Pengajuan Halal",
+      "description": "Data pengajuan sertifikasi halal",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "nomorRegistrasi": { "type": "string" },
+        "companyName": { "type": "string" },
+        "productName": { "type": "string" },
+        "jenisPengajuan": { "type": "string" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "integer" },
+        "history": {
+          "type": "array",
+          "items": { "type": "object" }
+        }
+      },
+      "required": ["userId", "companyName", "productName", "status"]
+    },
+    "Berita": {
+      "title": "Berita",
+      "description": "Berita dan artikel edukasi",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "category": { "type": "string" },
+        "content": { "type": "string" },
+        "createdAt": { "type": "integer" },
+        "fileData": { "type": "string" },
+        "fileType": { "type": "string" },
+        "socialMediaLink": { "type": "string" }
+      },
+      "required": ["title", "category", "content"]
+    },
+    "SystemSettings": {
+      "title": "System Settings",
+      "description": "Global application settings and contact info",
+      "type": "object",
+      "properties": {
+        "profil": {
+          "type": "object",
+          "properties": {
+            "noWa": { "type": "string" },
+            "email": { "type": "string" },
+            "alamat": { "type": "string" }
+          }
+        }
+      }
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "/artifacts/{appId}/public/system_settings": {
+      "schema": "SystemSettings",
+      "description": "Global settings"
+    },
+    "/artifacts/{appId}/public/data/berita/{beritaId}": {
+      "schema": "Berita",
+      "description": "News articles"
+    },
+    "/artifacts/{appId}/public/data/pengajuan_halal/{pengajuanId}": {
+      "schema": "PengajuanHalal",
+      "description": "Halal certification applications"
+    }
+  }
+}
