@@ -3795,29 +3795,32 @@ function AuthView({ navigateTo, setRole, roleType = 'pu' }: any) {
                 </div>
             )}
             {roleType === 'staff' && (
-               <div className="mt-4 p-4 bg-emerald-50 rounded-xl border border-emerald-100">
-                  <h4 className="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-2 flex items-center">
-                    <Key className="w-3.5 h-3.5 mr-1" /> Contoh Akun Admin/Staf (Demo)
+               <div className="mt-4 p-5 bg-white/80 backdrop-blur-sm rounded-2xl border border-emerald-100 shadow-sm">
+                  <h4 className="text-[10px] font-bold text-emerald-800 uppercase tracking-[0.1em] mb-3 flex items-center">
+                    <ShieldCheck className="w-3.5 h-3.5 mr-1.5" /> Akun Demo Akses Internal
                   </h4>
-                  <div className="space-y-1.5">
-                     <div className="flex justify-between text-[11px] border-b border-emerald-100 pb-1">
-                        <span className="text-gray-600">Pusat:</span>
-                        <span className="font-mono text-emerald-700">admin@lphalghazali.com</span>
+                  <div className="grid grid-cols-1 gap-2">
+                     <div className="flex items-center justify-between p-2 bg-emerald-50/50 rounded-lg border border-emerald-100/50">
+                        <span className="text-[11px] font-medium text-gray-600">Admin Pusat:</span>
+                        <code className="text-[10px] font-mono text-emerald-700 bg-white px-2 py-0.5 rounded border border-emerald-100">admin@lphalghazali.com</code>
                      </div>
-                     <div className="flex justify-between text-[11px] border-b border-emerald-100 pb-1">
-                        <span className="text-gray-600">Auditor:</span>
-                        <span className="font-mono text-emerald-700">auditor@lphalghazali.com</span>
+                     <div className="flex items-center justify-between p-2 bg-emerald-50/50 rounded-lg border border-emerald-100/50">
+                        <span className="text-[11px] font-medium text-gray-600">Auditor:</span>
+                        <code className="text-[10px] font-mono text-emerald-700 bg-white px-2 py-0.5 rounded border border-emerald-100">auditor@lphalghazali.com</code>
                      </div>
-                     <div className="flex justify-between text-[11px] border-b border-emerald-100 pb-1">
-                        <span className="text-gray-600">Editor:</span>
-                        <span className="font-mono text-emerald-700">editor@lphalghazali.com</span>
+                     <div className="flex items-center justify-between p-2 bg-emerald-50/50 rounded-lg border border-emerald-100/50">
+                        <span className="text-[11px] font-medium text-gray-600">Editor:</span>
+                        <code className="text-[10px] font-mono text-emerald-700 bg-white px-2 py-0.5 rounded border border-emerald-100">editor@lphalghazali.com</code>
                      </div>
-                     <div className="flex justify-between text-[11px]">
-                        <span className="text-gray-600">Staf:</span>
-                        <span className="font-mono text-emerald-700">staf@lphalghazali.com</span>
+                     <div className="flex items-center justify-between p-2 bg-emerald-50/50 rounded-lg border border-emerald-100/50">
+                        <span className="text-[11px] font-medium text-gray-600">Staf:</span>
+                        <code className="text-[10px] font-mono text-emerald-700 bg-white px-2 py-0.5 rounded border border-emerald-100">staf@lphalghazali.com</code>
                      </div>
                   </div>
-                  <p className="mt-2 text-[10px] text-emerald-600 italic">* Gunakan password sembarang (simulasi simpan otomatis)</p>
+                  <div className="mt-3 flex items-center justify-center text-[10px] text-emerald-600 font-medium">
+                     <Key className="w-3 h-3 mr-1" /> Password: <span className="ml-1 bg-emerald-100 px-1.5 rounded">admin123</span>
+                  </div>
+                  <p className="mt-2 text-[9px] text-gray-400 text-center italic">Sistem akan otomatis mendaftarkan email di atas jika belum terdaftar.</p>
                </div>
             )}
 
@@ -3933,27 +3936,33 @@ function DashboardLayout({ children, role, navigateTo, logout, currentView }: an
             </button>
           )}
           
+          {(role === 'admin' || role === 'staf' || role === 'auditor') && (
+            <button onClick={() => { navigateTo('admin-dashboard'); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'admin-dashboard' || (currentView === 'auditor-dashboard' && role === 'auditor') ? (isInternal ? 'bg-emerald-600 text-white font-medium shadow-md' : 'bg-emerald-100 text-emerald-700') : (isInternal ? 'hover:bg-slate-800 hover:text-white' : 'hover:bg-emerald-50 hover:text-emerald-600')}`}>
+              <ShieldCheck className="w-5 h-5 mr-3" /> Dashboard {role === 'pu' ? '' : 'Internal'}
+            </button>
+          )}
+
           {(role === 'admin' || role === 'editor') && (
-            <button onClick={() => { navigateTo('admin-berita'); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'admin-berita' ? (isInternal ? 'bg-emerald-600 text-white font-medium' : 'bg-emerald-100') : (isInternal ? 'hover:bg-slate-800 hover:text-white' : 'hover:bg-emerald-50')}`}>
+            <button onClick={() => { navigateTo('admin-berita'); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'admin-berita' ? (isInternal ? 'bg-emerald-600 text-white font-medium shadow-md' : 'bg-emerald-100') : (isInternal ? 'hover:bg-slate-800 hover:text-white' : 'hover:bg-emerald-50')}`}>
               <Newspaper className="w-5 h-5 mr-3" /> Publikasi & Berita
             </button>
           )}
 
           {(role === 'admin' || role === 'editor') && (
-            <button onClick={() => { navigateTo('admin-kegiatan'); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'admin-kegiatan' ? (isInternal ? 'bg-emerald-600 text-white font-medium' : 'bg-emerald-100') : (isInternal ? 'hover:bg-slate-800 hover:text-white' : 'hover:bg-emerald-50')}`}>
-              <Activity className="w-5 h-5 mr-3" /> Form Kegiatan
+            <button onClick={() => { navigateTo('admin-kegiatan'); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'admin-kegiatan' ? (isInternal ? 'bg-emerald-600 text-white font-medium shadow-md' : 'bg-emerald-100') : (isInternal ? 'hover:bg-slate-800 hover:text-white' : 'hover:bg-emerald-50')}`}>
+              <Activity className="w-5 h-5 mr-3" /> Agenda Kegiatan
             </button>
           )}
 
           {(role === 'admin' || role === 'staf') && (
-            <button onClick={() => { navigateTo('admin-auditor'); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'admin-auditor' ? (isInternal ? 'bg-emerald-600 text-white font-medium' : 'bg-emerald-100') : (isInternal ? 'hover:bg-slate-800 hover:text-white' : 'hover:bg-emerald-50')}`}>
-              <Briefcase className="w-5 h-5 mr-3" /> Data Auditor
+            <button onClick={() => { navigateTo('admin-auditor'); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'admin-auditor' ? (isInternal ? 'bg-emerald-600 text-white font-medium shadow-md' : 'bg-emerald-100') : (isInternal ? 'hover:bg-slate-800 hover:text-white' : 'hover:bg-emerald-50')}`}>
+              <Users className="w-5 h-5 mr-3" /> Data Auditor
             </button>
           )}
 
           {role === 'auditor' && (
-            <button onClick={() => { navigateTo('auditor-dashboard'); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'auditor-dashboard' ? 'bg-emerald-600 text-white font-medium' : 'hover:bg-slate-800 hover:text-white'}`}>
-              <UserCheck className="w-5 h-5 mr-3" /> Panel Audit
+            <button onClick={() => { navigateTo('auditor-dashboard'); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'auditor-dashboard' ? 'bg-emerald-600 text-white font-medium shadow-md' : 'hover:bg-slate-800 hover:text-white'}`}>
+              <UserCheck className="w-5 h-5 mr-3" /> Panel Audit Halal
             </button>
           )}
 
