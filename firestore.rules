@@ -14,7 +14,7 @@ service cloud.firestore {
     
     function isStaff() {
       let role = getRole();
-      return role == 'admin' || role == 'auditor';
+      return role == 'admin' || role == 'auditor' || role == 'editor' || role == 'staf';
     }
     
     function isOwner(userId) {
@@ -64,7 +64,9 @@ service cloud.firestore {
       allow create: if isSignedIn() && isOwner(userId) && (
         request.resource.data.role == 'pu' || 
         (request.resource.data.role == 'admin' && request.auth.token.email == 'admin@lphalghazali.com') ||
-        (request.resource.data.role == 'auditor' && request.auth.token.email == 'auditor@lphalghazali.com')
+        (request.resource.data.role == 'auditor' && request.auth.token.email == 'auditor@lphalghazali.com') ||
+        (request.resource.data.role == 'editor' && request.auth.token.email == 'editor@lphalghazali.com') ||
+        (request.resource.data.role == 'staf' && request.auth.token.email == 'staf@lphalghazali.com')
       );
       allow update: if isSignedIn() && isOwner(userId) && request.resource.data.role == resource.data.role; // Prevent role escalation
     }

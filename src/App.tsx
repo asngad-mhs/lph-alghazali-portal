@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { initializeApp } from 'firebase/app';
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInAnonymously, onAuthStateChanged, signOut, updateProfile, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInAnonymously, onAuthStateChanged, signOut, updateProfile, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail } from 'firebase/auth';
 import { getFirestore, collection, onSnapshot, getDoc, addDoc, updateDoc, doc, serverTimestamp, deleteDoc, setDoc, query, where } from 'firebase/firestore';
-import { Leaf, Home, FileText, LogOut, PlusCircle, Settings, CheckCircle, Clock, Search, Briefcase, FileSignature, UploadCloud, ArrowLeft, ArrowRight, ShieldCheck, Zap, MonitorSmartphone, UserCheck, Newspaper, Edit, Trash2, X, Image as ImageIcon, Route, Coins, ChevronDown, ChevronRight, Calculator, Receipt, CalendarDays, Activity, Video, Link, MapPin, Phone, Mail, Facebook, Twitter, Instagram, Linkedin, History, Target, Award, Network, Users, BookOpen, Handshake, Menu, Scale, Landmark, CheckCircle2, FlaskConical, FileEdit, Globe } from 'lucide-react';
+import { Leaf, Home, FileText, LogOut, PlusCircle, Settings, CheckCircle, Clock, Search, Briefcase, FileSignature, UploadCloud, ArrowLeft, ArrowRight, ShieldCheck, Zap, MonitorSmartphone, UserCheck, Newspaper, Edit, Trash2, X, Image as ImageIcon, Route, Coins, ChevronDown, ChevronRight, Calculator, Receipt, CalendarDays, Activity, Video, Link, MapPin, Phone, Mail, Facebook, Twitter, Instagram, Linkedin, History, Target, Award, Network, Users, BookOpen, Handshake, Menu, Scale, Landmark, CheckCircle2, FlaskConical, FileEdit, Globe, Key } from 'lucide-react';
 import CryptoJS from 'crypto-js';
 
 const OrgCard = ({ title, name, list, className = "", noHover = false, allowUpload = false, defaultImages = {}, onImageChange }: any) => {
@@ -117,7 +117,7 @@ function handleFirestoreError(error: unknown, operationType: OperationType, path
     path
   };
   console.error('Firestore Error: ', JSON.stringify(errInfo));
-  throw new Error(JSON.stringify(errInfo));
+  // DO NOT THROW HERE. Throwing inside an async callback (like onSnapshot) crashes the Firebase inner loop.
 }
 
 import firebaseConfig from '../firebase-applet-config.json';
@@ -3554,6 +3554,19 @@ function AuthView({ navigateTo, setRole, roleType = 'pu' }: any) {
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
+  const handleResetPassword = async () => {
+    if (!email) {
+       setErrorMsg('Harap masukkan email Anda terlebih dahulu, lalu klik lupa sandi.');
+       return;
+    }
+    try {
+      await sendPasswordResetEmail(auth, email);
+      alert('Tautan reset kata sandi telah dikirim ke email Anda.');
+    } catch(e: any) {
+      setErrorMsg(e.message || 'Gagal mengirim email reset kata sandi.');
+    }
+  };
+
   const handleStaffLogin = async () => {
     try {
       setLoading(true);
@@ -3567,7 +3580,9 @@ function AuthView({ navigateTo, setRole, roleType = 'pu' }: any) {
             // Auto-create example staff accounts
             const EXAMPLE_STAFF: Record<string, string> = {
               'admin@lphalghazali.com': 'admin',
-              'auditor@lphalghazali.com': 'auditor'
+              'editor@lphalghazali.com': 'editor',
+              'staf@lphalghazali.com': 'staf',
+              'auditor@lphalghazali.com': 'auditor' // keep for backward compatibility temporarily
             };
             
             if (EXAMPLE_STAFF[email]) {
@@ -3598,27 +3613,28 @@ function AuthView({ navigateTo, setRole, roleType = 'pu' }: any) {
          
          if (userDocSnap.exists()) {
             const userData = userDocSnap.data();
-            if (userData.role === 'admin' || userData.role === 'auditor') {
+            if (['admin', 'editor', 'staf', 'auditor'].includes(userData.role)) {
                roleToSet = userData.role;
-               if (selectedRole === 'admin' && userData.role !== 'admin') {
-                   throw new Error("Anda tidak memiliki akses sebagai Admin Pusat.");
-               }
-               if (selectedRole === 'auditor' && userData.role !== 'auditor' && userData.role !== 'admin') {
-                   throw new Error("Anda tidak memiliki akses sebagai Auditor.");
+               if (selectedRole !== userData.role && !(selectedRole === 'editor' && userData.role === 'auditor')) {
+                   // Only relax error if user mis-selected but is actually staff. But for simplicity, let's just warn or accept.
+                   // To avoid locking them out, we just use their real role from DB since they authenticated successfully.
                }
             } else {
                throw new Error("Akun ini bukan merupakan akun Staf/Admin.");
             }
          } else {
             // Ensure example staff data exists in database
-            if (email === 'admin@lphalghazali.com' || email === 'auditor@lphalghazali.com') {
-                const roleAssigned = email === 'admin@lphalghazali.com' ? 'admin' : 'auditor';
+            if (email === 'admin@lphalghazali.com' || email === 'editor@lphalghazali.com' || email === 'staf@lphalghazali.com') {
+                const roleAssigned = email === 'admin@lphalghazali.com' ? 'admin' : (email === 'editor@lphalghazali.com' ? 'editor' : 'staf');
                 await setDoc(userDocRef, {
                     email: email,
                     role: roleAssigned,
                     createdAt: Date.now()
                 });
                 roleToSet = roleAssigned;
+            } else if (email === 'auditor@lphalghazali.com') {
+                await setDoc(userDocRef, { email, role: 'auditor', createdAt: Date.now() });
+                roleToSet = 'auditor';
             } else {
                 throw new Error("Data Role Admin tidak ditemukan di database.");
             }
@@ -3732,7 +3748,8 @@ function AuthView({ navigateTo, setRole, roleType = 'pu' }: any) {
                   <label className="block text-sm font-medium text-gray-700 mb-1">Pilih Role</label>
                   <select value={selectedRole} onChange={(e) => setSelectedRole(e.target.value)} className="block w-full border-gray-300 rounded-lg border p-3 bg-gray-50 focus:ring-emerald-500 focus:border-emerald-500">
                      <option value="admin">Admin Pusat</option>
-                     <option value="auditor">Auditor Halal</option>
+                     <option value="editor">Admin Editor</option>
+                     <option value="staf">Staf Admin</option>
                   </select>
                </div>
             )}
@@ -3741,7 +3758,18 @@ function AuthView({ navigateTo, setRole, roleType = 'pu' }: any) {
               <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="block w-full border-gray-300 rounded-lg border p-3 bg-gray-50 focus:ring-emerald-500 focus:border-emerald-500" placeholder="nama@email.com" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Kata Sandi</label>
+              <div className="flex justify-between items-center mb-1">
+                <label className="block text-sm font-medium text-gray-700">Kata Sandi</label>
+                {isLogin && (
+                   <button 
+                     type="button" 
+                     onClick={handleResetPassword}
+                     className="text-sm font-medium text-emerald-600 hover:text-emerald-500 flex items-center focus:outline-none"
+                   >
+                     <Key className="w-4 h-4 mr-1" /> Lupa sandi?
+                   </button>
+                )}
+              </div>
               <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required className="block w-full border-gray-300 rounded-lg border p-3 bg-gray-50 focus:ring-emerald-500 focus:border-emerald-500" placeholder="••••••••" />
             </div>
 
@@ -3774,10 +3802,10 @@ function AuthView({ navigateTo, setRole, roleType = 'pu' }: any) {
 
 function DashboardLayout({ children, role, navigateTo, logout, currentView }: any) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const isInternal = role === 'admin' || role === 'auditor';
-  const roleName = role === 'admin' ? 'Admin Pusat' : (role === 'auditor' ? 'Auditor Halal' : 'Pelaku Usaha');
-  const roleInitial = role === 'admin' ? 'AD' : (role === 'auditor' ? 'AU' : 'PU');
-  const roleTitle = role === 'admin' ? 'Admin' : (role === 'auditor' ? 'Auditor' : 'Portal PU');
+  const isInternal = ['admin', 'auditor', 'editor', 'staf'].includes(role);
+  const roleName = role === 'admin' ? 'Admin Pusat' : (role === 'editor' ? 'Admin Editor' : (role === 'staf' ? 'Staf Admin' : (role === 'auditor' ? 'Auditor Halal' : 'Pelaku Usaha')));
+  const roleInitial = role === 'admin' ? 'AD' : (role === 'editor' ? 'ED' : (role === 'staf' ? 'SA' : (role === 'auditor' ? 'AU' : 'PU')));
+  const roleTitle = role === 'admin' ? 'Admin' : (role === 'editor' ? 'Editor' : (role === 'staf' ? 'Staf' : (role === 'auditor' ? 'Auditor' : 'Portal PU')));
   const portalTitle = isInternal ? 'Sistem Manajemen LPH' : 'Portal Pelaku Usaha';
 
   return (
@@ -3810,7 +3838,7 @@ function DashboardLayout({ children, role, navigateTo, logout, currentView }: an
         </div>
 
         <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
-          <button onClick={() => { navigateTo(role === 'admin' ? 'admin-dashboard' : (role === 'auditor' ? 'auditor-dashboard' : 'pu-dashboard')); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView.includes('dashboard') ? (isInternal ? 'bg-emerald-600 text-white' : 'bg-emerald-100 text-emerald-700 font-medium') : (isInternal ? 'hover:bg-slate-800' : 'hover:bg-emerald-50')}`}>
+          <button onClick={() => { navigateTo(role === 'admin' ? 'admin-dashboard' : (isInternal ? 'auditor-dashboard' : 'pu-dashboard')); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView.includes('dashboard') ? (isInternal ? 'bg-emerald-600 text-white' : 'bg-emerald-100 text-emerald-700 font-medium') : (isInternal ? 'hover:bg-slate-800' : 'hover:bg-emerald-50')}`}>
             <Home className="w-5 h-5 mr-3" /> Dashboard
           </button>
           
@@ -3834,7 +3862,7 @@ function DashboardLayout({ children, role, navigateTo, logout, currentView }: an
             </>
           )}
 
-          <button onClick={() => { if (role === 'admin') { navigateTo('admin-settings'); } else if (role === 'auditor') { navigateTo('auditor-dashboard'); } else { navigateTo('pu-settings'); } setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'admin-settings' && role === 'admin' ? 'bg-emerald-600 text-white font-medium' : currentView === 'pu-settings' && role === 'pu' ? 'bg-emerald-100 text-emerald-700 font-medium' : isInternal ? 'hover:bg-slate-800 hover:text-white' : 'hover:bg-emerald-50 hover:text-emerald-600'}`}>
+          <button onClick={() => { if (role === 'admin') { navigateTo('admin-settings'); } else if (isInternal) { navigateTo('auditor-dashboard'); } else { navigateTo('pu-settings'); } setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'admin-settings' && role === 'admin' ? 'bg-emerald-600 text-white font-medium' : currentView === 'pu-settings' && role === 'pu' ? 'bg-emerald-100 text-emerald-700 font-medium' : isInternal ? 'hover:bg-slate-800 hover:text-white' : 'hover:bg-emerald-50 hover:text-emerald-600'}`}>
             <Settings className="w-5 h-5 mr-3" /> Pengaturan
           </button>
         </nav>
@@ -5184,8 +5212,8 @@ function AdminSettings() {
     ],
     akunStaf: [
       { nama: 'Admin Pusat', email: 'admin@lphalghazali.com', role: 'Super Admin', status: 'Aktif', passwordHash: CryptoJS.SHA256('Admin123').toString() },
-      { nama: 'Ahmad Auditor', email: 'ahmad.auditor@lphalghazali.com', role: 'Auditor Utama', status: 'Aktif', passwordHash: CryptoJS.SHA256('Audit123').toString() },
-      { nama: 'Siti Keuangan', email: 'keuangan@lphalghazali.com', role: 'Staf Keuangan', status: 'Aktif', passwordHash: CryptoJS.SHA256('Uang123').toString() }
+      { nama: 'Admin Editor', email: 'editor@lphalghazali.com', role: 'Editor Eksekutif', status: 'Aktif', passwordHash: CryptoJS.SHA256('Editor123').toString() },
+      { nama: 'Staf Admin', email: 'staf@lphalghazali.com', role: 'Staf Pelaksana', status: 'Aktif', passwordHash: CryptoJS.SHA256('Staf123').toString() }
     ]
   };
 
@@ -5457,7 +5485,7 @@ function AdminSettings() {
                                  <div className="text-sm text-emerald-600">{akun.email}</div>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                                 <span className="bg-gray-100 border border-gray-200 rounded px-2 py-1 font-mono text-xs select-all">Pwd: {akun.email.includes('admin') ? 'Admin123' : (akun.email.includes('auditor') ? 'Audit123' : 'Uang123')}</span>
+                                 <span className="bg-gray-100 border border-gray-200 rounded px-2 py-1 font-mono text-xs select-all">Pwd: {akun.email.includes('admin') ? 'Admin123' : (akun.email.includes('editor') ? 'Editor123' : 'Staf123')}</span>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                                  <span className="px-2.5 py-1 inline-flex text-xs font-semibold rounded bg-gray-100 text-gray-800 border border-gray-200">{akun.role === 'Super Admin' ? 'Admin Pusat' : (akun.role === 'Auditor Utama' ? 'Auditor Halal' : 'Staf Keuangan')}</span>
