@@ -3670,7 +3670,27 @@ function AuthView({ navigateTo, setRole, roleType = 'pu' }: any) {
 
     try {
        if (isLogin) {
-          await signInWithEmailAndPassword(auth, email, password);
+          try {
+             await signInWithEmailAndPassword(auth, email, password);
+          } catch (signInErr: any) {
+             if (signInErr.code === 'auth/user-not-found' || signInErr.code === 'auth/invalid-credential') {
+                try {
+                   const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                   await setDoc(doc(db, 'users', userCredential.user.uid), {
+                      email: email,
+                      role: 'pu',
+                      createdAt: Date.now()
+                   });
+                } catch (createErr: any) {
+                   if (createErr.code === 'auth/email-already-in-use') {
+                      throw new Error('Email sudah terdaftar, tetapi kata sandi Anda salah.');
+                   }
+                   throw createErr; // rethrow other errors
+                }
+             } else {
+                throw signInErr; // rethrow other sign in errors
+             }
+          }
        } else {
           const userCredential = await createUserWithEmailAndPassword(auth, email, password);
           try {

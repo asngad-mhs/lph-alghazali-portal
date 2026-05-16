@@ -2,74 +2,64 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    function isSignedIn() {
-      return request.auth != null;
-    }
-    
-    function getRole() {
-      return exists(/databases/$(database)/documents/users/$(request.auth.uid)) 
-        ? get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role 
-        : null;
-    }
-    
-    function isStaff() {
-      let role = getRole();
-      return role == 'admin' || role == 'auditor' || role == 'editor' || role == 'staf';
-    }
-    
-    function isOwner(userId) {
-      return request.auth.uid == userId;
-    }
-    
     match /{document=**} {
       allow read, write: if false;
     }
 
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isStaff() {
+      return exists(/databases/$(database)/documents/users/$(request.auth.uid)) && (
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'auditor', 'editor', 'staf']
+      );
+    }
+
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    match /users/{userId} {
+      // Users can get their own doc. Staff can list/get all users.
+      allow get: if isOwner(userId) || (isSignedIn() && isStaff());
+      allow list: if isSignedIn() && isStaff();
+      allow create: if isOwner(userId) && (
+        incoming().role == 'pu' || 
+        (incoming().role == 'admin' && request.auth.token.email == 'admin@lphalghazali.com') ||
+        (incoming().role == 'auditor' && request.auth.token.email == 'auditor@lphalghazali.com') ||
+        (incoming().role == 'editor' && request.auth.token.email == 'editor@lphalghazali.com') ||
+        (incoming().role == 'staf' && request.auth.token.email == 'staf@lphalghazali.com')
+      );
+      allow update: if isOwner(userId) && incoming().role == existing().role;
+      allow delete: if false;
+    }
+
     match /artifacts/{appId} {
-      // System Settings
       match /public/system_settings {
         allow read: if true;
         allow write: if isSignedIn() && isStaff();
       }
       
-      // Berita
       match /public/data/berita/{beritaId} {
         allow read: if true;
         allow write: if isSignedIn() && isStaff();
       }
       
-      // Pengajuan Halal
       match /public/data/pengajuan_halal/{pengajuanId} {
-        // PU only reads their own. Staff reads all.
-        allow read: if isSignedIn() && (
-          isStaff() || 
-          resource.data.userId == request.auth.uid
-        );
-        
-        allow create: if isSignedIn();
-        // Allow PU to update their own, or Staff to update
-        allow update: if isSignedIn() && (
-          isStaff() || 
-          resource.data.userId == request.auth.uid
-        );
-        
+        allow read: if isSignedIn() && (isStaff() || resource.data.userId == request.auth.uid);
+        allow create: if isSignedIn() && incoming().userId == request.auth.uid;
+        allow update: if isSignedIn() && (isStaff() || (existing().userId == request.auth.uid && incoming().userId == existing().userId));
         allow delete: if isSignedIn() && isStaff();
       }
     }
-    
-    match /users/{userId} {
-      // Users can read their own data.
-      allow get: if isSignedIn() && isOwner(userId);
-      // Let PU create their own profile, but enforce role='pu'. Staff roles created by admin.
-      allow create: if isSignedIn() && isOwner(userId) && (
-        request.resource.data.role == 'pu' || 
-        (request.resource.data.role == 'admin' && request.auth.token.email == 'admin@lphalghazali.com') ||
-        (request.resource.data.role == 'auditor' && request.auth.token.email == 'auditor@lphalghazali.com') ||
-        (request.resource.data.role == 'editor' && request.auth.token.email == 'editor@lphalghazali.com') ||
-        (request.resource.data.role == 'staf' && request.auth.token.email == 'staf@lphalghazali.com')
-      );
-      allow update: if isSignedIn() && isOwner(userId) && request.resource.data.role == resource.data.role; // Prevent role escalation
-    }
   }
 }
-
