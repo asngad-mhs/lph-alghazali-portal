@@ -482,37 +482,37 @@ export default function LPHApp() {
       )}
 
       {currentView === 'admin-dashboard' && (
-        <DashboardLayout role="admin" navigateTo={navigateTo} logout={handleLogout} currentView={currentView}>
-          <AdminDashboard data={pengajuanList} updateStatus={handleUpdateStatus} />
+        <DashboardLayout role={userRole} navigateTo={navigateTo} logout={handleLogout} currentView={currentView}>
+          <AdminDashboard data={pengajuanList} updateStatus={handleUpdateStatus} role={userRole} />
         </DashboardLayout>
       )}
 
       {currentView === 'auditor-dashboard' && (
-        <DashboardLayout role="auditor" navigateTo={navigateTo} logout={handleLogout} currentView={currentView}>
+        <DashboardLayout role={userRole} navigateTo={navigateTo} logout={handleLogout} currentView={currentView}>
           <AuditorDashboard data={pengajuanList.filter(p => p.status === 'Proses Audit')} updateStatus={handleUpdateStatus} />
         </DashboardLayout>
       )}
 
       {currentView === 'admin-berita' && (
-        <DashboardLayout role="admin" navigateTo={navigateTo} logout={handleLogout} currentView={currentView}>
+        <DashboardLayout role={userRole} navigateTo={navigateTo} logout={handleLogout} currentView={currentView}>
           <AdminBerita data={beritaList} addData={handleAddBerita} updateData={handleUpdateBerita} deleteData={handleDeleteBerita} />
         </DashboardLayout>
       )}
 
       {currentView === 'admin-kegiatan' && (
-        <DashboardLayout role="admin" navigateTo={navigateTo} logout={handleLogout} currentView={currentView}>
+        <DashboardLayout role={userRole} navigateTo={navigateTo} logout={handleLogout} currentView={currentView}>
           <AdminKegiatan addData={handleAddBerita} updateData={handleUpdateBerita} />
         </DashboardLayout>
       )}
 
       {currentView === 'admin-auditor' && (
-        <DashboardLayout role="admin" navigateTo={navigateTo} logout={handleLogout} currentView={currentView}>
+        <DashboardLayout role={userRole} navigateTo={navigateTo} logout={handleLogout} currentView={currentView}>
           <AdminAuditor data={pengajuanList} />
         </DashboardLayout>
       )}
 
       {currentView === 'admin-settings' && (
-        <DashboardLayout role="admin" navigateTo={navigateTo} logout={handleLogout} currentView={currentView}>
+        <DashboardLayout role={userRole} navigateTo={navigateTo} logout={handleLogout} currentView={currentView}>
           <AdminSettings />
         </DashboardLayout>
       )}
@@ -3671,7 +3671,15 @@ function AuthView({ navigateTo, setRole, roleType = 'pu' }: any) {
       }
 
       setRole(roleToSet);
-      navigateTo(roleToSet === 'admin' ? 'admin-dashboard' : 'auditor-dashboard');
+      if (roleToSet === 'admin' || roleToSet === 'staf') {
+        navigateTo('admin-dashboard');
+      } else if (roleToSet === 'auditor') {
+        navigateTo('auditor-dashboard');
+      } else if (roleToSet === 'editor') {
+        navigateTo('admin-berita');
+      } else {
+        navigateTo('auditor-dashboard');
+      }
       
     } catch (e: any) {
        console.error("Staff Login Error:", e);
@@ -3786,6 +3794,33 @@ function AuthView({ navigateTo, setRole, roleType = 'pu' }: any) {
                    <X className="w-4 h-4 mr-2 shrink-0" /> {errorMsg}
                 </div>
             )}
+            {roleType === 'staff' && (
+               <div className="mt-4 p-4 bg-emerald-50 rounded-xl border border-emerald-100">
+                  <h4 className="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-2 flex items-center">
+                    <Key className="w-3.5 h-3.5 mr-1" /> Contoh Akun Admin/Staf (Demo)
+                  </h4>
+                  <div className="space-y-1.5">
+                     <div className="flex justify-between text-[11px] border-b border-emerald-100 pb-1">
+                        <span className="text-gray-600">Pusat:</span>
+                        <span className="font-mono text-emerald-700">admin@lphalghazali.com</span>
+                     </div>
+                     <div className="flex justify-between text-[11px] border-b border-emerald-100 pb-1">
+                        <span className="text-gray-600">Auditor:</span>
+                        <span className="font-mono text-emerald-700">auditor@lphalghazali.com</span>
+                     </div>
+                     <div className="flex justify-between text-[11px] border-b border-emerald-100 pb-1">
+                        <span className="text-gray-600">Editor:</span>
+                        <span className="font-mono text-emerald-700">editor@lphalghazali.com</span>
+                     </div>
+                     <div className="flex justify-between text-[11px]">
+                        <span className="text-gray-600">Staf:</span>
+                        <span className="font-mono text-emerald-700">staf@lphalghazali.com</span>
+                     </div>
+                  </div>
+                  <p className="mt-2 text-[10px] text-emerald-600 italic">* Gunakan password sembarang (simulasi simpan otomatis)</p>
+               </div>
+            )}
+
             {!isLogin && roleType === 'pu' && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Nama Perusahaan</label>
@@ -3797,8 +3832,9 @@ function AuthView({ navigateTo, setRole, roleType = 'pu' }: any) {
                   <label className="block text-sm font-medium text-gray-700 mb-1">Pilih Role</label>
                   <select value={selectedRole} onChange={(e) => setSelectedRole(e.target.value)} className="block w-full border-gray-300 rounded-lg border p-3 bg-gray-50 focus:ring-emerald-500 focus:border-emerald-500">
                      <option value="admin">Admin Pusat</option>
+                     <option value="auditor">Admin Auditor</option>
                      <option value="editor">Admin Editor</option>
-                     <option value="staf">Staf Admin</option>
+                     <option value="staf">Admin Staf</option>
                   </select>
                </div>
             )}
@@ -3852,9 +3888,9 @@ function AuthView({ navigateTo, setRole, roleType = 'pu' }: any) {
 function DashboardLayout({ children, role, navigateTo, logout, currentView }: any) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const isInternal = ['admin', 'auditor', 'editor', 'staf'].includes(role);
-  const roleName = role === 'admin' ? 'Admin Pusat' : (role === 'editor' ? 'Admin Editor' : (role === 'staf' ? 'Staf Admin' : (role === 'auditor' ? 'Auditor Halal' : 'Pelaku Usaha')));
-  const roleInitial = role === 'admin' ? 'AD' : (role === 'editor' ? 'ED' : (role === 'staf' ? 'SA' : (role === 'auditor' ? 'AU' : 'PU')));
-  const roleTitle = role === 'admin' ? 'Admin' : (role === 'editor' ? 'Editor' : (role === 'staf' ? 'Staf' : (role === 'auditor' ? 'Auditor' : 'Portal PU')));
+  const roleName = role === 'admin' ? 'Admin Pusat' : (role === 'editor' ? 'Admin Editor' : (role === 'staf' ? 'Admin Staf' : (role === 'auditor' ? 'Admin Auditor' : 'Pelaku Usaha')));
+  const roleInitial = role === 'admin' ? 'AP' : (role === 'editor' ? 'AE' : (role === 'staf' ? 'AS' : (role === 'auditor' ? 'AA' : 'PU')));
+  const roleTitle = role === 'admin' ? 'Admin Pusat' : (role === 'editor' ? 'Editor' : (role === 'staf' ? 'Staf' : (role === 'auditor' ? 'Auditor' : 'Portal PU')));
   const portalTitle = isInternal ? 'Sistem Manajemen LPH' : 'Portal Pelaku Usaha';
 
   return (
@@ -3892,23 +3928,33 @@ function DashboardLayout({ children, role, navigateTo, logout, currentView }: an
           </button>
           
           {role === 'pu' && (
-            <button onClick={() => { navigateTo('pu-settings'); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'pu-pengajuan' || currentView === 'pu-settings' ? 'bg-emerald-100 text-emerald-700 font-medium' : 'hover:bg-emerald-50 hover:text-emerald-600'}`}>
+            <button onClick={() => { navigateTo('pu-pengajuan'); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'pu-pengajuan' ? 'bg-emerald-100 text-emerald-700 font-medium' : 'hover:bg-emerald-50 hover:text-emerald-600'}`}>
               <PlusCircle className="w-5 h-5 mr-3" /> Buat Pengajuan
             </button>
           )}
           
-          {role === 'admin' && (
-            <>
-              <button onClick={() => { navigateTo('admin-berita'); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'admin-berita' ? 'bg-emerald-600 text-white font-medium' : 'hover:bg-slate-800 hover:text-white'}`}>
-                <Newspaper className="w-5 h-5 mr-3" /> Publikasi & Berita
-              </button>
-              <button onClick={() => { navigateTo('admin-kegiatan'); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'admin-kegiatan' ? 'bg-emerald-600 text-white font-medium' : 'hover:bg-slate-800 hover:text-white'}`}>
-                <Activity className="w-5 h-5 mr-3" /> Form Kegiatan
-              </button>
-              <button onClick={() => { navigateTo('admin-auditor'); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'admin-auditor' ? 'bg-emerald-600 text-white font-medium' : 'hover:bg-slate-800 hover:text-white'}`}>
-                <Briefcase className="w-5 h-5 mr-3" /> Data Auditor
-              </button>
-            </>
+          {(role === 'admin' || role === 'editor') && (
+            <button onClick={() => { navigateTo('admin-berita'); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'admin-berita' ? (isInternal ? 'bg-emerald-600 text-white font-medium' : 'bg-emerald-100') : (isInternal ? 'hover:bg-slate-800 hover:text-white' : 'hover:bg-emerald-50')}`}>
+              <Newspaper className="w-5 h-5 mr-3" /> Publikasi & Berita
+            </button>
+          )}
+
+          {(role === 'admin' || role === 'editor') && (
+            <button onClick={() => { navigateTo('admin-kegiatan'); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'admin-kegiatan' ? (isInternal ? 'bg-emerald-600 text-white font-medium' : 'bg-emerald-100') : (isInternal ? 'hover:bg-slate-800 hover:text-white' : 'hover:bg-emerald-50')}`}>
+              <Activity className="w-5 h-5 mr-3" /> Form Kegiatan
+            </button>
+          )}
+
+          {(role === 'admin' || role === 'staf') && (
+            <button onClick={() => { navigateTo('admin-auditor'); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'admin-auditor' ? (isInternal ? 'bg-emerald-600 text-white font-medium' : 'bg-emerald-100') : (isInternal ? 'hover:bg-slate-800 hover:text-white' : 'hover:bg-emerald-50')}`}>
+              <Briefcase className="w-5 h-5 mr-3" /> Data Auditor
+            </button>
+          )}
+
+          {role === 'auditor' && (
+            <button onClick={() => { navigateTo('auditor-dashboard'); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'auditor-dashboard' ? 'bg-emerald-600 text-white font-medium' : 'hover:bg-slate-800 hover:text-white'}`}>
+              <UserCheck className="w-5 h-5 mr-3" /> Panel Audit
+            </button>
           )}
 
           <button onClick={() => { if (role === 'admin') { navigateTo('admin-settings'); } else if (isInternal) { navigateTo('auditor-dashboard'); } else { navigateTo('pu-settings'); } setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'admin-settings' && role === 'admin' ? 'bg-emerald-600 text-white font-medium' : currentView === 'pu-settings' && role === 'pu' ? 'bg-emerald-100 text-emerald-700 font-medium' : isInternal ? 'hover:bg-slate-800 hover:text-white' : 'hover:bg-emerald-50 hover:text-emerald-600'}`}>
@@ -4351,7 +4397,7 @@ function PUSettings({ navigateTo }: any) {
 // ADMIN VIEWS
 // ==========================================
 
-function AdminDashboard({ data, updateStatus }: any) {
+function AdminDashboard({ data, updateStatus, role }: any) {
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newStatus, setNewStatus] = useState('');
@@ -4360,7 +4406,10 @@ function AdminDashboard({ data, updateStatus }: any) {
   const [historyModalOpen, setHistoryModalOpen] = useState(false);
   const [activeHistory, setActiveHistory] = useState<any>(null);
 
+  const roleLabel = role === 'admin' ? 'Pusat' : (role === 'staf' ? 'Staf' : (role === 'auditor' ? 'Auditor' : 'Editor'));
+
   const handleOpenUpdateModal = (item: any) => {
+    // Audit log or restriction check here if needed
     setSelectedItem(item);
     setNewStatus(item.status);
     setCatatan('');
@@ -4385,7 +4434,7 @@ function AdminDashboard({ data, updateStatus }: any) {
     <div className="max-w-full relative">
       <div className="mb-8 flex justify-between items-end">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Panel Sinkronisasi Data</h2>
+          <h2 className="text-2xl font-bold text-gray-900 border-l-4 border-emerald-600 pl-4">Panel Sinkronisasi Data <span className="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-lg text-sm font-semibold ml-2">Admin {roleLabel}</span></h2>
           <p className="text-gray-500 text-sm mt-1">Perubahan status di sini akan langsung terlihat oleh Pelaku Usaha via Cloud.</p>
         </div>
       </div>
