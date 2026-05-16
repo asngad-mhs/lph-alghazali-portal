@@ -3794,35 +3794,6 @@ function AuthView({ navigateTo, setRole, roleType = 'pu' }: any) {
                    <X className="w-4 h-4 mr-2 shrink-0" /> {errorMsg}
                 </div>
             )}
-            {roleType === 'staff' && (
-               <div className="mt-4 p-5 bg-white/80 backdrop-blur-sm rounded-2xl border border-emerald-100 shadow-sm">
-                  <h4 className="text-[10px] font-bold text-emerald-800 uppercase tracking-[0.1em] mb-3 flex items-center">
-                    <ShieldCheck className="w-3.5 h-3.5 mr-1.5" /> Akun Demo Akses Internal
-                  </h4>
-                  <div className="grid grid-cols-1 gap-2">
-                     <div className="flex items-center justify-between p-2 bg-emerald-50/50 rounded-lg border border-emerald-100/50">
-                        <span className="text-[11px] font-medium text-gray-600">Admin Pusat:</span>
-                        <code className="text-[10px] font-mono text-emerald-700 bg-white px-2 py-0.5 rounded border border-emerald-100">admin@lphalghazali.com</code>
-                     </div>
-                     <div className="flex items-center justify-between p-2 bg-emerald-50/50 rounded-lg border border-emerald-100/50">
-                        <span className="text-[11px] font-medium text-gray-600">Auditor:</span>
-                        <code className="text-[10px] font-mono text-emerald-700 bg-white px-2 py-0.5 rounded border border-emerald-100">auditor@lphalghazali.com</code>
-                     </div>
-                     <div className="flex items-center justify-between p-2 bg-emerald-50/50 rounded-lg border border-emerald-100/50">
-                        <span className="text-[11px] font-medium text-gray-600">Editor:</span>
-                        <code className="text-[10px] font-mono text-emerald-700 bg-white px-2 py-0.5 rounded border border-emerald-100">editor@lphalghazali.com</code>
-                     </div>
-                     <div className="flex items-center justify-between p-2 bg-emerald-50/50 rounded-lg border border-emerald-100/50">
-                        <span className="text-[11px] font-medium text-gray-600">Staf:</span>
-                        <code className="text-[10px] font-mono text-emerald-700 bg-white px-2 py-0.5 rounded border border-emerald-100">staf@lphalghazali.com</code>
-                     </div>
-                  </div>
-                  <div className="mt-3 flex items-center justify-center text-[10px] text-emerald-600 font-medium">
-                     <Key className="w-3 h-3 mr-1" /> Password: <span className="ml-1 bg-emerald-100 px-1.5 rounded">admin123</span>
-                  </div>
-                  <p className="mt-2 text-[9px] text-gray-400 text-center italic">Sistem akan otomatis mendaftarkan email di atas jika belum terdaftar.</p>
-               </div>
-            )}
 
             {!isLogin && roleType === 'pu' && (
               <div>
