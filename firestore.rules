@@ -20,7 +20,7 @@ service cloud.firestore {
     function isOwner(userId) {
       return request.auth.uid == userId;
     }
-
+    
     match /{document=**} {
       allow read, write: if false;
     }
@@ -63,7 +63,8 @@ service cloud.firestore {
       // Let PU create their own profile, but enforce role='pu'. Staff roles created by admin.
       allow create: if isSignedIn() && isOwner(userId) && (
         request.resource.data.role == 'pu' || 
-        (request.resource.data.role in ['admin', 'auditor'] && request.auth.token.email in ['admin@lphalghazali.com', 'auditor@lphalghazali.com'])
+        (request.resource.data.role == 'admin' && request.auth.token.email == 'admin@lphalghazali.com') ||
+        (request.resource.data.role == 'auditor' && request.auth.token.email == 'auditor@lphalghazali.com')
       );
       allow update: if isSignedIn() && isOwner(userId) && request.resource.data.role == resource.data.role; // Prevent role escalation
     }
