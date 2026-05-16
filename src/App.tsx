@@ -226,11 +226,28 @@ export default function LPHApp() {
            try {
              const userDocRef = doc(db, 'users', currentUser.uid);
              const userDocSnap = await getDoc(userDocRef);
+             
              if (userDocSnap.exists()) {
                role = userDocSnap.data().role || 'pu';
+             } else {
+               // Auto-create profile if missing
+               role = (currentUser.email === 'admin@lphalghazali.com' || currentUser.email === 'auditor@lphalghazali.com') 
+                 ? currentUser.email.split('@')[0] 
+                 : 'pu';
+                 
+               await setDoc(userDocRef, {
+                 name: currentUser.displayName || currentUser.email?.split('@')[0] || 'User',
+                 email: currentUser.email,
+                 role: role,
+                 createdAt: serverTimestamp()
+               });
              }
            } catch(e) {
              console.error("Error fetching user role", e);
+             // If fetching fails, fallback to check email just in case
+             role = (currentUser.email === 'admin@lphalghazali.com' || currentUser.email === 'auditor@lphalghazali.com') 
+                 ? currentUser.email.split('@')[0] 
+                 : 'pu';
            }
         }
         setUserRole(role);
