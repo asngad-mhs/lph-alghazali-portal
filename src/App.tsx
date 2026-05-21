@@ -4,6 +4,7 @@ import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, si
 import { getFirestore, initializeFirestore, collection, onSnapshot, getDoc, addDoc, updateDoc, doc, serverTimestamp, deleteDoc, setDoc, query, where } from 'firebase/firestore';
 import { Leaf, Home, FileText, LogOut, PlusCircle, Settings, CheckCircle, Clock, Search, Briefcase, FileSignature, UploadCloud, ArrowLeft, ArrowRight, ShieldCheck, Zap, MonitorSmartphone, UserCheck, Newspaper, Edit, Trash2, X, Image as ImageIcon, Route, Coins, ChevronDown, ChevronRight, Calculator, Receipt, CalendarDays, Activity, Video, Link, MapPin, Phone, Mail, Facebook, Twitter, Instagram, Linkedin, History, Target, Award, Network, Users, BookOpen, Handshake, Menu, Scale, Landmark, CheckCircle2, FlaskConical, FileEdit, Globe, Key, Download } from 'lucide-react';
 import CryptoJS from 'crypto-js';
+import RegulasiView from './components/RegulasiView';
 
 const OrgCard = ({ title, name, list, className = "", noHover = false, allowUpload = false, defaultImages = {}, onImageChange }: any) => {
     const [images, setImages] = useState<Record<string, string>>({});
@@ -351,6 +352,61 @@ Mengatur penyusunan standardisasi internal industri produk halal:
 - Penetapan Kebijakan Halal manajemen.
 - Penelusuran bahan baku bersertifikat halal dari pemasok (supplying trace).
 - Pencegahan pencemaran silang dari fasilitas non-halal.`
+  },
+  {
+    id: 'kep-bpjph-2-2022',
+    nomor: 'Keputusan Kepala BPJPH Nomor 2 Tahun 2022',
+    kategori: 'Keputusan Kepala BPJPH',
+    tentang: 'Tata Cara Sertifikasi Halal Reguler',
+    deskripsi: 'Mengatur tata cara dan prosedur lengkap pengajuan serta pemeriksaan dokumen sertifikasi halal reguler (non self-declare) melalui sistem portal Sihalal Kemenag.',
+    tahun: '2022',
+    referensiUrl: 'https://bpjph.halal.go.id/',
+    pasalPenting: [
+      { pasal: 'Poin Alur', isi: 'Alur pendaftaran pelaku usaha, verifikasi dokumen administratif dan penunjukan Lembaga Pemeriksa Halal (LPH) dalam 1 hari kerja.' },
+      { pasal: 'Pemeriksaan LPH', isi: 'LPH berkewajiban melakukan audit bahan, fasilitas produksi, proses produk halal, serta menerbitkan Laporan Hasil Pemeriksaan (LHP).' }
+    ],
+    isiLengkap: `KEPUTUSAN KEPALA BADAN PENYELENGGARA JAMINAN PRODUK HALAL NOMOR 2 TAHUN 2022 TENTANG TATA CARA SERTIFIKASI HALAL REGULER
+
+Mengatur tata cara operasional untuk pendaftaran sertifikasi halal reguler:
+- Pendaftaran oleh Pelaku Usaha melalui sistem Sihalal Kemenag.
+- Penunjukan Auditor Halal oleh LPH terpilih untuk merespon permohonan.
+- Penerbitan Laporan Hasil Pemeriksaan (LHP) pasca audit lapangan.`
+  },
+  {
+    id: 'per-bpom-22-2018',
+    nomor: 'Peraturan BPOM Nomor 22 Tahun 2018',
+    kategori: 'Peraturan BPOM',
+    tentang: 'Label Halal pada Pangan Olahan',
+    deskripsi: 'Aturan BPOM yang merincikan tata cara pencantuman status, logo, dan tulisan halal pada media kemasan pangan olahan yang diedarkan secara komersil.',
+    tahun: '2018',
+    referensiUrl: 'https://bpjph.halal.go.id/',
+    pasalPenting: [
+      { pasal: 'Pencantuman Logo', isi: 'Pelaku usaha wajib mencantumkan logo halal Indonesia pada permukaan label pangan yang paling mudah dilihat konsumen setelah memperoleh sertifikat halal.' },
+      { pasal: 'Larangan Klaim', isi: 'Dilarang mencantumkan logo atau klaim halal sepihak tanpa adanya sertifikat halal dari BPJPH.' }
+    ],
+    isiLengkap: `PERATURAN BADAN PENGAWAS OBAT DAN MAKANAN NOMOR 22 TAHUN 2018 TENTANG PEDOMAN LABEL PANGAN OLAHAN TERKAIT LOGO HALAL
+
+Mengatur standarisasi label jaminan kehalalan produk:
+- Kewajiban pencantuman penandaan halal yang sah bagi produk pangan yang telah mengantongi Sertifikat Halal.
+- Sanksi persuasif hingga administratif bagi pelaku usaha pangan olahan bermasalah.`
+  },
+  {
+    id: 'sni-99001-2022',
+    nomor: 'SNI 99001:2022',
+    kategori: 'SNI',
+    tentang: 'Sistem Jaminan Halal – Persyaratan Umum',
+    deskripsi: 'Standar Nasional Indonesia revisi terbaru yang menjadi standar acuan utama untuk mengevaluasi konsistensi, integritas, dan manajemen produk halal dalam rantai pasok industri modern.',
+    tahun: '2022',
+    referensiUrl: 'https://bpjph.halal.go.id/',
+    pasalPenting: [
+      { pasal: 'Kebijakan Halal', isi: 'Perusahaan wajib menetapkan, dokumentasikan, dan memelihara kebijakan jaminan produk halal secara konsisten dari hulu ke hilir.' },
+      { pasal: 'Pemisahan Total', isi: 'Memastikan tidak terjadi kontaminasi silang antara bahan halal dan bahan haram/najis sepanjang proses penanganan dan distribusi bahan baku.' }
+    ],
+    isiLengkap: `STANDAR NASIONAL INDONESIA SNI 99001:2022 SISTEM JAMINAN HALAL - PERSYARATAN UMUM
+
+Menetapkan persyaratan konsistensi audit dan kelayakan manajemen industri:
+1. Pembentukan Tim Jaminan Halal dengan pembina syariah tersertifikasi.
+2. Penelusuran silsilah bahan kritis (critical materials lineage) dari pemasok pihak ketiga.`
   }
 ];
 
@@ -360,6 +416,7 @@ export default function LPHApp() {
   const [userRole, setUserRole] = useState('pu');
   const [pengajuanList, setPengajuanList] = useState<any[]>([]);
   const [beritaList, setBeritaList] = useState<any[]>([]);
+  const [regulasiList, setRegulasiList] = useState<any[]>(REKAP_REGULASI_DATA);
   const [isLoading, setIsLoading] = useState(true);
 
   // Connection Test - Removed to avoid potential race conditions and SDK assertion failures
@@ -562,9 +619,51 @@ export default function LPHApp() {
         handleFirestoreError(error, OperationType.GET, `artifacts/${currentAppId}/public/data/berita`);
       });
 
+      // Fetch Regulasi
+      const regulasiRef = collection(db, 'artifacts', currentAppId, 'public', 'data', 'regulasi');
+      const unsubscribeRegulasi = onSnapshot(regulasiRef, (snapshot) => {
+        const rData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as any[];
+        if (rData.length > 0) {
+          // Sort them nicely
+          rData.sort((a, b) => {
+            const order = ['Undang-Undang', 'Peraturan Pemerintah', 'Keputusan Menteri Agama', 'Keputusan Kepala BPJPH', 'Peraturan BPOM', 'SNI'];
+            const indexA = order.indexOf(a.kategori);
+            const indexB = order.indexOf(b.kategori);
+            if (indexA !== indexB) {
+              return (indexA === -1 ? 99 : indexA) - (indexB === -1 ? 99 : indexB);
+            }
+            return b.tahun - a.tahun;
+          });
+          setRegulasiList(rData);
+        }
+      }, (error) => {
+        handleFirestoreError(error, OperationType.GET, `artifacts/${currentAppId}/public/data/regulasi`);
+      });
+
+      // Idempotent Seeding for Regulasi
+      const seedRegulasi = async () => {
+        try {
+          for (const reg of REKAP_REGULASI_DATA) {
+            const docRef = doc(db, 'artifacts', currentAppId, 'public', 'data', 'regulasi', reg.id);
+            const docSnap = await getDoc(docRef);
+            if (!docSnap.exists()) {
+              await setDoc(docRef, {
+                ...reg,
+                status: "Masih Berlaku",
+                lastUpdated: "21 Mei 2026"
+              });
+            }
+          }
+        } catch (e) {
+          console.warn("Seeding regulasi not completed:", e);
+        }
+      };
+      seedRegulasi();
+
       return () => {
           unsubscribeData();
           unsubscribeBerita();
+          unsubscribeRegulasi();
       };
     }
   }, [user, userRole]);
@@ -690,7 +789,17 @@ export default function LPHApp() {
   // ==========================================
   return (
     <div className="min-h-screen bg-gray-50 font-sans text-gray-800">
-      {currentView === 'landing' && <LandingView navigateTo={navigateTo} beritaList={beritaList} />}
+      {currentView === 'landing' && (
+        <LandingView 
+          navigateTo={navigateTo} 
+          beritaList={beritaList}
+          regulasiList={regulasiList}
+          user={user}
+          userRole={userRole}
+          db={db}
+          currentAppId={currentAppId}
+        />
+      )}
       {currentView === 'login' && <AuthView navigateTo={navigateTo} setRole={setUserRole} roleType="pu" />}
       {currentView === 'login-staff' && <AuthView navigateTo={navigateTo} setRole={setUserRole} roleType="staff" />}
       
@@ -761,8 +870,9 @@ export default function LPHApp() {
 // VIEW COMPONENTS
 // ==========================================
 
-function LandingView({ navigateTo, beritaList }: any) {
+function LandingView({ navigateTo, beritaList, regulasiList, user, userRole, db, currentAppId }: any) {
   const [settings, setSettings] = useState<any>(null);
+  const [landingSubView, setLandingSubView] = useState<'home' | 'regulasi'>('home');
 
   useEffect(() => {
     // Fetch settings to display dynamic structure and images
@@ -826,7 +936,8 @@ function LandingView({ navigateTo, beritaList }: any) {
 
   const openRegulasiWithCategory = (category: string) => {
     setSelectedRegulasiCategory(category);
-    setIsMenuRegulasiOpen(true);
+    setLandingSubView('regulasi');
+    setIsMenuRegulasiOpen(false);
     setSearchRegulasiQuery('');
     setActiveRegulasiDoc(null);
   };
@@ -1000,7 +1111,7 @@ SHA-256 Verified Secure Archive File`;
         <div className="border-b border-gray-100 bg-emerald-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-24 sm:h-32 py-2">
-              <div className="flex items-center space-x-3 sm:space-x-4">
+              <div onClick={() => setLandingSubView('home')} className="flex items-center space-x-3 sm:space-x-4 cursor-pointer">
                 <Logo className="h-16 w-16 sm:h-24 sm:w-24 drop-shadow-md" />
                 <div className="flex flex-col">
                   <span className="font-bold text-2xl sm:text-3xl tracking-tight text-gray-900 leading-none mb-1">LPH AL-GHAZALI</span>
@@ -1041,7 +1152,7 @@ SHA-256 Verified Secure Archive File`;
           <div className="flex justify-between h-14 items-center">
             {/* Desktop Navigation */}
             <div className="hidden xl:flex space-x-6 items-center text-sm font-medium">
-              <a href="#beranda" className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center shrink-0">
+              <a href="#beranda" onClick={() => setLandingSubView('home')} className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center shrink-0">
                 <Home className="w-4 h-4 mr-1" /> Beranda
               </a>
               <div className="relative group shrink-0">
@@ -1119,7 +1230,7 @@ SHA-256 Verified Secure Archive File`;
                 </div>
               </div>
               <div className="relative group shrink-0">
-                <button className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center py-4">
+                <button onClick={() => openRegulasiWithCategory('Semua')} className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center py-4 cursor-pointer">
                   <Scale className="w-4 h-4 mr-1" /> Regulasi <ChevronDown className="w-4 h-4 ml-1" />
                 </button>
                 <div className="absolute top-[80%] left-0 w-72 bg-white border border-gray-100 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 overflow-hidden z-50">
@@ -1184,7 +1295,7 @@ SHA-256 Verified Secure Archive File`;
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
           <div className="xl:hidden bg-white px-4 pt-2 pb-4 space-y-1 shadow-lg max-h-[80vh] overflow-y-auto">
-            <a href="#beranda" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-md">
+            <a href="#beranda" onClick={() => { setLandingSubView('home'); setIsMobileMenuOpen(false); }} className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-md">
               <div className="flex items-center"><Home className="w-4 h-4 mr-2" /> Beranda</div>
             </a>
             
@@ -1266,8 +1377,26 @@ SHA-256 Verified Secure Archive File`;
         )}
       </nav>
 
-      {/* Hero */}
-      <section id="beranda" className="pt-48 sm:pt-56 pb-20 bg-emerald-600 text-white flex-1 flex items-center relative overflow-hidden">
+      {landingSubView === 'regulasi' ? (
+        <RegulasiView
+          navigateTo={navigateTo}
+          regulasiList={regulasiList}
+          selectedCategory={selectedRegulasiCategory}
+          setSelectedCategory={setSelectedRegulasiCategory}
+          searchQuery={searchRegulasiQuery}
+          setSearchQuery={setSearchRegulasiQuery}
+          activeDoc={activeRegulasiDoc}
+          setActiveDoc={setActiveRegulasiDoc}
+          handleDownload={handleDownloadRegulasiDocument}
+          user={user}
+          userRole={userRole}
+          db={db}
+          currentAppId={currentAppId}
+        />
+      ) : (
+        <>
+          {/* Hero */}
+          <section id="beranda" className="pt-48 sm:pt-56 pb-20 bg-emerald-600 text-white flex-1 flex items-center relative overflow-hidden">
          <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#10b981 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center lg:text-left flex flex-col lg:flex-row items-center">
             <div className="lg:w-1/2 lg:pr-12">
@@ -2332,6 +2461,7 @@ SHA-256 Verified Secure Archive File`;
             </div>
         </div>
       </section>
+      </>)}
 
       {/* Footer */}
       <footer className="bg-gray-900 border-t border-gray-800 pt-16 pb-8 text-gray-300">

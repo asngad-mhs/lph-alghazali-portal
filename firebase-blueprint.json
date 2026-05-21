@@ -61,6 +61,33 @@
           }
         }
       }
+    },
+    "Regulasi": {
+      "title": "Regulasi JPH",
+      "description": "Dokumen Regulasi Jaminan Produk Halal dari BPJPH Kemenag",
+      "type": "object",
+      "properties": {
+        "nomor": { "type": "string" },
+        "kategori": { "type": "string" },
+        "tentang": { "type": "string" },
+        "deskripsi": { "type": "string" },
+        "tahun": { "type": "string" },
+        "status": { "type": "string" },
+        "referensiUrl": { "type": "string" },
+        "pasalPenting": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "pasal": { "type": "string" },
+              "isi": { "type": "string" }
+            }
+          }
+        },
+        "isiLengkap": { "type": "string" },
+        "lastUpdated": { "type": "string" }
+      },
+      "required": ["nomor", "kategori", "tentang", "tahun"]
     }
   },
   "firestore": {
@@ -75,6 +102,10 @@
     "/artifacts/{appId}/public/data/berita/{beritaId}": {
       "schema": "Berita",
       "description": "News articles"
+    },
+    "/artifacts/{appId}/public/data/regulasi/{regulasiId}": {
+      "schema": "Regulasi",
+      "description": "Halal certification regulatory documents"
     },
     "/artifacts/{appId}/public/data/pengajuan_halal/{pengajuanId}": {
       "schema": "PengajuanHalal",

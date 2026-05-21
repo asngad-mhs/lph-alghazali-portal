@@ -58,6 +58,11 @@ service cloud.firestore {
       allow write: if isStaff();
     }
 
+    match /artifacts/{appId}/public/data/regulasi/{regulasiId} {
+      allow read: if true;
+      allow write: if isStaff();
+    }
+
     match /artifacts/{appId}/public/data/pengajuan_halal/{pengajuanId} {
       allow read: if isStaff() || (isSignedIn() && resource.data.userId == request.auth.uid);
       allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
