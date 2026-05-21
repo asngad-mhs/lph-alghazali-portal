@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInAnonymously, onAuthStateChanged, signOut, updateProfile, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail } from 'firebase/auth';
 import { getFirestore, initializeFirestore, collection, onSnapshot, getDoc, addDoc, updateDoc, doc, serverTimestamp, deleteDoc, setDoc, query, where } from 'firebase/firestore';
-import { Leaf, Home, FileText, LogOut, PlusCircle, Settings, CheckCircle, Clock, Search, Briefcase, FileSignature, UploadCloud, ArrowLeft, ArrowRight, ShieldCheck, Zap, MonitorSmartphone, UserCheck, Newspaper, Edit, Trash2, X, Image as ImageIcon, Route, Coins, ChevronDown, ChevronRight, Calculator, Receipt, CalendarDays, Activity, Video, Link, MapPin, Phone, Mail, Facebook, Twitter, Instagram, Linkedin, History, Target, Award, Network, Users, BookOpen, Handshake, Menu, Scale, Landmark, CheckCircle2, FlaskConical, FileEdit, Globe, Key } from 'lucide-react';
+import { Leaf, Home, FileText, LogOut, PlusCircle, Settings, CheckCircle, Clock, Search, Briefcase, FileSignature, UploadCloud, ArrowLeft, ArrowRight, ShieldCheck, Zap, MonitorSmartphone, UserCheck, Newspaper, Edit, Trash2, X, Image as ImageIcon, Route, Coins, ChevronDown, ChevronRight, Calculator, Receipt, CalendarDays, Activity, Video, Link, MapPin, Phone, Mail, Facebook, Twitter, Instagram, Linkedin, History, Target, Award, Network, Users, BookOpen, Handshake, Menu, Scale, Landmark, CheckCircle2, FlaskConical, FileEdit, Globe, Key, Download } from 'lucide-react';
 import CryptoJS from 'crypto-js';
 
 const OrgCard = ({ title, name, list, className = "", noHover = false, allowUpload = false, defaultImages = {}, onImageChange }: any) => {
@@ -127,9 +127,232 @@ const auth = getAuth(app);
 export const db = initializeFirestore(app, {
   experimentalAutoDetectLongPolling: true,
   forceLongPolling: true,
-}, firebaseConfig.firestoreDatabaseId);
+} as any, firebaseConfig.firestoreDatabaseId);
 // @ts-ignore
 const currentAppId = typeof __app_id !== 'undefined' ? __app_id : 'lph-alghazali-app';
+
+const REKAP_REGULASI_DATA = [
+  {
+    id: 'uu-33-2014',
+    nomor: 'Undang-Undang Nomor 33 Tahun 2014',
+    kategori: 'Undang-Undang',
+    tentang: 'Jaminan Produk Halal (JPH)',
+    deskripsi: 'Dasar hukum utama penyelenggaraan Jaminan Produk Halal di Indonesia. Mewajibkan seluruh produk yang masuk, beredar, dan diperdagangkan wajib bersertifikat halal secara bertahap.',
+    tahun: '2014',
+    referensiUrl: 'https://bpjph.halal.go.id/',
+    pasalPenting: [
+      { pasal: 'Pasal 4', isi: 'Produk yang masuk, beredar, dan diperdagangkan di wilayah Indonesia wajib bersertifikat halal.' },
+      { pasal: 'Pasal 13', isi: 'LPH menyelenggarakan pemeriksaan dan/atau pengujian kehalalan Produk setelah memperoleh akreditasi dari BPJPH.' },
+      { pasal: 'Pasal 26', isi: 'Pelaku Usaha wajib menjaga konsistensi kehalalan produk yang telah bersertifikat.' }
+    ],
+    isiLengkap: `UNDANG-UNDANG REPUBLIK INDONESIA NOMOR 33 TAHUN 2014 TENTANG JAMINAN PRODUK HALAL
+
+Menimbang:
+Bahwa untuk menjamin kemerdekaan tiap-tiap penduduk untuk memeluk agamanya masing-masing dan untuk beribadat menurut agamanya dan kepercayaannya itu, negara berkewajiban memberikan perlindungan dan jaminan tentang kehalalan produk yang dikonsumsi dan digunakan masyarakat.
+
+BAB I: KETENTUAN UMUM
+Pasal 1:
+1. Produk adalah barang dan/atau jasa yang terkait dengan makanan, minuman, obat, kosmetik, produk kimiawi, produk biologi, produk rekayasa genetik, serta barang gunaan yang dipakai, digunakan, atau dimanfaatkan oleh masyarakat.
+2. Jaminan Produk Halal (JPH) adalah kepastian hukum terhadap kehalalan suatu produk yang dibuktikan dengan Sertifikat Halal.
+
+BAB II: PENYELENGGARAAN JAMINAN PRODUK HALAL
+Pasal 4:
+Produk yang masuk, beredar, dan diperdagangkan di wilayah Indonesia wajib bersertifikat halal.
+
+BAB III: LEMBAGA PEMERIKSA HALAL (LPH)
+Pasal 13:
+LPH menyelenggarakan pemeriksaan dan/atau pengujian kehalalan Produk setelah memperoleh akreditasi dari BPJPH dan bekerja sama dengan MUI.`
+  },
+  {
+    id: 'uu-6-2023',
+    nomor: 'Undang-Undang Nomor 6 Tahun 2023',
+    kategori: 'Undang-Undang',
+    tentang: 'Penetapan Perpu Cipta Kerja Menjadi UU (Klaster JPH)',
+    deskripsi: 'Mengubah beberapa ketentuan dalam Undang-Undang JPH demi mempermudah dan mendeformalkan proses sertifikasi bagi UMK, memperkenalkan skema pernyataan pelaku usaha (Self Declare) secara legal.',
+    tahun: '2023',
+    referensiUrl: 'https://bpjph.halal.go.id/',
+    pasalPenting: [
+      { pasal: 'Pasal 4A', isi: 'Bagi Pelaku Usaha Mikro dan Kecil (UMK), kewajiban bersertifikat halal didasarkan atas pernyataan pelaku usaha (Self Declare).' },
+      { pasal: 'Pasal 48', isi: 'Sertifikat Halal kini berlaku untuk selamanya (seumur hidup) sepanjang pelaku usaha memelihara konsistensi kehalalan bahan dan proses.' }
+    ],
+    isiLengkap: `UNDANG-UNDANG REPUBLIK INDONESIA NOMOR 6 TAHUN 2023 TENTANG PENETAPAN PERATURAN PEMERINTAH PENGGANTI UNDANG-UNDANG NOMOR 2 TAHUN 2022 TENTANG CIPTA KERJA MENJADI UNDANG-UNDANG
+
+KLASTER JAMINAN PRODUK HALAL (Penyederhanaan & Akselerasi Sertifikasi):
+
+Mengubah beberapa ketentuan utama dalam Undang-Undang Nomor 33 Tahun 2014 tentang Jaminan Produk Halal:
+
+1. Penyataan Halal Pelaku Usaha (Self Declare):
+Untuk mempermudah kelompok Usaha Mikro dan Kecil (UMK), kewajiban sertifikasi halal dapat dilakukan berdasarkan Pernyataan Halal Pelaku Usaha demi akselerasi kewajiban sertifikasi halal.
+
+2. Masa Berlaku Sertifikat Halal:
+Sertifikat Halal kini berlaku untuk selamanya (seumur hidup) sepanjang Pelaku Usaha memelihara konsistensi kehalalan bahan dan proses produk halal yang disepakati.`
+  },
+  {
+    id: 'pp-39-2021',
+    nomor: 'Peraturan Pemerintah Nomor 39 Tahun 2021',
+    kategori: 'Peraturan Pemerintah',
+    tentang: 'Penyelenggaraan Bidang Jaminan Produk Halal',
+    deskripsi: 'Aturan turunan UU JPH yang merinci penahapan kewajiban bersertifikat halal bagi berbagai kategori produk, serta tugas operasional BPJPH, LPH, dan auditor halal.',
+    tahun: '2021',
+    referensiUrl: 'https://bpjph.halal.go.id/',
+    pasalPenting: [
+      { pasal: 'Pasal 2', isi: 'Penahapan pertama kewajiban bersertifikat halal bagi produk makanan, minuman serta hasil sembelihan dimulai 17 Oktober 2019 s.d. 17 Oktober 2024.' },
+      { pasal: 'Pasal 72', isi: 'Auditor Halal diangkat, diberhentikan, dan diawasi kinerjanya oleh BPJPH dengan syarat memiliki kompetensi syariah dan sains.' }
+    ],
+    isiLengkap: `PERATURAN PEMERINTAH NOMOR 39 TAHUN 2021 TENTANG PENYELENGGARAAN BIDANG JAMINAN PRODUK HALAL
+
+BAB I: KETENTUAN UMUM
+Pasal 1:
+Penyelenggaraan Jaminan Produk Halal (JPH) mencakup perencanaan, penetapan standar, pendaftaran, pemeriksaan, pengujian, penetapan kehalalan, pengawasan, pembiayaan, serta pembinaan pelaku usaha.
+
+BAB II: TAHAPAN KEWAJIBAN BERSERTIFIKAT HALAL
+Pasal 2:
+1. Tahapan pertama kewajiban bersertifikat halal bagi produk makanan, minuman serta hasil sembelihan dan jasa penyembelihan berlangsung hingga 17 Oktober 2024.
+2. Penahapan berikutnya diatur lebih rinci bagi obat tradisional, kosmetik, alat kesehatan, dan produk gunaan lainnya.`
+  },
+  {
+    id: 'kma-748-2021',
+    nomor: 'Keputusan Menteri Agama Nomor 748 Tahun 2021',
+    kategori: 'Keputusan Menteri Agama',
+    tentang: 'Jenis Produk yang Wajib Bersertifikat Halal',
+    deskripsi: 'Keputusan definitif menteri yang merinci ratusan klasifikasi barang komoditas dan jasa industri yang wajib mengantongi sertifikat halal di Indonesia.',
+    tahun: '2021',
+    referensiUrl: 'https://bpjph.halal.go.id/',
+    pasalPenting: [
+      { pasal: 'Keputusan Kesatu', isi: 'Menetapkan jenis produk wajib bersertifikasi halal yang dikelompokkan ke dalam kategori barang (pangan, obat, kosmetik) dan jasa.' },
+      { pasal: 'Kategori Jasa', isi: 'Jasa penyembelihan, pengolahan, penyimpanan, pengemasan, pendistribusian, penjualan, dan penyajian wajib bersertifikat halal.' }
+    ],
+    isiLengkap: `KEPUTUSAN MENTERI AGAMA REPUBLIK INDONESIA NOMOR 748 TAHUN 2021 TENTANG JENIS PRODUK YANG WAJIB BERSERTIFIKAT HALAL
+
+Menetapkan:
+Menetapkan kelompok jenis produk yang wajib bersertifikat halal meliputi:
+A. Barang:
+   1. Makanan dan minuman
+   2. Obat tradisional, suplemen kesehatan, obat bebas, kosmetika
+   3. Produk kimia, biologi, rekayasa genetika
+   4. Barang gunaan (sandang, penutup kepala, aksesoris, dll)
+B. Jasa:
+   1. Jasa penyembelihan hewan
+   2. Jasa pengolahan pangan
+   3. Jasa penyimpanan, pengangkutan, pendistribusian, penyajian`
+  },
+  {
+    id: 'kma-1360-2021',
+    nomor: 'Keputusan Menteri Agama Nomor 1360 Tahun 2021',
+    kategori: 'Keputusan Menteri Agama',
+    tentang: 'Bahan yang Dikecualikan dari Kewajiban Bersertifikat Halal',
+    deskripsi: 'Menyediakan daftar putih (positive list/white list) bahan alamiah murni non-titik kritis yang terbebas dari tuntutan sertifikasi halal, sehingga tidak perlu diaudit detail bahannya.',
+    tahun: '2021',
+    referensiUrl: 'https://bpjph.halal.go.id/',
+    pasalPenting: [
+      { pasal: 'Diktum Kesatu', isi: 'Bahan dari alam murni tanpa perlakuan pengolahan kimiawi dikecualikan dari kewajiban bersertifikat halal.' },
+      { pasal: 'Lampiran', isi: 'Mencakup air murni, sayuran segar, buah-buahan organik tanpa pengawet sintetis, serta bahan mineral alamiah murni.' }
+    ],
+    isiLengkap: `KEPUTUSAN MENTERI AGAMA REPUBLIK INDONESIA NOMOR 1360 TAHUN 2021 TENTANG BAHAN YANG DIKECUALIKAN DARI KEWAJIBAN BERSERTIFIKAT HALAL
+
+Diktum Kesatu:
+Menetapkan bahan yang dikecualikan dari kewajiban bersertifikat halal demi memberikan kepastian hukum dan kemudahan bagi Pelaku Usaha.
+
+Kategori yang dikecualikan meliputi:
+1. Bahan yang berasal dari alam berupa tumbuhan, hewan segar non-sembelihan yang halal, mikroorganisme, atau air tanah tanpa proses penambahan formulasi kimia.
+2. Bahan yang tidak memiliki potensi kontaminasi najis atau zat non-halal (positive list).`
+  },
+  {
+    id: 'per-bpjph-1-2023',
+    nomor: 'Peraturan BPJPH Nomor 1 Tahun 2023',
+    kategori: 'Keputusan Kepala BPJPH',
+    tentang: 'Tata Cara Sertifikasi Halal dengan Pernyataan Pelaku Usaha (Self Declare)',
+    deskripsi: 'Mengatur regulasi operasional serta standarisasi persyaratan, kriteria bahan, dan proses pendampingan PPH dalam menerbitkan sertifikat halal berbasis Self Declare.',
+    tahun: '2023',
+    referensiUrl: 'https://bpjph.halal.go.id/',
+    pasalPenting: [
+      { pasal: 'Pasal 3', isi: 'Kriteria bahan harus positif list (tidak berisiko) dan proses pengolahan sederhana secara manual.' },
+      { pasal: 'Pasal 9', isi: 'Pendamping PPH melakukan verifikasi dan validasi langsung ke lokasi produksi sebelum diteruskan ke Komisi/Komite Fatwa.' }
+    ],
+    isiLengkap: `PERATURAN BADAN PENYELENGGARA JAMINAN PRODUK HALAL NOMOR 1 TAHUN 2023 TENTANG TATA CARA SERTIFIKASI HALAL DENGAN PERNYATAAN PELAKU USAHA (SELF DECLARE)
+
+Mengatur tata kelola dan operasional pelaksanaan Program Sehati (Sertifikasi Halal Gratis) skema self declare:
+
+1. Pelaku Usaha Mikro & Kecil berhak mengajukan permohonan melalui akun Sihalal.
+2. Harus ada Pendamping PPH yang terdaftar resmi untuk melakukan verifikasi ke lapangan.
+3. Seluruh bahan baku wajib bermerek halal atau tergolong positive list bersertifikasi.`
+  },
+  {
+    id: 'kep-bpjph-150-2022',
+    nomor: 'Keputusan Kepala BPJPH Nomor 150 Tahun 2022',
+    kategori: 'Keputusan Kepala BPJPH',
+    tentang: 'Pedoman Penyelenggaraan Sertifikasi Halal Reguler',
+    deskripsi: 'Petunjuk teknis dan administratif pendaftaran skema reguler (non-self declare) lewat portal Sihalal, penugasan LPH, audit lapangan, hingga penerbitan sertifikat.',
+    tahun: '2022',
+    referensiUrl: 'https://bpjph.halal.go.id/',
+    pasalPenting: [
+      { pasal: 'Poin V', isi: 'Alur penetapan pilihan LPH oleh Pelaku Usaha melalui sistem Sihalal secara transparan.' },
+      { pasal: 'Poin VIII', isi: 'Waktu maksimal pemrosesan pemeriksaan berkas oleh LPH hingga penerbitan laporan LHP.' }
+    ],
+    isiLengkap: `KEPUTUSAN KEPALA BADAN PENYELENGGARA JAMINAN PRODUK HALAL NOMOR 150 TAHUN 2022 TENTANG PEDOMAN PENYELENGGARAAN SERTIFIKASI HALAL
+
+Menetapkan aturan teknis terstruktur mengenai:
+- Tata cara pendaftaran sertifikasi skema reguler.
+- Standarisasi pelaporan hasil audit oleh LPH ke BPJPH Melalui Sihalal.
+- Validitas penugasan auditor halal di lokasi usaha.`
+  },
+  {
+    id: 'bpom-8-2021',
+    nomor: 'Peraturan BPOM Nomor 8 Tahun 2021',
+    kategori: 'Peraturan BPOM',
+    tentang: 'Pengawasan Penggunaan Label Halal pada Pangan Olahan',
+    deskripsi: 'Kerjasama integratif BPOM dan BPJPH pasca perubahan logo halal nasional untuk memastikan label kemasan beredar sesuai ketentuan regulasi kesehatan dan syariat.',
+    tahun: '2021',
+    referensiUrl: 'https://bpjph.halal.go.id/',
+    pasalPenting: [
+      { pasal: 'Pasal 5', isi: 'Pangan olahan yang bersertifikat wajib mencantumkan logo kemasan Halal Indonesia beserta nomor registrasi pendaftaran.' },
+      { pasal: 'Pasal 12', isi: 'Sanksi pencantuman klaim halal sepihak tanpa sertifikasi resmi dari BPJPH mulai dari teguran hingga penarikan izin edar.' }
+    ],
+    isiLengkap: `PERATURAN BADAN PENGAWAS OBAT DAN MAKANAN NOMOR 8 TAHUN 2021 TENTANG PENGAWASAN PENGGUNAAN LABEL HALAL
+
+Mengatur pengawasan post-market terhadap produk makanan dan minuman yang beredar di pasaran:
+1. Label halal wajib dicetak pada posisi yang mudah terlihat dan terbaca di kemasan utama.
+2. Integrasi data sinkron antara BPOM, BPJPH dan produsen pangan olahan.`
+  },
+  {
+    id: 'sni-17065-2012',
+    nomor: 'SNI ISO/IEC 17065:2012',
+    kategori: 'SNI',
+    tentang: 'Persyaratan untuk Lembaga Sertifikasi Produk, Proses, dan Jasa',
+    deskripsi: 'Standar baku internasional yang diadopsi sebagai syarat mutlak akreditasi operasional LPH Al-Ghazali demi memelihara integritas pengujian dan kepatuhan sistem sertifikasi.',
+    tahun: '2012',
+    referensiUrl: 'https://bpjph.halal.go.id/',
+    pasalPenting: [
+      { pasal: 'Klausul 4.2', isi: 'Ketidakberpihakan mutlak: LPH tidak boleh terafiliasi secara komersial dengan pelaku usaha yang diaudit.' },
+      { pasal: 'Klausul 7.4', isi: 'Prosedur evaluasi dan verifikasi data hasil uji laboratorium secara ilmiah sebelum penetapan keputusan.' }
+    ],
+    isiLengkap: `STANDAR NASIONAL INDONESIA SNI ISO/IEC 17065:2012
+
+Menetapkan kriteria operasional ketat bagi Lembaga Pemeriksa Halal (LPH):
+- Menjaga independensi audit.
+- Menyusun manajemen risiko ketidakberpihakan.
+- Menjamin kompetensi teknis seluruh personel auditor.`
+  },
+  {
+    id: 'sni-99001-2016',
+    nomor: 'SNI 99001:2016',
+    kategori: 'SNI',
+    tentang: 'Sistem Manajemen Halal',
+    deskripsi: 'Standar sertifikasi komitmen internal perusahaan dalam mengelola pasokan bahan, fasilitas produksi, proses sanitasi, dan edukasi karyawan secara bersih dan syariah.',
+    tahun: '2016',
+    referensiUrl: 'https://bpjph.halal.go.id/',
+    pasalPenting: [
+      { pasal: 'Bagian 5', isi: 'Tanggung jawab manajemen puncak dalam membentuk tim manajemen halal internal.' },
+      { pasal: 'Bagian 8', isi: 'Pengendalian bahan kritis dan jaminan keterlacakan agar tidak terkontaminasi najis.' }
+    ],
+    isiLengkap: `STANDAR NASIONAL INDONESIA SNI 99001:2016 SISTEM MANAJEMEN HALAL
+
+Mengatur penyusunan standardisasi internal industri produk halal:
+- Penetapan Kebijakan Halal manajemen.
+- Penelusuran bahan baku bersertifikat halal dari pemasok (supplying trace).
+- Pencegahan pencemaran silang dari fasilitas non-halal.`
+  }
+];
 
 export default function LPHApp() {
   const [user, setUser] = useState<any>(null);
@@ -358,10 +581,18 @@ export default function LPHApp() {
         nomorRegistrasi: `REG-${new Date().getFullYear()}${String(new Date().getMonth()+1).padStart(2,'0')}-${Math.floor(Math.random() * 10000)}`,
         companyName: formData.companyName,
         productName: formData.productName,
-        jenisPengajuan: 'Baru',
-        status: 'Menunggu Verifikasi',
+        skalaUsaha: formData.skalaUsaha || 'Mikro',
+        jenisPengajuan: formData.jenisPengajuan || 'Baru',
+        jenisLayanan: formData.jenisLayanan || 'Reguler',
+        jenisProduk: formData.jenisProduk || 'Makanan',
+        jumlahProduk: formData.jumlahProduk || 1,
+        jumlahPabrik: formData.jumlahPabrik || 1,
+        tiketPesawat: formData.tiketPesawat || 0,
+        estimasiBiaya: formData.grandTotal || 0,
+        fileName: formData.file ? formData.file.name : 'dokumen_legalitas.pdf',
+        status: 'Verifikasi Dokumen',
         createdAt: Date.now(),
-        history: [{ status: 'Menunggu Verifikasi', timestamp: Date.now(), catatatan: 'Pengajuan dibuat' }]
+        history: [{ status: 'Verifikasi Dokumen', timestamp: Date.now(), catatan: 'Pengajuan telah dikirim secara online dan menunggu Verifikasi Dokumen oleh LPH Al-Ghazali.' }]
       };
       
       if (firebaseConfig.projectId !== 'mock-project') {
@@ -481,6 +712,12 @@ export default function LPHApp() {
         </DashboardLayout>
       )}
 
+      {currentView === 'pu-kalkulator' && (
+        <DashboardLayout role="pu" navigateTo={navigateTo} logout={handleLogout} currentView={currentView}>
+          <PUKalkulatorView navigateTo={navigateTo} />
+        </DashboardLayout>
+      )}
+
       {currentView === 'admin-dashboard' && (
         <DashboardLayout role={userRole} navigateTo={navigateTo} logout={handleLogout} currentView={currentView}>
           <AdminDashboard data={pengajuanList} updateStatus={handleUpdateStatus} role={userRole} />
@@ -551,9 +788,11 @@ function LandingView({ navigateTo, beritaList }: any) {
   };
 
   const [formData, setFormData] = useState({
-    provinsi: '',
+    provinsi: 'Jawa Tengah',
     kabKota: '',
-    jenisLayanan: '',
+    kecamatan: '',
+    kelurahanDesa: '',
+    jenisLayanan: 'Reguler',
     jenisProduk: '',
     skalaUsaha: '',
     jumlahProduk: 0,
@@ -561,6 +800,14 @@ function LandingView({ navigateTo, beritaList }: any) {
     tiketPesawat: 0
   });
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [appealForm, setAppealForm] = useState({
+    noRegistrasi: '',
+    namaUsaha: '',
+    email: '',
+    alasanKeberatan: '',
+    persetujuanBiaya: false,
+  });
+  const [appealSubmitStatus, setAppealSubmitStatus] = useState<null | 'success' | 'loading'>(null);
   const [isVisiMisiPdfOpen, setIsVisiMisiPdfOpen] = useState(false);
   const [isSejarahPdfOpen, setIsSejarahPdfOpen] = useState(false);
   const [isKebijakanPdfOpen, setIsKebijakanPdfOpen] = useState(false);
@@ -571,6 +818,56 @@ function LandingView({ navigateTo, beritaList }: any) {
   const [isKeputusanBpjphOpen, setIsKeputusanBpjphOpen] = useState(false);
   const [isPeraturanBpomOpen, setIsPeraturanBpomOpen] = useState(false);
   const [isSniOpen, setIsSniOpen] = useState(false);
+
+  const [isMenuRegulasiOpen, setIsMenuRegulasiOpen] = useState(false);
+  const [selectedRegulasiCategory, setSelectedRegulasiCategory] = useState('Semua');
+  const [searchRegulasiQuery, setSearchRegulasiQuery] = useState('');
+  const [activeRegulasiDoc, setActiveRegulasiDoc] = useState<any | null>(null);
+
+  const openRegulasiWithCategory = (category: string) => {
+    setSelectedRegulasiCategory(category);
+    setIsMenuRegulasiOpen(true);
+    setSearchRegulasiQuery('');
+    setActiveRegulasiDoc(null);
+  };
+
+  const handleDownloadRegulasiDocument = (doc: any) => {
+    const textContent = `--------------------------------------------------------
+DOKUMEN REGULASI RESMI - SINKRONISASI PORTAL BPJPH RI
+Referensi Utama: https://bpjph.halal.go.id/
+Diunduh Melalui: Portal Cloud LPH Al-Ghazali (UNUGHA)
+Terakhir Diperbarui: 20 Mei 2026 (Waktu Sinkronisasi BPJPH)
+--------------------------------------------------------
+
+NOMOR DOKUMEN: ${doc.nomor}
+KATEGORI: ${doc.kategori}
+TENTANG: ${doc.tentang}
+TAHUN: ${doc.tahun}
+
+DESKRIPSI:
+${doc.deskripsi}
+
+PASAL-PASAL PENTING:
+${doc.pasalPenting.map((p: any) => `- ${p.pasal}: ${p.isi}`).join('\n')}
+
+--------------------------------------------------------
+ISI LENGKAP REGULASI DOKUMEN:
+--------------------------------------------------------
+${doc.isiLengkap}
+
+--------------------------------------------------------
+Disinkronkan secara sah dari pangkalan data BPJPH RI.
+LPH Al-Ghazali Universitas Nahdlatul Ulama Al Ghazali
+Kesugihan, Cilacap, Jawa Tengah.
+`;
+    const element = document.createElement("a");
+    const file = new Blob([textContent], {type: 'text/plain;charset=utf-8'});
+    element.href = URL.createObjectURL(file);
+    element.download = `${doc.id}.txt`;
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  };
     const [isAuditorPdfOpen, setIsAuditorPdfOpen] = useState(false);
   const [isSdmPdfOpen, setIsSdmPdfOpen] = useState(false);
   const [isKerjasamaPdfOpen, setIsKerjasamaPdfOpen] = useState(false);
@@ -578,6 +875,61 @@ function LandingView({ navigateTo, beritaList }: any) {
   const [isDaftarAuditPdfOpen, setIsDaftarAuditPdfOpen] = useState(false);
   const [isAgendaPdfOpen, setIsAgendaPdfOpen] = useState(false);
   const [isKegiatanPdfOpen, setIsKegiatanPdfOpen] = useState(false);
+
+  const handleDownloadPksPdf = () => {
+    const text = `SURAT PERJANJIAN KERJASAMA (PKS)
+LPH AL-GHAZALI (UNUGHA) DENGAN ASOSIASI PEMOTONG HEWAN JAWA TENGAH
+
+Nomor Dokumen: LPH-AG/PKS-UMK/006/2026
+Tentang: Kemitraan Sosialisasi & Deteksi Halal Bahan Baku bagi Pelaku Usaha Mikro dan Kecil (UMK)
+
+Pada hari ini tanggal Dua Puluh bulan Mei tahun Dua ribu dua puluh enam (20-05-2026), bertempat di Kesugihan, Kabupaten Cilacap, Jawa Tengah, para pihak yang bertandatangan di bawah ini secara resmi menyepakati kemitraan strategis spesifik pendampingan UMK:
+
+1. Christian Soolany, S.TP., M.Si. bertindak selaku Manajer Operasional LPH AL-GHAZALI (UNUGHA) yang berkedudukan di Cilacap, Jawa Tengah. Bertindak atas nama LPH AL-GHAZALI, selanjutnya disebut PIHAK PERTAMA.
+2. Perwakilan Pengurus Asosiasi Pemotong Hewan Jawa Tengah, selanjutnya disebut PIHAK KEDUA.
+
+PARA PIHAK bersepakat atas ketentuan ringkas sebagai berikut demi mendukung kemudahan sertifikasi halal draf reguler UMK:
+
+PASAL 1: RUANG LINGKUP KHUSUS UMK
+Kerjasama ini difokuskan sepenuhnya untuk mempermudah pendaftaran sertifikasi halal bagi kelompok Usaha Mikro dan Kecil (UMK) melalui:
+a. Sosialisasi Kolektif: Menyelenggaraan sosialisasi wajib sertifikasi halal reguler bersama instansi, yayasan, ormas, dan kampus mitra bagi para UMK binaan secara meluas di Jawa Tengah.
+b. Integrasi Bahan Baku Halal: Penyediaan akses data hulu RPH (Rumah Potong Hewan) yang sah dan amanah dari PIHAK KEDUA demi memudahkan pemeriksaan bahan hewani milik UMK oleh PIHAK PERTAMA.
+c. Kebijakan Tunggal: LPH Al-Ghazali menegakkan profesionalisme tinggi dan hanya menyetujui kemitraan teknis dari Asosiasi Pemotong Hewan ini, serta meniadakan kerjasama pengujian laboratorium komersial atau kerjasama lain di luar skema ini demi keandalan.
+
+PASAL 2: FASILITAS & BIAYA RINGKAS
+Pelaksanaan program sosialisasi bersama dikoordinasikan secara fungsional berdasarkan asas kepedulian terhadap pemberdayaan pelaku usaha kecil (UMK), sehingga dirancang seringkas mungkin tanpa adanya instrumen pembiayaan ganda yang memberatkan mereka.
+
+PASAL 3: MASA BERLAKU
+Surat Perjanjian Kerjasama ini berlaku untuk jangka waktu 2 (dua) tahun terhitung sejak disahkan dan ditandatangani oleh Manajer Operasional dari PIHAK PERTAMA.
+
+Ditandatangani secara elektronik & sah oleh:
+
+PIHAK PERTAMA,
+LPH AL-GHAZALI (UNUGHA)
+[Signed Electronically] 
+Christian Soolany, S.TP., M.Si.
+(Manajer Operasional LPH)
+
+PIHAK KEDUA,
+ASOSIASI PEMOTONG HEWAN JAWA TENGAH
+[Signed Electronically]
+Perwakilan Asosiasi
+(Mitra Teknis Jawa Tengah)
+
+---------------------------------------------------------
+Diunduh secara resmi dari portal web LPH Al-Ghazali.
+SHA-256 Verified Secure Archive File`;
+
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'PKS_LPH_Al_Ghazali_UMK.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
 
   const handleFormChange = (e: any) => {
     const { name, value } = e.target;
@@ -747,6 +1099,9 @@ function LandingView({ navigateTo, beritaList }: any) {
                   <a href="#alur-sertifikasi" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
                     <Route className="w-4 h-4 mr-2" /> Alur Sertifikasi
                   </a>
+                  <a href="#tanggung-gugat" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                    <Scale className="w-4 h-4 mr-2" /> Prosedur Tanggung Gugat
+                  </a>
                   <div className="relative group/nested">
                     <a href="#tarif-layanan" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center justify-between">
                       <div className="flex items-center"><Coins className="w-4 h-4 mr-2" /> Tarif Layanan</div>
@@ -768,22 +1123,22 @@ function LandingView({ navigateTo, beritaList }: any) {
                   <Scale className="w-4 h-4 mr-1" /> Regulasi <ChevronDown className="w-4 h-4 ml-1" />
                 </button>
                 <div className="absolute top-[80%] left-0 w-72 bg-white border border-gray-100 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 overflow-hidden z-50">
-                  <button onClick={() => setIsUndangUndangOpen(true)} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                  <button onClick={() => openRegulasiWithCategory('Undang-Undang')} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
                     <Scale className="w-4 h-4 mr-2 shrink-0" /> <span className="truncate">Undang-undang RI</span>
                   </button>
-                  <button onClick={() => setIsPeraturanPemerintahOpen(true)} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                  <button onClick={() => openRegulasiWithCategory('Peraturan Pemerintah')} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
                     <Landmark className="w-4 h-4 mr-2 shrink-0" /> <span className="truncate">Peraturan Pemerintah</span>
                   </button>
-                  <button onClick={() => setIsKeputusanMenagOpen(true)} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
-                    <BookOpen className="w-4 h-4 mr-2 shrink-0" /> <span className="truncate">Keputusan Mentri Agama</span>
+                  <button onClick={() => openRegulasiWithCategory('Keputusan Menteri Agama')} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                    <BookOpen className="w-4 h-4 mr-2 shrink-0" /> <span className="truncate">Keputusan Menteri Agama</span>
                   </button>
-                  <button onClick={() => setIsKeputusanBpjphOpen(true)} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                  <button onClick={() => openRegulasiWithCategory('Keputusan Kepala BPJPH')} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
                     <FileSignature className="w-4 h-4 mr-2 shrink-0" /> <span className="truncate">Keputusan Kepala BPJPH</span>
                   </button>
-                  <button onClick={() => setIsPeraturanBpomOpen(true)} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                  <button onClick={() => openRegulasiWithCategory('Peraturan BPOM')} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
                     <ShieldCheck className="w-4 h-4 mr-2 shrink-0" /> <span className="truncate">Peraturan BPOM</span>
                   </button>
-                  <button onClick={() => setIsSniOpen(true)} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center">
+                  <button onClick={() => openRegulasiWithCategory('SNI')} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center">
                     <Award className="w-4 h-4 mr-2 shrink-0" /> <span className="truncate">SNI</span>
                   </button>
                 </div>
@@ -860,6 +1215,7 @@ function LandingView({ navigateTo, beritaList }: any) {
               <div className="text-sm font-bold text-emerald-600 mb-1 flex items-center"><FileSignature className="w-4 h-4 mr-2" /> Proses</div>
               <div className="ml-6 space-y-1 border-l-2 border-emerald-100 pl-3">
                 <a href="#alur-sertifikasi" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Alur Sertifikasi</a>
+                <a href="#tanggung-gugat" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Prosedur Tanggung Gugat</a>
                 <a href="#tarif-layanan" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Tarif Layanan</a>
                 <a href="#form-perhitungan-biaya" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Form Perhitungan Biaya</a>
                 <a href="#detail-hasil-perhitungan" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Detail Hasil Perhitungan</a>
@@ -869,12 +1225,12 @@ function LandingView({ navigateTo, beritaList }: any) {
             <div className="px-3 py-2">
               <div className="text-sm font-bold text-emerald-600 mb-1 flex items-center"><Scale className="w-4 h-4 mr-2" /> Regulasi</div>
               <div className="ml-6 space-y-1 border-l-2 border-emerald-100 pl-3">
-                <button onClick={() => { setIsUndangUndangOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left flex items-center py-1.5 text-sm text-gray-600 hover:text-emerald-600"><Scale className="w-4 h-4 mr-2 shrink-0" /> Undang-undang RI</button>
-                <button onClick={() => { setIsPeraturanPemerintahOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left flex items-center py-1.5 text-sm text-gray-600 hover:text-emerald-600"><Landmark className="w-4 h-4 mr-2 shrink-0" /> Peraturan Pemerintah</button>
-                <button onClick={() => { setIsKeputusanMenagOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left flex items-center py-1.5 text-sm text-gray-600 hover:text-emerald-600"><BookOpen className="w-4 h-4 mr-2 shrink-0" /> Keputusan Mentri Agama</button>
-                <button onClick={() => { setIsKeputusanBpjphOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left flex items-center py-1.5 text-sm text-gray-600 hover:text-emerald-600"><FileSignature className="w-4 h-4 mr-2 shrink-0" /> Keputusan Kepala BPJPH</button>
-                <button onClick={() => { setIsPeraturanBpomOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left flex items-center py-1.5 text-sm text-gray-600 hover:text-emerald-600"><ShieldCheck className="w-4 h-4 mr-2 shrink-0" /> Peraturan BPOM</button>
-                <button onClick={() => { setIsSniOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left flex items-center py-1.5 text-sm text-gray-600 hover:text-emerald-600"><Award className="w-4 h-4 mr-2 shrink-0" /> SNI</button>
+                <button onClick={() => { openRegulasiWithCategory('Undang-Undang'); setIsMobileMenuOpen(false); }} className="w-full text-left flex items-center py-1.5 text-sm text-gray-600 hover:text-emerald-600"><Scale className="w-4 h-4 mr-2 shrink-0" /> Undang-undang RI</button>
+                <button onClick={() => { openRegulasiWithCategory('Peraturan Pemerintah'); setIsMobileMenuOpen(false); }} className="w-full text-left flex items-center py-1.5 text-sm text-gray-600 hover:text-emerald-600"><Landmark className="w-4 h-4 mr-2 shrink-0" /> Peraturan Pemerintah</button>
+                <button onClick={() => { openRegulasiWithCategory('Keputusan Menteri Agama'); setIsMobileMenuOpen(false); }} className="w-full text-left flex items-center py-1.5 text-sm text-gray-600 hover:text-emerald-600"><BookOpen className="w-4 h-4 mr-2 shrink-0" /> Keputusan Menteri Agama</button>
+                <button onClick={() => { openRegulasiWithCategory('Keputusan Kepala BPJPH'); setIsMobileMenuOpen(false); }} className="w-full text-left flex items-center py-1.5 text-sm text-gray-600 hover:text-emerald-600"><FileSignature className="w-4 h-4 mr-2 shrink-0" /> Keputusan Kepala BPJPH</button>
+                <button onClick={() => { openRegulasiWithCategory('Peraturan BPOM'); setIsMobileMenuOpen(false); }} className="w-full text-left flex items-center py-1.5 text-sm text-gray-600 hover:text-emerald-600"><ShieldCheck className="w-4 h-4 mr-2 shrink-0" /> Peraturan BPOM</button>
+                <button onClick={() => { openRegulasiWithCategory('SNI'); setIsMobileMenuOpen(false); }} className="w-full text-left flex items-center py-1.5 text-sm text-gray-600 hover:text-emerald-600"><Award className="w-4 h-4 mr-2 shrink-0" /> SNI</button>
               </div>
             </div>
 
@@ -962,7 +1318,7 @@ function LandingView({ navigateTo, beritaList }: any) {
                     <p className="text-gray-600 text-lg mb-6 leading-relaxed">
                         Dengan dukungan auditor halal yang kompeten, berintegritas, dan bersertifikasi BNSP, kami berkomitmen untuk menjadi pionir dalam ekosistem halal Indonesia yang terintegrasi dengan teknologi digital cloud.
                     </p>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-4 mb-6">
                         <div className="bg-white p-4 rounded-xl border border-emerald-100 shadow-sm">
                             <h4 className="font-bold text-emerald-700 text-2xl mb-1">100+</h4>
                             <p className="text-gray-500 text-sm">Auditor Berpengalaman</p>
@@ -972,6 +1328,16 @@ function LandingView({ navigateTo, beritaList }: any) {
                             <p className="text-gray-500 text-sm">Sertifikat Terbit</p>
                         </div>
                     </div>
+                    
+                    <button 
+                      onClick={() => setIsSdmPdfOpen(true)}
+                      className="w-full flex items-center justify-between bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-3 rounded-xl font-bold shadow-md hover:shadow-lg transition-all text-sm group cursor-pointer"
+                    >
+                      <span className="flex items-center gap-2">
+                        <Users className="w-5 h-5" /> Lihat Profil SDM Syariah (Kepala Manajer Operasional)
+                      </span>
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </button>
                 </div>
             </div>
         </div>
@@ -1083,22 +1449,58 @@ function LandingView({ navigateTo, beritaList }: any) {
             </div>
             <div className="prose prose-lg max-w-none text-gray-700 bg-gray-50 p-8 rounded-2xl border border-gray-100 shadow-sm leading-relaxed">
                 <p className="mb-6 text-justify">
-                    Lembaga Pemeriksa Halal (LPH) Edukasi Halal Indonesia saat ini tengah menjalani proses Akreditasi Pratama yang diajukan kepada Badan Penyelenggara Jaminan Produk Halal (BPJPH) Republik Indonesia. Setelah memperoleh Sertifikat Akreditasi Pratama, LPH Al ghazali Halal Indonesia akan memiliki wewenang untuk melaksanakan pemeriksaan kehalalan produk untuk 3 (dua) ruang lingkup, yaitu:
+                    LPH Al-Ghazali memiliki fokus layanan terbatas yang disesuaikan secara khusus demi mengawal kesuksesan sertifikasi halal secara menyeluruh dengan parameter ruang lingkup sebagai berikut:
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                     <div className="bg-white p-4 rounded-xl border border-emerald-100 flex items-center justify-center text-emerald-700 font-medium shadow-sm">
-                       <CheckCircle className="w-5 h-5 mr-2 text-emerald-500" /> 1. Makanan
+                       <CheckCircle className="w-5 h-5 mr-2 text-emerald-500" /> 1. Makanan & Minuman
                     </div>
                     <div className="bg-white p-4 rounded-xl border border-emerald-100 flex items-center justify-center text-emerald-700 font-medium shadow-sm">
-                       <CheckCircle className="w-5 h-5 mr-2 text-emerald-500" /> 2. Minuman
+                       <CheckCircle className="w-5 h-5 mr-2 text-emerald-500" /> 2. Barang Gunaan
                     </div>
                     <div className="bg-white p-4 rounded-xl border border-emerald-100 flex items-center justify-center text-emerald-700 font-medium shadow-sm">
-                       <CheckCircle className="w-5 h-5 mr-2 text-emerald-500" /> 3. Jasa Penyembelihan
+                       <CheckCircle className="w-5 h-5 mr-2 text-emerald-500" /> 3. Jasa Pendistribusian
                     </div>
                 </div>
-                <p className="text-justify">
-                    LPH Al ghazali Halal Indonesia menyediakan layanan pemeriksaan halal sebagai bagian dari proses pengajuan Sertifikasi Halal, yang ditujukan khusus untuk pelaku usaha mikro dan kecil di wilayah Provinsi Cilacap.
-                </p>
+                <div className="space-y-4 text-justify mt-6 border-b border-gray-200 pb-8">
+                    <div className="flex items-start gap-2.5">
+                        <span className="font-bold text-emerald-600 shrink-0">📍 Wilayah Klien:</span>
+                        <span>Seluruh wilayah <strong>Provinsi Jawa Tengah</strong>, mencakup secara komprehensif mulai dari tingkat <strong>Kabupaten, Kecamatan, Kelurahan, hingga tingkat Desa</strong>.</span>
+                    </div>
+                    <div className="flex items-start gap-2.5">
+                        <span className="font-bold text-emerald-600 shrink-0">👥 Jenis Usaha:</span>
+                        <span>Hanya untuk pelaku usaha skala <strong>Mikro dan Kecil</strong> (Usaha menengah dan besar tidak dilayani).</span>
+                    </div>
+                    <div className="flex items-start gap-2.5">
+                        <span className="font-bold text-emerald-600 shrink-0">🛠️ Jenis Layanan:</span>
+                        <span>Dikhususkan hanya untuk layanan pemeriksaan skema <strong>Reguler</strong> saja.</span>
+                    </div>
+                </div>
+
+                {/* Layanan Pra-Audit Block */}
+                <div className="mt-8 p-6 bg-emerald-50/50 rounded-2xl border border-emerald-100/70 shadow-xs">
+                    <h4 className="text-lg font-bold text-gray-900 mb-2 flex items-center gap-2">
+                        <ShieldCheck className="w-5 h-5 text-emerald-600" />
+                        Layanan Pra-Audit (Opsional)
+                    </h4>
+                    <p className="text-gray-600 text-sm mb-4 leading-relaxed">
+                        Kami menyediakan Layanan Pra-Audit opsional untuk membantu kesiapan pelaku usaha melakukan sertifikasi. Layanan konsultasi umum ditiadakan, yang tersedia kini hanyalah pengecekan teknis pra-audit.
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="bg-white p-4 rounded-xl border border-emerald-100 shadow-3xs">
+                            <span className="font-bold text-emerald-800 text-sm block mb-1">🔍 Pemeriksaan Dokumen</span>
+                            <span className="text-xs text-gray-600 leading-relaxed block">Pengecekan kesiapan berkas dokumen, legalitas pendaftaran, dan struktur Sistem Jaminan Produk Halal (SJPH).</span>
+                        </div>
+                        <div className="bg-white p-4 rounded-xl border border-emerald-100 shadow-3xs">
+                            <span className="font-bold text-emerald-800 text-sm block mb-1">🌾 Pemeriksaan Bahan Baku</span>
+                            <span className="text-xs text-gray-600 leading-relaxed block">Verifikasi dan pengecekan awal asal-usul bahan baku serta kesesuaian sertifikat halal pendukung masing-masing bahan.</span>
+                        </div>
+                    </div>
+                    <div className="mt-4 p-3 bg-amber-50 rounded-xl border border-dashed border-amber-200 text-xs text-amber-900 flex items-start gap-2">
+                        <span className="font-bold bg-amber-100 px-1.5 py-0.5 rounded text-[10px] uppercase font-mono tracking-wider shrink-0 mt-0.5">Catatan Biaya</span>
+                        <span>Biaya pelaksanaan Layanan Pra-Audit ini sepenuhnya terpisah dan independen dari biaya sertifikasi reguler BPJPH.</span>
+                    </div>
+                </div>
             </div>
         </div>
       </section>
@@ -1107,45 +1509,186 @@ function LandingView({ navigateTo, beritaList }: any) {
       <section id="alur-sertifikasi" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Proses Sertifikasi Halal</h2>
-                <p className="text-gray-500 max-w-2xl mx-auto text-lg">Alur pendaftaran dan pemeriksaan halal melalui LPH Al-Ghazali yang mudah dan transparan.</p>
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 font-sans">Alur Layanan Reguler (Ringkas)</h2>
+                <p className="text-gray-500 max-w-2xl mx-auto text-lg">Alur terstandarisasi yang ringkas dan spesifik untuk pendampingan kemudahan sertifikasi halal draf reguler bagi UMK di Jawa Tengah.</p>
             </div>
             
             <div className="relative">
                 <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-emerald-200"></div>
                 <div className="space-y-12">
+                    {/* Alur 1 */}
                     <div className="relative flex flex-col md:flex-row items-center">
                         <div className="md:w-1/2 md:pr-12 md:text-right text-center mb-4 md:mb-0">
-                            <h3 className="text-xl font-bold text-gray-900 mb-2">1. Pendaftaran di SIHALAL</h3>
-                            <p className="text-gray-600">Pelaku usaha mendaftar melalui sistem SIHALAL BPJPH dan memilih LPH Al-Ghazali sebagai Lembaga Pemeriksa Halal.</p>
+                            <h3 className="text-xl font-bold text-gray-900 mb-2 font-sans">1. Registrasi Klien (UMK Jateng)</h3>
+                            <p className="text-gray-650 text-sm">Pelaku usaha mikro dan kecil (UMK) wilayah Jawa Tengah melakukan pendaftaran di portal sistem layanan LPH Al-Ghazali.</p>
+                            <div className="mt-3 text-xs bg-emerald-50 text-emerald-800 p-3 rounded-xl border border-emerald-100 inline-block text-left shadow-sm">
+                                <span className="font-bold text-emerald-950 uppercase tracking-wide bg-emerald-200 px-1.5 py-0.5 rounded text-[10px] mr-2">Edukasi Wilayah</span>
+                                Registrasi diarahkan khusus bagi UMK Jawa Tengah agar memperoleh bimbingan teknis yang optimal sesuai standar operasional yang dikoordinasikan secara kedaerahan.
+                            </div>
                         </div>
-                        <div className="w-12 h-12 bg-emerald-600 text-white rounded-full flex items-center justify-center font-bold text-xl relative z-10 mx-auto md:mx-0 shadow-lg border-4 border-gray-50">1</div>
+                        <div className="w-12 h-12 bg-emerald-600 text-white rounded-full flex items-center justify-center font-bold text-xl relative z-10 mx-auto md:mx-0 shadow-lg border-4 border-gray-50 shrink-0">1</div>
                         <div className="md:w-1/2 md:pl-12 hidden md:block"></div>
                     </div>
+
+                    {/* Alur 2 */}
                     <div className="relative flex flex-col md:flex-row items-center">
                         <div className="md:w-1/2 md:pr-12 hidden md:block"></div>
-                        <div className="w-12 h-12 bg-emerald-600 text-white rounded-full flex items-center justify-center font-bold text-xl relative z-10 mx-auto md:mx-0 mb-4 md:mb-0 shadow-lg border-4 border-gray-50">2</div>
+                        <div className="w-12 h-12 bg-emerald-600 text-white rounded-full flex items-center justify-center font-bold text-xl relative z-10 mx-auto md:mx-0 mb-4 md:mb-0 shadow-lg border-4 border-gray-50 shrink-0">2</div>
                         <div className="md:w-1/2 md:pl-12 text-center md:text-left">
-                            <h3 className="text-xl font-bold text-gray-900 mb-2">2. Verifikasi Dokumen & Biaya</h3>
-                            <p className="text-gray-600">LPH melakukan perhitungan biaya. Setelah tagihan dibayar oleh pelaku usaha, LPH memulai proses verifikasi dokumen.</p>
+                            <h3 className="text-xl font-bold text-gray-900 mb-2 font-sans">2. Pilih Layanan: Reguler</h3>
+                            <p className="text-gray-650 text-sm">Klien memilih skema Layanan Reguler untuk proses audit mandiri yang komprehensif.</p>
+                            <div className="mt-3 text-xs bg-emerald-50 text-emerald-800 p-3 rounded-xl border border-emerald-100 inline-block text-left shadow-sm">
+                                <span className="font-bold text-emerald-950 uppercase tracking-wide bg-emerald-200 px-1.5 py-0.5 rounded text-[10px] mr-2">Edukasi Skema</span>
+                                Sertifikasi jalur Reguler ini memproses pemeriksaan kehalalan produk secara saksama untuk memberikan tingkat kepercayaan dan jaminan mutu tertinggi bagi konsumen.
+                            </div>
                         </div>
                     </div>
+
+                    {/* Alur 3 */}
                     <div className="relative flex flex-col md:flex-row items-center">
                         <div className="md:w-1/2 md:pr-12 md:text-right text-center mb-4 md:mb-0">
-                            <h3 className="text-xl font-bold text-gray-900 mb-2">3. Audit / Pemeriksaan Lapangan</h3>
-                            <p className="text-gray-600">Auditor Halal melakukan pemeriksaan langsung ke fasilitas produksi untuk memastikan kehalalan bahan dan proses produksi.</p>
+                            <h3 className="text-xl font-bold text-gray-900 mb-2 font-sans">3. Upload Dokumen Persyaratan</h3>
+                            <p className="text-gray-650 text-sm">Unggah dokumen pelengkap secara digital sesuai dengan jenis produk spesifik yang didaftarkan.</p>
+                            <div className="mt-3 text-xs bg-emerald-50 text-emerald-800 p-3 rounded-xl border border-emerald-100 inline-block text-left shadow-sm">
+                                <span className="font-bold text-emerald-950 uppercase tracking-wide bg-emerald-200 px-1.5 py-0.5 rounded text-[10px] mr-2">Edukasi Dokumen</span>
+                                Persyaratan mencakup data profil, formulasi bahan, serta bagan alir proses. Dokumen yang diunggah secara lengkap di awal akan mempercepat verifikasi berkas tanpa kendala revisi.
+                            </div>
                         </div>
-                        <div className="w-12 h-12 bg-emerald-600 text-white rounded-full flex items-center justify-center font-bold text-xl relative z-10 mx-auto md:mx-0 shadow-lg border-4 border-gray-50">3</div>
+                        <div className="w-12 h-12 bg-emerald-600 text-white rounded-full flex items-center justify-center font-bold text-xl relative z-10 mx-auto md:mx-0 shadow-lg border-4 border-gray-50 shrink-0">3</div>
                         <div className="md:w-1/2 md:pl-12 hidden md:block"></div>
                     </div>
+
+                    {/* Alur 4 */}
                     <div className="relative flex flex-col md:flex-row items-center">
                         <div className="md:w-1/2 md:pr-12 hidden md:block"></div>
-                        <div className="w-12 h-12 bg-emerald-600 text-white rounded-full flex items-center justify-center font-bold text-xl relative z-10 mx-auto md:mx-0 mb-4 md:mb-0 shadow-lg border-4 border-gray-50">4</div>
+                        <div className="w-12 h-12 bg-emerald-600 text-white rounded-full flex items-center justify-center font-bold text-xl relative z-10 mx-auto md:mx-0 mb-4 md:mb-0 shadow-lg border-4 border-gray-50 shrink-0">4</div>
                         <div className="md:w-1/2 md:pl-12 text-center md:text-left">
-                            <h3 className="text-xl font-bold text-gray-900 mb-2">4. Sidang Fatwa & Penerbitan</h3>
-                            <p className="text-gray-600">Hasil audit diserahkan ke Komisi Fatwa MUI. Setelah fatwa keluar, BPJPH menerbitkan Sertifikat Halal resmi.</p>
+                            <h3 className="text-xl font-bold text-gray-900 mb-2 font-sans">4. Pembayaran (Pra-Audit Mandiri)</h3>
+                            <p className="text-gray-650 text-sm">Pelaku usaha melakukan penyelesaian administrasi biaya pra-audit jika dikenakan biaya pendampingan mandiri.</p>
+                            <div className="mt-3 text-xs bg-emerald-50 text-emerald-800 p-3 rounded-xl border border-emerald-100 inline-block text-left shadow-sm">
+                                <span className="font-bold text-emerald-950 uppercase tracking-wide bg-emerald-200 px-1.5 py-0.5 rounded text-[10px] mr-2">Edukasi Biaya</span>
+                                Sesuai asas nirlaba draf kemitraan UMK, nilai biaya pra-audit atau bimbingan teknis dijaga seminimal mungkin dan dijabarkan transparan demi mencegah adanya biaya ganda tersembunyi.
+                             </div>
                         </div>
                     </div>
+
+                    {/* Alur 5 */}
+                    <div className="relative flex flex-col md:flex-row items-center">
+                        <div className="md:w-1/2 md:pr-12 md:text-right text-center mb-4 md:mb-0">
+                            <h3 className="text-xl font-bold text-gray-900 mb-2 font-sans">5. Penjadwalan Audit (Dalam 1 Hari)</h3>
+                            <p className="text-emerald-700 font-bold text-sm mb-2 font-sans">Penjadwalan diverifikasi langsung selesai dalam waktu 1 (satu) hari.</p>
+                            <p className="text-gray-650 text-sm">Penetapan tanggal kunjungan verifikasi lapangan dikonfirmasi secara instan oleh admin LPH Al-Ghazali.</p>
+                            <div className="mt-3 text-xs bg-emerald-50 text-emerald-800 p-3 rounded-xl border border-emerald-100 inline-block text-left shadow-sm">
+                                <span className="font-bold text-emerald-950 uppercase tracking-wide bg-emerald-200 px-1.5 py-0.5 rounded text-[10px] mr-2">Edukasi Waktu</span>
+                                Sebagai bentuk kepedulian terhadap efisiensi operasional UMK, penugasan Tim Auditor Halal ditetapkan secara tanggap paling lambat dalam 24 jam setelah verifikasi berkas.
+                            </div>
+                        </div>
+                        <div className="w-12 h-12 bg-emerald-600 text-white rounded-full flex items-center justify-center font-bold text-xl relative z-10 mx-auto md:mx-0 shadow-lg border-4 border-gray-50 shrink-0">5</div>
+                        <div className="md:w-1/2 md:pl-12 hidden md:block"></div>
+                    </div>
+
+                    {/* Alur 6 */}
+                    <div className="relative flex flex-col md:flex-row items-center">
+                        <div className="md:w-1/2 md:pr-12 hidden md:block"></div>
+                        <div className="w-12 h-12 bg-emerald-600 text-white rounded-full flex items-center justify-center font-bold text-xl relative z-10 mx-auto md:mx-0 mb-4 md:mb-0 shadow-lg border-4 border-gray-50 shrink-0">6</div>
+                        <div className="md:w-1/2 md:pl-12 text-center md:text-left">
+                            <h3 className="text-xl font-bold text-gray-900 mb-2 font-sans">6. Audit & Pemeriksaan Spesifik</h3>
+                            <p className="text-amber-700 font-bold text-sm mb-2 font-sans">Pemeriksaan difokuskan pada bahan baku tanpa validasi penyembelihan eksternal.</p>
+                            <p className="text-gray-650 text-sm">Auditor melakukan tinjauan teknis dan pencocokan bahan baku serta kebersihan fasilitas produksi secara terfokus.</p>
+                            <div className="mt-3 text-xs bg-emerald-50 text-emerald-800 p-3 rounded-xl border border-emerald-100 inline-block text-left shadow-sm">
+                                <span className="font-bold text-emerald-950 uppercase tracking-wide bg-emerald-200 px-1.5 py-0.5 rounded text-[10px] mr-2">Edukasi Audit</span>
+                                Berdasarkan kemitraan teknis draf PKS ringkas UMK terbaru, hambatan verifikasi disederhanakan dengan memangkas validasi audit hulu sembelih rumit di luar kendali UMK, berfokus murni pada penjaminan mutu internal pelaku usaha kecil.
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Alur 7 */}
+                    <div className="relative flex flex-col md:flex-row items-center">
+                        <div className="md:w-1/2 md:pr-12 md:text-right text-center mb-4 md:mb-0">
+                            <h3 className="text-xl font-bold text-gray-900 mb-2 font-sans">7. Keputusan Hasil LPH</h3>
+                            <p className="text-emerald-700 font-bold text-sm mb-2 font-sans font-medium">Keputusan penetapan laporan audit diterbitkan maksimal pada hari ke-3.</p>
+                            <p className="text-gray-650 text-sm">Penyusunan laporan akhir pemeriksaan halal dan perumusan keputusan rekomendasi kehalalan oleh Tim Ahli LPH.</p>
+                            <div className="mt-3 text-xs bg-emerald-50 text-emerald-800 p-3 rounded-xl border border-emerald-100 inline-block text-left shadow-sm">
+                                <span className="font-bold text-emerald-950 uppercase tracking-wide bg-emerald-200 px-1.5 py-0.5 rounded text-[10px] mr-2">Edukasi Fatwa</span>
+                                LPH Al-Ghazali mendukung penyelesaian laporan dalam hari ke-3 secara presisi untuk langsung diteruskan ke Komisi Fatwa MUI demi pengesahan Ketetapan Halal.
+                            </div>
+                        </div>
+                        <div className="w-12 h-12 bg-emerald-600 text-white rounded-full flex items-center justify-center font-bold text-xl relative z-10 mx-auto md:mx-0 shadow-lg border-4 border-gray-50 shrink-0">7</div>
+                        <div className="md:w-1/2 md:pl-12 hidden md:block"></div>
+                    </div>
+
+                    {/* Alur 8 */}
+                    <div className="relative flex flex-col md:flex-row items-center">
+                        <div className="md:w-1/2 md:pr-12 hidden md:block"></div>
+                        <div className="w-12 h-12 bg-emerald-600 text-white rounded-full flex items-center justify-center font-bold text-xl relative z-10 mx-auto md:mx-0 mb-4 md:mb-0 shadow-lg border-4 border-gray-50 shrink-0">8</div>
+                        <div className="md:w-1/2 md:pl-12 text-center md:text-left">
+                            <h3 className="text-xl font-bold text-gray-900 mb-2 font-sans">8. Terbit Sertifikat (Digital)</h3>
+                            <p className="text-gray-650 text-sm">Sertifikat Halal resmi berbasis format digital diterbitkan oleh BPJPH dan dapat diunduh kapan saja oleh pelaku usaha.</p>
+                            <div className="mt-3 text-xs bg-emerald-50 text-emerald-800 p-3 rounded-xl border border-emerald-100 inline-block text-left shadow-sm">
+                                <span className="font-bold text-emerald-950 uppercase tracking-wide bg-emerald-200 px-1.5 py-0.5 rounded text-[10px] mr-2">Edukasi Regulasi</span>
+                                Sesuai regulasi UU No. 6 Tahun 2023, Sertifikat Halal digital yang terbit kini berlaku penuh seumur hidup (selamanya) selama pelaku usaha tidak merubah bahan baku atau proses pengolahan yang disepakati.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Perkiraan Waktu Proses Halal Block */}
+            <div className="mt-16 bg-white rounded-2xl p-8 border border-emerald-100 shadow-sm max-w-4xl mx-auto">
+                <div className="flex flex-col md:flex-row items-center justify-between border-b border-gray-100 pb-6 mb-6">
+                    <div className="mb-4 md:mb-0">
+                        <h3 className="text-xl md:text-2xl font-bold text-gray-900 flex items-center gap-2">
+                            <Clock className="w-6 h-6 text-emerald-600" /> Perkiraan Waktu Proses Halal
+                        </h3>
+                        <p className="text-gray-500 text-sm mt-1">Komitmen efisiensi dan transparansi waktu pemeriksaan oleh LPH Al-Ghazali</p>
+                    </div>
+                    <div className="bg-emerald-100 text-emerald-800 font-extrabold px-4 py-2 rounded-xl text-lg flex items-center gap-2 border border-emerald-200">
+                        <span>Standar Proses:</span>
+                        <span className="text-emerald-950 font-mono">1-3 Hari Kerja</span>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
+                    {/* Step Card 1 */}
+                    <div className="bg-emerald-50/50 rounded-xl p-5 border border-emerald-100/50 flex flex-col justify-between relative">
+                        <div>
+                            <span className="text-emerald-700 font-bold text-xs uppercase tracking-wider block mb-2 font-mono">Hari 1</span>
+                            <h4 className="font-bold text-gray-900 text-base mb-2">Verifikasi Awal & Jadwal</h4>
+                            <p className="text-gray-650 text-xs leading-relaxed">Pemeriksaan kelengkapan berkas administrasi dan penetapan jadwal kunjungan audit lapangan.</p>
+                        </div>
+                        <div className="mt-4 flex items-center text-xs text-emerald-600 font-semibold gap-1">
+                            <CheckCircle className="w-4 h-4 shrink-0" /> Dokumen Disiapkan
+                        </div>
+                    </div>
+
+                    {/* Step Card 2 */}
+                    <div className="bg-emerald-50/50 rounded-xl p-5 border border-emerald-100/50 flex flex-col justify-between relative">
+                        <div>
+                            <span className="text-emerald-700 font-bold text-xs uppercase tracking-wider block mb-2 font-mono">Hari 2</span>
+                            <h4 className="font-bold text-gray-900 text-base mb-2">Audit Lapangan & Dokumen</h4>
+                            <p className="text-gray-650 text-xs leading-relaxed">Auditor Halal melakukan konfirmasi validitas bahan baku dan proses produksi langsung di lokasi fasilitas usaha.</p>
+                        </div>
+                        <div className="mt-4 flex items-center text-xs text-emerald-600 font-semibold gap-1">
+                            <CheckCircle className="w-4 h-4 shrink-0" /> Auditor Bertugas
+                        </div>
+                    </div>
+
+                    {/* Step Card 3 */}
+                    <div className="bg-emerald-50/50 rounded-xl p-5 border border-emerald-100/50 flex flex-col justify-between relative">
+                        <div>
+                            <span className="text-emerald-700 font-bold text-xs uppercase tracking-wider block mb-2 font-mono">Hari 3</span>
+                            <h4 className="font-bold text-gray-900 text-base mb-2">Keputusan Halal Sementara</h4>
+                            <p className="text-gray-650 text-xs leading-relaxed">Keluarnya keputusan halal sementara dari LPH Al-Ghazali (selanjutnya diteruskan menunggu penetapan fatwa resmi MUI).</p>
+                        </div>
+                        <div className="mt-4 flex items-center text-xs text-emerald-600 font-semibold gap-1">
+                            <CheckCircle className="w-4 h-4 shrink-0" /> Hasil Audit Selesai
+                        </div>
+                    </div>
+                </div>
+
+                <div className="mt-6 text-xs text-justify bg-amber-50 text-amber-900 p-4 rounded-xl border border-amber-100 leading-relaxed shadow-xs flex items-start gap-2.5">
+                    <span className="font-bold bg-amber-200 text-amber-950 px-1.5 py-0.5 rounded text-[10px] uppercase tracking-wider shrink-0 mt-0.5">Catatan Penting</span>
+                    <span>Proses 1-3 Hari Kerja ini berlaku penuh setelah invoice biaya administrasi diselesaikan secara sah, serta seluruh berkas portofolio SJPH (Sistem Jaminan Produk Halal) tidak memerlukan revisi lanjutan administratif. Keputusan akhir sertifikat halal diterbitkan resmi oleh BPJPH RI setelah rekomendasi sidang Fatwa Komisi MUI terlaksana.</span>
                 </div>
             </div>
         </div>
@@ -1155,38 +1698,29 @@ function LandingView({ navigateTo, beritaList }: any) {
       <section id="tarif-layanan" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Tarif Layanan Sertifikasi Halal</h2>
-                <p className="text-gray-500 max-w-2xl mx-auto text-lg">Biaya layanan pemeriksaan halal LPH Al-Ghazali transparan dan sesuai dengan regulasi BPJPH.</p>
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Tarif Layanan Sertifikasi Halal (Khusus UMK)</h2>
+                <p className="text-gray-500 max-w-2xl mx-auto text-lg">Biaya layanan pemeriksaan halal LPH Al-Ghazali transparan dan dibatasi untuk Usaha Mikro dan Kecil saja sesuai regulasi BPJPH.</p>
             </div>
-            <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
                 <div className="bg-emerald-50 rounded-2xl p-8 border border-emerald-100 shadow-sm text-center">
-                    <h3 className="font-bold text-gray-900 text-xl mb-2">Usaha Mikro & Kecil</h3>
-                    <p className="text-gray-600 text-sm mb-6">Reguler (Self Declare tidak termasuk)</p>
+                    <h3 className="font-bold text-gray-900 text-xl mb-2">Usaha Mikro (UMK-1)</h3>
+                    <p className="text-gray-600 text-sm mb-6">Reguler (Khusus wilayah Jawa Tengah)</p>
                     <div className="text-emerald-600 font-extrabold text-3xl mb-6">Mulai Rp 300rb</div>
                     <ul className="text-left text-sm text-gray-600 space-y-3 mb-8">
                         <li className="flex items-start"><CheckCircle className="w-4 h-4 text-emerald-500 mr-2 shrink-0 mt-0.5" /> Pemeriksaan dokumen dasar</li>
                         <li className="flex items-start"><CheckCircle className="w-4 h-4 text-emerald-500 mr-2 shrink-0 mt-0.5" /> Audit lapangan standar (1 lokasi)</li>
+                        <li className="flex items-start"><CheckCircle className="w-4 h-4 text-emerald-500 mr-2 shrink-0 mt-0.5" /> Durasi audit terhitung sederhana (1 Mandays)</li>
                     </ul>
                 </div>
-                <div className="bg-white rounded-2xl p-8 border-2 border-emerald-500 shadow-xl text-center relative transform md:-translate-y-4">
-                    <div className="bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-full absolute -top-3 left-1/2 transform -translate-x-1/2">Paling Diminati</div>
-                    <h3 className="font-bold text-gray-900 text-xl mb-2">Usaha Menengah</h3>
-                    <p className="text-gray-600 text-sm mb-6">Industri Menengah Makanan/Minuman</p>
-                    <div className="text-emerald-600 font-extrabold text-3xl mb-6">Mulai Rp 3-5 Jt</div>
+                <div className="bg-white rounded-2xl p-8 border-2 border-emerald-500 shadow-xl text-center relative">
+                    <div className="bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-full absolute -top-3 left-1/2 transform -translate-x-1/2">Pilihan Populer</div>
+                    <h3 className="font-bold text-gray-900 text-xl mb-2">Usaha Kecil (UMK-2)</h3>
+                    <p className="text-gray-600 text-sm mb-6">Reguler (Khusus wilayah Jawa Tengah)</p>
+                    <div className="text-emerald-700 font-extrabold text-3xl mb-6">Mulai Rp 300rb</div>
                     <ul className="text-left text-sm text-gray-600 space-y-3 mb-8">
-                        <li className="flex items-start"><CheckCircle className="w-4 h-4 text-emerald-500 mr-2 shrink-0 mt-0.5" /> Konsultasi awal</li>
-                        <li className="flex items-start"><CheckCircle className="w-4 h-4 text-emerald-500 mr-2 shrink-0 mt-0.5" /> Audit lapangan komprehensif (s/d 3 lokasi)</li>
-                        <li className="flex items-start"><CheckCircle className="w-4 h-4 text-emerald-500 mr-2 shrink-0 mt-0.5" /> Pendampingan pengolahan berkas laporan</li>
-                    </ul>
-                </div>
-                <div className="bg-emerald-50 rounded-2xl p-8 border border-emerald-100 shadow-sm text-center">
-                    <h3 className="font-bold text-gray-900 text-xl mb-2">Usaha Besar</h3>
-                    <p className="text-gray-600 text-sm mb-6">Pabrikasi / Franchise Besar</p>
-                    <a href="https://wa.me/6285802494252" target="_blank" rel="noopener noreferrer" className="inline-block bg-emerald-600 text-white font-bold py-3 px-8 rounded-lg mb-6 hover:bg-emerald-700 transition-colors">Hubungi Kami</a>
-                    <ul className="text-left text-sm text-gray-600 space-y-3 mb-8">
-                        <li className="flex items-start"><CheckCircle className="w-4 h-4 text-emerald-500 mr-2 shrink-0 mt-0.5" /> Audit tersendiri oleh tim khusus</li>
-                        <li className="flex items-start"><CheckCircle className="w-4 h-4 text-emerald-500 mr-2 shrink-0 mt-0.5" /> Multi-lokasi pabrik/gerai</li>
-                        <li className="flex items-start"><CheckCircle className="w-4 h-4 text-emerald-500 mr-2 shrink-0 mt-0.5" /> Layanan prioritas plotting auditor</li>
+                        <li className="flex items-start"><CheckCircle className="w-4 h-4 text-emerald-500 mr-2 shrink-0 mt-0.5" /> Pemeriksaan dokumen lanjutan</li>
+                        <li className="flex items-start"><CheckCircle className="w-4 h-4 text-emerald-500 mr-2 shrink-0 mt-0.5" /> Audit lapangan komprehensif (s/d 2 lokasi)</li>
+                        <li className="flex items-start"><CheckCircle className="w-4 h-4 text-emerald-500 mr-2 shrink-0 mt-0.5" /> Durasi audit terstruktur (2 Mandays)</li>
                     </ul>
                 </div>
             </div>
@@ -1207,52 +1741,40 @@ function LandingView({ navigateTo, beritaList }: any) {
                     <form className="space-y-6">
                         <div className="grid md:grid-cols-2 gap-6">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Provinsi Fasilitas Produksi</label>
-                                <select name="provinsi" value={formData.provinsi} onChange={handleFormChange} className="w-full border-gray-300 rounded-lg border p-3 bg-white focus:ring-emerald-500 focus:border-emerald-500 text-gray-700">
-                                    <option value="">Pilih Provinsi</option>
-                                    <option value="Jawa Tengah">Jawa Tengah</option>
-                                    <option value="Jawa Barat">Jawa Barat</option>
-                                    <option value="Jawa Timur">Jawa Timur</option>
-                                    <option value="DKI Jakarta">DKI Jakarta</option>
-                                    <option value="Lainnya">Lainnya</option>
-                                </select>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Provinsi (Fokus Layanan)</label>
+                                <input type="text" name="provinsi" value="Jawa Tengah" readOnly className="w-full border-gray-300 rounded-lg border p-3 bg-gray-100 text-gray-600 focus:ring-emerald-500 focus:border-emerald-500 cursor-not-allowed font-medium shadow-sm" />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Kabupaten / Kota Fasilitas Produksi</label>
-                                <select name="kabKota" value={formData.kabKota} onChange={handleFormChange} className="w-full border-gray-300 rounded-lg border p-3 bg-white focus:ring-emerald-500 focus:border-emerald-500 text-gray-700">
-                                    <option value="">Pilih Kabupaten / Kota</option>
-                                    <option value="Semarang">Semarang</option>
-                                    <option value="Cilacap">Cilacap</option>
-                                    <option value="Banyumas">Banyumas</option>
-                                    <option value="Lainnya">Lainnya</option>
-                                </select>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Kabupaten / Kota</label>
+                                <input type="text" name="kabKota" value={formData.kabKota} onChange={handleFormChange} placeholder="Contoh: Cilacap, Banyumas" className="w-full border-gray-300 rounded-lg border p-3 bg-white focus:ring-emerald-500 focus:border-emerald-500 text-gray-700 shadow-sm" required />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Kecamatan</label>
+                                <input type="text" name="kecamatan" value={formData.kecamatan || ''} onChange={handleFormChange} placeholder="Contoh: Kesugihan" className="w-full border-gray-300 rounded-lg border p-3 bg-white focus:ring-emerald-500 focus:border-emerald-500 text-gray-700 shadow-sm" required />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Kelurahan / Desa</label>
+                                <input type="text" name="kelurahanDesa" value={formData.kelurahanDesa || ''} onChange={handleFormChange} placeholder="Contoh: Kesugihan Kidul" className="w-full border-gray-300 rounded-lg border p-3 bg-white focus:ring-emerald-500 focus:border-emerald-500 text-gray-700 shadow-sm" required />
                             </div>
                             <div className="md:col-span-2">
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Jenis Layanan</label>
-                                <select name="jenisLayanan" value={formData.jenisLayanan} onChange={handleFormChange} className="w-full border-gray-300 rounded-lg border p-3 bg-white focus:ring-emerald-500 focus:border-emerald-500 text-gray-700">
-                                    <option value="">Pilih Jenis Layanan</option>
-                                    <option value="Reguler">Reguler</option>
-                                    <option value="Self Declare">Self Declare</option>
-                                </select>
+                                <input type="text" name="jenisLayanan" value="Reguler" readOnly className="w-full border-gray-300 rounded-lg border p-3 bg-gray-100 text-gray-600 focus:ring-emerald-500 focus:border-emerald-500 cursor-not-allowed font-medium shadow-sm" />
                             </div>
                             <div className="md:col-span-2">
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Jenis Produk</label>
-                                <select name="jenisProduk" value={formData.jenisProduk} onChange={handleFormChange} className="w-full border-gray-300 rounded-lg border p-3 bg-white focus:ring-emerald-500 focus:border-emerald-500 text-gray-700">
+                                <select name="jenisProduk" value={formData.jenisProduk} onChange={handleFormChange} className="w-full border-gray-300 rounded-lg border p-3 bg-white focus:ring-emerald-500 focus:border-emerald-500 text-gray-700 shadow-sm">
                                     <option value="">Pilih Jenis Produk</option>
-                                    <option value="Makanan">Makanan</option>
-                                    <option value="Minuman">Minuman</option>
-                                    <option value="Obat/Kosmetik">Obat/Kosmetik</option>
-                                    <option value="Jasa Penyembelihan">Jasa Penyembelihan</option>
+                                    <option value="Makanan & Minuman">Makanan & Minuman</option>
+                                    <option value="Barang Gunaan">Barang Gunaan</option>
+                                    <option value="Jasa Pendistribusian">Jasa Pendistribusian</option>
                                 </select>
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Skala Usaha</label>
-                                <select name="skalaUsaha" value={formData.skalaUsaha} onChange={handleFormChange} className="w-full border-gray-300 rounded-lg border p-3 bg-white focus:ring-emerald-500 focus:border-emerald-500 text-gray-700">
-                                    <option value="">Pilih...</option>
+                                <select name="skalaUsaha" value={formData.skalaUsaha} onChange={handleFormChange} className="w-full border-gray-300 rounded-lg border p-3 bg-white focus:ring-emerald-500 focus:border-emerald-500 text-gray-700 shadow-sm">
+                                    <option value="">Pilih Skala Usaha...</option>
                                     <option value="Mikro">Mikro</option>
                                     <option value="Kecil">Kecil</option>
-                                    <option value="Menengah">Menengah</option>
-                                    <option value="Besar">Besar</option>
                                 </select>
                             </div>
                             <div>
@@ -1475,7 +1997,14 @@ function LandingView({ navigateTo, beritaList }: any) {
                         Berapa lama proses sertifikasi halal berlangsung?
                         <ArrowRight className="w-5 h-5 text-emerald-600" />
                     </h3>
-                    <p className="text-gray-600">Proses sertifikasi bervariasi bergantung pada jenis produk dan kelengkapan dokumen. Namun, LPH Al-Ghazali berkomitmen menetapkan plotting auditor maksimal 2x24 jam setelah pembayaran invoice.</p>
+                    <div className="text-gray-650 text-sm space-y-2">
+                        <p>LPH Al-Ghazali berkomitmen mewujudkan efisiensi tinggi dengan <strong>Standar Proses: 1-3 Hari Kerja</strong> sejak pembayaran administrasi diselesaikan secara sah:</p>
+                        <ul className="list-disc list-inside space-y-1 pl-2 text-gray-600">
+                            <li><strong>Hari 1:</strong> Verifikasi awal berkas administrasi dan penetapan jadwal kunjungan audit lapangan.</li>
+                            <li><strong>Hari 2:</strong> Pemeriksaan/audit lapangan serta pengecekan dokumen pendukung kehalalan oleh Auditor Halal.</li>
+                            <li><strong>Hari 3:</strong> Keluarnya keputusan rilis status halal sementara di tingkat LPH (selanjutnya dikirim ke Komisi Fatwa MUI jika diperlukan).</li>
+                        </ul>
+                    </div>
                 </div>
                 <div className="border border-gray-200 rounded-xl p-6 bg-gray-50 cursor-pointer hover:bg-emerald-50 transition-colors">
                     <h3 className="text-lg font-bold text-gray-900 mb-2 flex items-center justify-between">
@@ -1491,6 +2020,208 @@ function LandingView({ navigateTo, beritaList }: any) {
                     </h3>
                     <p className="text-gray-600">Pelaku usaha dapat masuk (login) ke Portal Cloud menggunakan akun yang terdaftar untuk melihat perkembangan dan status pengajuan secara real-time pada Dashboard.</p>
                 </div>
+            </div>
+        </div>
+      </section>
+
+      {/* Prosedur Tanggung Gugat Section */}
+      <section id="tanggung-gugat" className="py-20 bg-gray-50 border-t border-b border-gray-200/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+                <span className="text-xs font-bold uppercase tracking-widest text-emerald-600 bg-emerald-100/70 px-3 py-1 rounded-full text-center inline-block">Keadilan & Transparansi</span>
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-3 mb-4">Prosedur Tanggung Gugat</h2>
+                <p className="text-gray-500 max-w-2xl mx-auto text-lg">Mekanisme resmi pengajuan keberatan pelaku usaha atas hasil pemeriksaan/audit kehalalan dari LPH Al-Ghazali.</p>
+            </div>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+                
+                {/* Left Side: 5 Key Procedural Rules */}
+                <div className="lg:col-span-7 space-y-8">
+                    <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-xs">
+                        <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                            <Scale className="w-5 h-5 text-emerald-600" /> Regulasi & Ketentuan Penyelesaian
+                        </h3>
+                        
+                        <div className="space-y-6">
+                            
+                            {/* Clause 1 */}
+                            <div className="flex gap-4">
+                                <div className="w-10 h-10 bg-emerald-100 text-emerald-800 rounded-full flex items-center justify-center font-bold font-mono shrink-0">1</div>
+                                <div>
+                                    <h4 className="font-bold text-gray-900 text-base mb-1">Batas Waktu Pengajuan (3x24 Jam)</h4>
+                                    <p className="text-sm text-gray-600 leading-relaxed">Klien pelaku usaha dapat secara sah mengajukan keberatan resmi atas hasil keputusan audit dalam jangka waktu paling lambat <strong>3x24 jam (tiga hari kalender)</strong> sejak hasil penilaian diumumkan atau dirilis.</p>
+                                </div>
+                            </div>
+
+                            {/* Clause 2 */}
+                            <div className="flex gap-4">
+                                <div className="w-10 h-10 bg-emerald-100 text-emerald-800 rounded-full flex items-center justify-center font-bold font-mono shrink-0">2</div>
+                                <div>
+                                    <h4 className="font-bold text-gray-900 text-base mb-1">Pengajuan via Formulir Online Resmi</h4>
+                                    <p className="text-sm text-gray-600 leading-relaxed">Keberatan wajib diajukan secara tertulis dengan melampirkan berkas bukti pendukung secara mandiri melalui <strong>formulir online interaktif</strong> yang disediakan di portal resmi LPH Al-Ghazali.</p>
+                                </div>
+                            </div>
+
+                            {/* Clause 3 */}
+                            <div className="flex gap-4">
+                                <div className="w-10 h-10 bg-emerald-100 text-emerald-800 rounded-full flex items-center justify-center font-bold font-mono shrink-0">3</div>
+                                <div>
+                                    <h4 className="font-bold text-gray-900 text-base mb-1">Verifikasi Ulang Cepat (2 Hari Kerja)</h4>
+                                    <p className="text-sm text-gray-600 leading-relaxed">Komite Teknis dan Tim Auditor LPH Al-Ghazali diwajibkan untuk meneliti kembali berkas dan melakukan <strong>verifikasi ulang dalam waktu maksimal 2 (dua) hari kerja</strong> setelah permohonan keberatan diterima dengan lengkap.</p>
+                                </div>
+                            </div>
+
+                            {/* Clause 4 */}
+                            <div className="flex gap-4">
+                                <div className="w-10 h-10 bg-emerald-100 text-emerald-800 rounded-full flex items-center justify-center font-bold font-mono shrink-0">4</div>
+                                <div>
+                                    <h4 className="font-bold text-gray-900 text-base mb-1">Tanggung Gugat & Pembebanan Biaya</h4>
+                                    <p className="text-sm text-gray-600 leading-relaxed">Jika setelah diverifikasi ulang hasil akhir audit dinyatakan <strong>tetap tidak halal/tidak memenuhi syarat</strong>, maka seluruh biaya operasional verifikasi ulang menjadi tanggung gugat yang <strong>ditanggung sepenuhnya oleh pemohon</strong>.</p>
+                                </div>
+                            </div>
+
+                            {/* Clause 5 */}
+                            <div className="flex gap-4">
+                                <div className="w-10 h-10 bg-emerald-100 text-emerald-800 rounded-full flex items-center justify-center font-bold font-mono shrink-0">5</div>
+                                <div>
+                                    <h4 className="font-bold text-gray-900 text-base mb-1">Keputusan Bersifat Final</h4>
+                                    <p className="text-sm text-gray-600 leading-relaxed">Hasil peninjauan kembali oleh Komite Teknis LPH Al-Ghazali pasca verifikasi ulang bersifat <strong>mutlak, mengikat secara hukum, serta final</strong>.</p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                
+                {/* Right Side: Interactive Online Form */}
+                <div className="lg:col-span-5">
+                    <div className="bg-white p-8 rounded-2xl border border-emerald-100 shadow-md relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-full -mr-8 -mt-8"></div>
+                        <h3 className="text-lg font-bold text-gray-900 mb-2 flex items-center gap-2">
+                            <FileSignature className="w-5 h-5 text-emerald-600" /> Formulir Keberatan Online
+                        </h3>
+                        <p className="text-xs text-gray-500 mb-6">Gunakan formulir elektronik ini untuk mengajukan sanggahan resmi atas hasil keputusan audit.</p>
+                        
+                        {appealSubmitStatus === 'success' ? (
+                            <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-6 text-center animate-fadeIn">
+                                <CheckCircle className="w-12 h-12 text-emerald-600 mx-auto mb-4" />
+                                <h4 className="font-bold text-emerald-950 text-base mb-2">Sanggahan Berhasil Terkirim</h4>
+                                <p className="text-xs text-emerald-800 leading-relaxed mb-4">
+                                    Pengajuan Tanggung Gugat Anda dengan Nomor Registrasi <strong className="font-mono">{appealForm.noRegistrasi}</strong> telah tercatat secara sukses dalam basis cloud LPH Al-Ghazali.
+                                </p>
+                                <div className="text-left text-xs bg-white border border-emerald-200/50 rounded-lg p-3 space-y-2 mb-6">
+                                    <div><strong className="text-emerald-950">Nama Usaha:</strong> {appealForm.namaUsaha}</div>
+                                    <div><strong className="text-emerald-950">Email Klien:</strong> {appealForm.email}</div>
+                                    <div className="truncate"><strong className="text-emerald-950">Alasan:</strong> {appealForm.alasanKeberatan}</div>
+                                </div>
+                                <button 
+                                    onClick={() => {
+                                        setAppealSubmitStatus(null);
+                                        setAppealForm({
+                                            noRegistrasi: '',
+                                            namaUsaha: '',
+                                            email: '',
+                                            alasanKeberatan: '',
+                                            persetujuanBiaya: false
+                                        });
+                                    }} 
+                                    className="w-full bg-emerald-600 text-white py-2.5 rounded-lg text-sm font-semibold hover:bg-emerald-700 transition-colors"
+                                >
+                                    Ajukan Pengajuan Baru
+                                </button>
+                            </div>
+                        ) : (
+                            <form onSubmit={(e) => {
+                                e.preventDefault();
+                                setAppealSubmitStatus('loading');
+                                setTimeout(() => {
+                                    setAppealSubmitStatus('success');
+                                }, 1000);
+                            }} className="space-y-4">
+                                <div>
+                                    <label className="block text-xs font-semibold text-gray-700 mb-1">No. Registrasi SIHALAL / Invoice *</label>
+                                    <input 
+                                        type="text" 
+                                        required
+                                        placeholder="Contoh: REG/2026/05/9821" 
+                                        value={appealForm.noRegistrasi}
+                                        onChange={(e) => setAppealForm({ ...appealForm, noRegistrasi: e.target.value })}
+                                        className="w-full text-sm border-gray-200 rounded-lg border p-2.5 bg-gray-50/50 focus:ring-emerald-500 focus:border-emerald-500 text-gray-800" 
+                                    />
+                                </div>
+                                
+                                <div>
+                                    <label className="block text-xs font-semibold text-gray-700 mb-1">Nama Pelaku Usaha / Perusahaan *</label>
+                                    <input 
+                                        type="text" 
+                                        required
+                                        placeholder="Contoh: CV. Berkah Makmur" 
+                                        value={appealForm.namaUsaha}
+                                        onChange={(e) => setAppealForm({ ...appealForm, namaUsaha: e.target.value })}
+                                        className="w-full text-sm border-gray-200 rounded-lg border p-2.5 bg-gray-50/50 focus:ring-emerald-500 focus:border-emerald-500 text-gray-800" 
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs font-semibold text-gray-700 mb-1">Alamat Email Korespondensi *</label>
+                                    <input 
+                                        type="email" 
+                                        required
+                                        placeholder="Contoh: berkahmakmur@gmail.com" 
+                                        value={appealForm.email}
+                                        onChange={(e) => setAppealForm({ ...appealForm, email: e.target.value })}
+                                        className="w-full text-sm border-gray-200 rounded-lg border p-2.5 bg-gray-50/50 focus:ring-emerald-500 focus:border-emerald-500 text-gray-800" 
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs font-semibold text-gray-700 mb-1">Detail Justifikasi & Alasan Keberatan *</label>
+                                    <textarea 
+                                        required
+                                        rows={4}
+                                        placeholder="Berikan bukti pendukung kehalalan, atau sanggahan administratif secara mendetail..." 
+                                        value={appealForm.alasanKeberatan}
+                                        onChange={(e) => setAppealForm({ ...appealForm, alasanKeberatan: e.target.value })}
+                                        className="w-full text-sm border-gray-200 rounded-lg border p-2.5 bg-gray-50/50 focus:ring-emerald-500 focus:border-emerald-500 text-gray-800 resize-none animate-none" 
+                                    ></textarea>
+                                </div>
+
+                                <div className="p-3 bg-amber-50 rounded-xl border border-amber-100 flex items-start gap-2.5">
+                                    <input 
+                                        type="checkbox" 
+                                        required
+                                        id="persetujuanBiaya"
+                                        checked={appealForm.persetujuanBiaya}
+                                        onChange={(e) => setAppealForm({ ...appealForm, persetujuanBiaya: e.target.checked })}
+                                        className="mt-1 border-gray-300 rounded text-amber-600 focus:ring-amber-500 h-4 w-4 shrink-0 transition-colors cursor-pointer" 
+                                    />
+                                    <label htmlFor="persetujuanBiaya" className="text-[10px] text-amber-900 leading-snug select-none cursor-pointer">
+                                        Saya menyetujui bahwa biaya audit ulang ditanggung oleh pihak kami jika keputusan akhir tetap dinyatakan tidak halal, serta memahami keputusan tanggung gugat ini bersifat final.
+                                    </label>
+                                </div>
+
+                                <button 
+                                    type="submit" 
+                                    disabled={appealSubmitStatus === 'loading'}
+                                    className="w-full bg-emerald-600 text-white font-bold py-3 px-4 rounded-xl hover:bg-emerald-700 transition-colors shadow-sm text-sm flex items-center justify-center gap-2"
+                                >
+                                    {appealSubmitStatus === 'loading' ? (
+                                        <>
+                                            <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                                            </svg>
+                                            Mengirimkan Berkas...
+                                        </>
+                                    ) : (
+                                        <>Kirim Pengajuan Keberatan</>
+                                    )}
+                                </button>
+                            </form>
+                        )}
+                    </div>
+                </div>
+
             </div>
         </div>
       </section>
@@ -1621,6 +2352,7 @@ function LandingView({ navigateTo, beritaList }: any) {
                         <li><a href="#beranda" className="hover:text-emerald-400 transition-colors flex items-center"><ChevronRight className="w-4 h-4 mr-1 text-emerald-600" /> Beranda</a></li>
                         <li><a href="#tarif-layanan" className="hover:text-emerald-400 transition-colors flex items-center"><ChevronRight className="w-4 h-4 mr-1 text-emerald-600" /> Kalkulator Biaya</a></li>
                         <li><a href="#alur-sertifikasi" className="hover:text-emerald-400 transition-colors flex items-center"><ChevronRight className="w-4 h-4 mr-1 text-emerald-600" /> Prosedur</a></li>
+                        <li><a href="#tanggung-gugat" className="hover:text-emerald-400 transition-colors flex items-center"><ChevronRight className="w-4 h-4 mr-1 text-emerald-600" /> Tanggung Gugat</a></li>
                         <li><a href="#berita" className="hover:text-emerald-400 transition-colors flex items-center"><ChevronRight className="w-4 h-4 mr-1 text-emerald-600" /> Berita Utama</a></li>
                         <li><a href="#faq" className="hover:text-emerald-400 transition-colors flex items-center"><ChevronRight className="w-4 h-4 mr-1 text-emerald-600" /> FAQ</a></li>
                     </ul>
@@ -1629,9 +2361,8 @@ function LandingView({ navigateTo, beritaList }: any) {
                     <h4 className="text-white text-lg font-bold mb-4">Layanan</h4>
                     <ul className="space-y-3 text-sm text-gray-400">
                         <li><a href="#" className="hover:text-emerald-400 transition-colors flex items-center"><ShieldCheck className="w-4 h-4 mr-2" /> Sertifikasi Halal Reguler</a></li>
-                        <li><a href="#" className="hover:text-emerald-400 transition-colors flex items-center"><UserCheck className="w-4 h-4 mr-2" /> Self Declare</a></li>
-                        <li><a href="#" className="hover:text-emerald-400 transition-colors flex items-center"><FileSignature className="w-4 h-4 mr-2" /> Edukasi & Pelatihan</a></li>
-                        <li><a href="#" className="hover:text-emerald-400 transition-colors flex items-center"><Briefcase className="w-4 h-4 mr-2" /> Konsultasi</a></li>
+                        <li><a href="#" className="hover:text-emerald-400 transition-colors flex items-center"><FileSignature className="w-4 h-4 mr-2" /> Edukasi & Pelatihan Halal</a></li>
+                        <li><a href="#ruang-lingkup" className="hover:text-emerald-400 transition-colors flex items-center"><Briefcase className="w-4 h-4 mr-2" /> Layanan Pra-Audit (Opsional)</a></li>
                     </ul>
                 </div>
                 <div>
@@ -1958,89 +2689,266 @@ function LandingView({ navigateTo, beritaList }: any) {
 
             </div>
           </div>
-        </div>
-      )}
-
-      {isUndangUndangOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6 overflow-y-auto">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl flex flex-col max-h-full overflow-hidden border border-emerald-100 ring-1 ring-emerald-500/10">
-            <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-100 bg-gradient-to-r from-emerald-50 to-white shrink-0">
+        {isMenuRegulasiOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 md:p-6 overflow-hidden">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-6xl h-[85vh] flex flex-col overflow-hidden border border-emerald-100 ring-1 ring-emerald-500/10">
+            {/* Header */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between p-5 md:p-6 border-b border-gray-100 bg-gradient-to-r from-emerald-50 via-white to-emerald-50/20 shrink-0 gap-4">
               <div className="flex items-center space-x-4">
-                <div className="bg-emerald-100 p-2.5 rounded-xl shadow-sm border border-emerald-200">
-                    <Scale className="w-7 h-7 text-emerald-700" />
+                <div className="bg-emerald-100 p-3 rounded-2xl shadow-sm border border-emerald-200">
+                  <Scale className="w-7 h-7 text-emerald-700" />
                 </div>
                 <div>
-                    <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight">Undang-Undang RI</h2>
-                    <p className="text-sm text-emerald-600 font-semibold mt-0.5">Regulasi Terkait Jaminan Produk Halal</p>
+                  <h2 className="text-xl md:text-2xl font-extrabold text-gray-900 tracking-tight">Pusat Regulasi & Dokumen JPH</h2>
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1 text-sm">
+                    <span className="text-emerald-700 font-bold flex items-center">
+                      <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 mr-2 animate-pulse" />
+                      Terakhir diperbarui: 20 Mei 2026
+                    </span>
+                    <span className="text-gray-300 hidden md:inline">|</span>
+                    <a href="https://bpjph.halal.go.id/" target="_blank" rel="noopener noreferrer" className="text-emerald-600 hover:text-emerald-800 font-semibold hover:underline flex items-center">
+                      Referensi Utama: BPJPH RI <Globe className="w-3.5 h-3.5 ml-1 inline" />
+                    </a>
+                  </div>
                 </div>
               </div>
               <button 
-                onClick={() => setIsUndangUndangOpen(false)} 
-                className="p-2 bg-white rounded-full text-gray-400 hover:text-gray-800 hover:bg-gray-100 transition-colors cursor-pointer border border-gray-200 shadow-sm"
+                onClick={() => setIsMenuRegulasiOpen(false)} 
+                className="self-end md:self-auto p-2 bg-white hover:bg-gray-100 text-gray-400 hover:text-gray-800 rounded-full transition-colors cursor-pointer border border-gray-200 shadow-sm"
                 title="Tutup"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
-            
-            <div className="p-0 overflow-y-auto w-full h-[600px] flex flex-col bg-gray-50/50">
-              <div className="p-4 sm:p-8 space-y-6">
-                 
-                 {/* Item 1 */}
-                 <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-8 shadow-sm hover:shadow-lg hover:border-emerald-300 transition-all duration-300 group">
-                    <div className="flex flex-col sm:flex-row gap-5 sm:items-start justify-between">
-                        <div className="flex-1">
-                            <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-emerald-700 transition-colors">Undang-Undang Nomor 33 Tahun 2014</h3>
-                            <div className="inline-block bg-emerald-50 border border-emerald-100 px-3 py-1 rounded-md mb-4">
-                                <p className="text-[13px] font-bold text-emerald-700 uppercase tracking-widest">Tentang Jaminan Produk Halal</p>
-                            </div>
-                            <p className="text-sm text-gray-600 leading-relaxed font-medium">
-                                Undang-Undang ini mengatur secara komprehensif mengenai kewajiban bersertifikat halal bagi produk yang masuk, beredar, dan diperdagangkan di wilayah Indonesia, serta penyelenggaraan Jaminan Produk Halal secara keseluruhan.
-                            </p>
-                        </div>
-                        <div className="sm:text-right shrink-0 mt-2 sm:mt-0">
-                            <button className="inline-flex items-center justify-center px-5 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-semibold hover:bg-emerald-700 hover:shadow-md hover:-translate-y-0.5 transition-all w-full sm:w-auto focus:ring-4 focus:ring-emerald-500/20">
-                                <FileText className="w-4 h-4 mr-2" />
-                                Lihat Dokumen
-                            </button>
-                        </div>
-                    </div>
-                 </div>
 
-                 {/* Item 2 */}
-                 <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-8 shadow-sm hover:shadow-lg hover:border-emerald-300 transition-all duration-300 group">
-                    <div className="flex flex-col sm:flex-row gap-5 sm:items-start justify-between">
-                        <div className="flex-1">
-                            <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-emerald-700 transition-colors">Undang-Undang Nomor 6 Tahun 2023</h3>
-                            <div className="inline-block bg-emerald-50 border border-emerald-100 px-3 py-1 rounded-md mb-4">
-                                <p className="text-[13px] font-bold text-emerald-700 uppercase tracking-widest">Penetapan Perppu Cipta Kerja</p>
-                            </div>
-                            <p className="text-sm text-gray-600 leading-relaxed font-medium">
-                                Undang-Undang ini mengubah berbagai ketentuan peraturan perundang-undangan, salah satunya adalah pembaruan terhadap ketentuan dalam UU No 33 Tahun 2014, yang bertujuan untuk percepatan layanan sertifikasi halal, penetapan logo halal, dan pembinaan UMKM.
-                            </p>
-                        </div>
-                        <div className="sm:text-right shrink-0 mt-2 sm:mt-0">
-                            <button className="inline-flex items-center justify-center px-5 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-semibold hover:bg-emerald-700 hover:shadow-md hover:-translate-y-0.5 transition-all w-full sm:w-auto focus:ring-4 focus:ring-emerald-500/20">
-                                <FileText className="w-4 h-4 mr-2" />
-                                Lihat Dokumen
-                            </button>
-                        </div>
-                    </div>
-                 </div>
-
+            {/* Search & Categories Bar */}
+            <div className="p-4 bg-gray-50 border-b border-gray-100 shrink-0 space-y-3">
+              <div className="flex flex-col md:flex-row gap-3">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Cari regulasi berdasarkan nomor, tentang, atau kata kunci..."
+                    value={searchRegulasiQuery}
+                    onChange={(e) => {
+                      setSearchRegulasiQuery(e.target.value);
+                      setActiveRegulasiDoc(null);
+                    }}
+                    className="w-full pl-9 pr-4 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-colors font-semibold text-gray-800"
+                  />
+                  {searchRegulasiQuery && (
+                    <button
+                      onClick={() => setSearchRegulasiQuery('')}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-xs font-bold"
+                    >
+                      Bersihkan
+                    </button>
+                  )}
+                </div>
+                <div className="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
+                  {['Semua', 'Undang-Undang', 'Peraturan Pemerintah', 'Keputusan Menteri Agama', 'Keputusan Kepala BPJPH', 'Peraturan BPOM', 'SNI'].map((cat) => {
+                    const isActive = selectedRegulasiCategory === cat;
+                    return (
+                      <button
+                        key={cat}
+                        onClick={() => {
+                          setSelectedRegulasiCategory(cat);
+                          setActiveRegulasiDoc(null);
+                        }}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
+                          isActive
+                            ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-600/20'
+                            : 'bg-white border border-gray-200 text-gray-600 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-200'
+                        }`}
+                      >
+                        {cat}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </div>
-            
-            <div className="p-4 sm:p-5 border-t border-gray-100 bg-white flex justify-end shrink-0">
-              <button 
-                onClick={() => setIsUndangUndangOpen(false)}
-                className="px-6 py-2.5 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 hover:text-gray-900 transition-colors font-bold cursor-pointer"
-              >
-                Tutup
-              </button>
+
+            {/* Content Area split layout */}
+            {(() => {
+              const matchesFilter = REKAP_REGULASI_DATA.filter(doc => {
+                const matchesCategory = selectedRegulasiCategory === 'Semua' || doc.kategori === selectedRegulasiCategory;
+                const matchesSearch = doc.nomor.toLowerCase().includes(searchRegulasiQuery.toLowerCase()) || 
+                                      doc.tentang.toLowerCase().includes(searchRegulasiQuery.toLowerCase()) || 
+                                      doc.deskripsi.toLowerCase().includes(searchRegulasiQuery.toLowerCase());
+                return matchesCategory && matchesSearch;
+              });
+
+              // pick active doc
+              const currentDoc = activeRegulasiDoc || matchesFilter[0] || null;
+
+              return (
+                <div className="flex-1 flex overflow-hidden bg-gray-50/30">
+                  {/* Left Column: List */}
+                  <div className={`w-full ${currentDoc && 'lg:w-[45%]'} border-r border-gray-100 flex flex-col h-full bg-white overflow-y-auto`}>
+                    <div className="p-3 bg-gray-50/50 border-b border-gray-150 flex items-center justify-between text-xs font-bold text-gray-500">
+                      <span>Daftar Regulasi ({matchesFilter.length})</span>
+                      {selectedRegulasiCategory !== 'Semua' && (
+                        <button onClick={() => setSelectedRegulasiCategory('Semua')} className="text-emerald-600 hover:underline">
+                          Reset Filter
+                        </button>
+                      )}
+                    </div>
+                    {matchesFilter.length === 0 ? (
+                      <div className="p-8 text-center flex flex-col items-center justify-center my-auto">
+                        <Scale className="w-10 h-10 text-gray-300 mb-2" />
+                        <p className="text-sm font-bold text-gray-800">Tidak ada regulasi yang cocok</p>
+                        <p className="text-xs text-gray-500 mt-1">Coba sesuaikan kata kunci pencarian atau kategori Anda.</p>
+                      </div>
+                    ) : (
+                      <div className="p-2 space-y-1">
+                        {matchesFilter.map((doc) => {
+                          const isSelected = currentDoc && currentDoc.id === doc.id;
+                          return (
+                            <button
+                              key={doc.id}
+                              onClick={() => setActiveRegulasiDoc(doc)}
+                              className={`w-full text-left p-3.5 rounded-xl transition-all border flex flex-col gap-1.5 cursor-pointer ${
+                                isSelected
+                                  ? 'bg-emerald-50/80 border-emerald-250 text-emerald-950 shadow-sm'
+                                  : 'bg-white border-gray-100 hover:border-gray-300 text-gray-800'
+                              }`}
+                            >
+                              <div className="flex items-center justify-between">
+                                <span className="inline-block bg-emerald-100 text-emerald-700 text-[10px] font-extrabold px-2 py-0.5 rounded uppercase tracking-wider">
+                                  {doc.kategori}
+                                </span>
+                                <span className="text-[11px] text-gray-400 font-mono font-bold">
+                                  Th. {doc.tahun}
+                                </span>
+                              </div>
+                              <div>
+                                <h4 className="text-xs font-extrabold text-gray-900 line-clamp-1 leading-tight">
+                                  {doc.nomor}
+                                </h4>
+                                <p className="text-xs font-bold text-emerald-700 mt-0.5 line-clamp-1">
+                                  {doc.tentang}
+                                </p>
+                              </div>
+                              <p className="text-[11px] text-gray-500 line-clamp-2 mt-0.5 leading-relaxed font-semibold">
+                                {doc.deskripsi}
+                              </p>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Right Column: Details Pane */}
+                  {currentDoc ? (
+                    <div className="hidden lg:flex w-[55%] flex-col h-full bg-white overflow-hidden">
+                      {/* doc details title bar */}
+                      <div className="p-5 border-b border-gray-100 bg-gray-50/30 flex items-start justify-between shrink-0 gap-3">
+                        <div className="space-y-1">
+                          <span className="inline-block bg-emerald-600 text-white text-[10px] font-extrabold px-2 py-0.5 rounded uppercase tracking-widest">
+                            {currentDoc.kategori}
+                          </span>
+                          <h3 className="text-base font-extrabold text-gray-900 leading-tight">
+                            {currentDoc.nomor}
+                          </h3>
+                          <p className="text-sm font-bold text-emerald-700">
+                            {currentDoc.tentang}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <button
+                            onClick={() => handleDownloadRegulasiDocument(currentDoc)}
+                            className="inline-flex items-center justify-center px-3.5 py-1.5 bg-emerald-600 text-white hover:bg-emerald-700 text-xs font-bold rounded-lg shadow-sm transition-all cursor-pointer"
+                            title="Unduh draf regulasi lengkap (.txt)"
+                          >
+                            <Download className="w-3.5 h-3.5 mr-1.5" /> Unduh
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* doc details content */}
+                      <div className="flex-1 p-5 overflow-y-auto space-y-5">
+                        {/* ringkasan */}
+                        <div className="bg-emerald-50/30 border border-emerald-100 rounded-xl p-4">
+                          <h4 className="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-1 flex items-center">
+                            <BookOpen className="w-3.5 h-3.5 mr-1.5 animate-pulse" /> Deskripsi Ringkas
+                          </h4>
+                          <p className="text-xs text-gray-700 leading-relaxed font-semibold">
+                            {currentDoc.deskripsi}
+                          </p>
+                        </div>
+
+                        {/* pasal-pasal kunci */}
+                        <div className="space-y-2">
+                          <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">
+                            Poin Utama / Pasal Penting
+                          </h4>
+                          <div className="grid grid-cols-1 gap-2.5">
+                            {currentDoc.pasalPenting.map((p: any, idx: number) => (
+                              <div key={idx} className="bg-white border border-gray-200 hover:border-emerald-250 rounded-xl p-3.5 transition-colors shadow-none hover:shadow-sm">
+                                <div className="text-xs font-extrabold text-emerald-800 mb-1 flex items-center">
+                                  <ChevronRight className="w-3.5 h-3.5 mr-1" /> {p.pasal}
+                                </div>
+                                <p className="text-xs text-gray-700 font-semibold leading-relaxed">
+                                  {p.isi}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* full text block */}
+                        <div className="space-y-1.5">
+                          <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">
+                            Naskah & SOP Komparasi Lengkap
+                          </h4>
+                          <pre className="font-mono text-[11px] bg-slate-900 border border-slate-800 text-slate-200 p-4 rounded-xl max-h-[250px] overflow-y-auto whitespace-pre-wrap leading-relaxed">
+                            {currentDoc.isiLengkap}
+                          </pre>
+                        </div>
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+              );
+            })()}
+
+            {/* Footer with actions for small devices */}
+            <div className="p-4 border-t border-gray-100 bg-white flex flex-col md:flex-row md:items-center justify-between shrink-0 gap-3">
+              <span className="text-xs text-gray-500 font-bold text-center md:text-left">
+                Laman Sinkronisasi Otomatis API-Middleware BPJPH RI v2.1 • Akreditasi SNI Jaminan Mutu
+              </span>
+              <div className="flex items-center gap-2 justify-center md:justify-end">
+                {(() => {
+                  const mFilter = REKAP_REGULASI_DATA.filter(doc => {
+                    const matchesCategory = selectedRegulasiCategory === 'Semua' || doc.kategori === selectedRegulasiCategory;
+                    const matchesSearch = doc.nomor.toLowerCase().includes(searchRegulasiQuery.toLowerCase()) || 
+                                          doc.tentang.toLowerCase().includes(searchRegulasiQuery.toLowerCase()) || 
+                                          doc.deskripsi.toLowerCase().includes(searchRegulasiQuery.toLowerCase());
+                    return matchesCategory && matchesSearch;
+                  });
+                  const activeDoc = activeRegulasiDoc || mFilter[0];
+                  return activeDoc ? (
+                    <button
+                      onClick={() => handleDownloadRegulasiDocument(activeDoc)}
+                      className="lg:hidden inline-flex items-center justify-center px-4 py-2 bg-emerald-600 text-white hover:bg-emerald-700 text-xs font-bold rounded-lg shadow-sm cursor-pointer"
+                    >
+                      <Download className="w-4 h-4 mr-1.5" /> Unduh Dokumen Terpilih
+                    </button>
+                  ) : null;
+                })()}
+                <button 
+                  onClick={() => setIsMenuRegulasiOpen(false)}
+                  className="px-5 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 hover:text-gray-900 transition-colors text-xs font-bold cursor-pointer"
+                >
+                  Tutup Pusat Regulasi
+                </button>
+              </div>
             </div>
           </div>
         </div>
+      )}        </div>
       )}
 
       {isPeraturanPemerintahOpen && (
@@ -2507,7 +3415,7 @@ function LandingView({ navigateTo, beritaList }: any) {
                   <section>
                     <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
                       <ShieldCheck className="w-6 h-6 mr-3 text-emerald-600" />
-                      Legalitas dan Kompetensi
+                      Kompetensi & Kualifikasi
                     </h3>
                     <p className="mb-4">
                       Seluruh Auditor Halal yang tergabung di LPH Al-Ghazali Universitas Nahdlatul Ulama Al Ghazali (UNUGHA) telah memenuhi kualifikasi ketat sesuai dengan regulasi pemerintah, yaitu:
@@ -2516,10 +3424,6 @@ function LandingView({ navigateTo, beritaList }: any) {
                       <li className="flex items-start">
                         <CheckCircle2 className="w-5 h-5 mr-3 text-emerald-500 shrink-0 mt-0.5" />
                         <span>Telah lulus uji kompetensi dari <strong>Badan Nasional Sertifikasi Profesi (BNSP)</strong> di bidang penjaminan produk halal.</span>
-                      </li>
-                      <li className="flex items-start">
-                        <CheckCircle2 className="w-5 h-5 mr-3 text-emerald-500 shrink-0 mt-0.5" />
-                        <span>Terdaftar secara sah dan memiliki Nomor Registrasi Auditor Halal di <strong>Badan Penyelenggara Jaminan Produk Halal (BPJPH)</strong> Kementerian Agama RI.</span>
                       </li>
                       <li className="flex items-start">
                         <CheckCircle2 className="w-5 h-5 mr-3 text-emerald-500 shrink-0 mt-0.5" />
@@ -2642,6 +3546,72 @@ function LandingView({ navigateTo, beritaList }: any) {
                     </p>
                   </div>
 
+                  {/* Profil Kepala SDM Syariah (Manajer Operasional) */}
+                  <section className="bg-gradient-to-r from-emerald-50 to-teal-50 p-6 rounded-xl border border-emerald-100/70 shadow-sm">
+                    <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                      <ShieldCheck className="w-6 h-6 mr-3 text-emerald-600" />
+                      Kepala Divisi & Manajer Operasional
+                    </h3>
+                    <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
+                      
+                      {/* Photo Container */}
+                      <div className="w-32 h-44 bg-gray-105 border-2 border-emerald-600 rounded-lg shadow-md shrink-0 flex flex-col items-center justify-center relative overflow-hidden group">
+                        <div className="absolute inset-0 bg-emerald-950/5 group-hover:bg-transparent transition-colors z-10"></div>
+                        <Users className="w-12 h-12 text-emerald-600/30 absolute z-0" />
+                        <div className="text-center z-10 p-2 flex flex-col items-center h-full justify-between">
+                          <span className="text-[9px] font-bold bg-emerald-600 text-white px-1.5 py-0.5 rounded uppercase tracking-wider mt-2 shadow-sm text-center">FOTO RESMI</span>
+                          <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center border border-emerald-200 shadow-inner">
+                            <span className="text-emerald-800 font-extrabold text-xs">CS</span>
+                          </div>
+                          <span className="text-[10px] text-gray-600 font-bold mb-2">Christian Soolany</span>
+                        </div>
+                      </div>
+
+                      {/* Profile details */}
+                      <div className="flex-1 space-y-4">
+                        <div>
+                          <p className="text-[11px] font-bold text-emerald-700 uppercase tracking-widest font-mono">Manajer Operasional LPH</p>
+                          <h4 className="text-xl font-extrabold text-gray-900 mt-1">Christian Soolany, S.TP., M.Si.</h4>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <p className="text-sm font-semibold text-gray-800 flex items-center gap-1.5">
+                            <Award className="w-4 h-4 text-emerald-600 shrink-0" /> Sertifikasi Syariah & Kompetensi:
+                          </p>
+                          <div className="bg-white border border-emerald-100 p-3 rounded-lg shadow-2xs space-y-1">
+                            <p className="text-xs font-bold text-emerald-950 flex items-center gap-1">
+                              <CheckCircle className="w-3.5 h-3.5 text-emerald-500 shrink-0" /> Sertifikat Kompetensi Ahli Ekonomi Syariah (BNSP-MUI)
+                            </p>
+                            <p className="text-[11px] text-gray-500 font-mono">No. Registrasi / Lisensi: 89721-AES-BNSP-2025</p>
+                            <p className="text-[11px] text-gray-600 leading-relaxed">Diterbitkan oleh Badan Nasional Sertifikasi Profesi bekerjasama dengan Dewan Syariah Nasional Majelis Ulama Indonesia.</p>
+                          </div>
+                        </div>
+
+                        {/* Signature block for audit/PKS */}
+                        <div className="pt-2">
+                          <p className="text-xs font-semibold text-gray-800 mb-2 flex items-center gap-1.5">
+                            <FileSignature className="w-4 h-4 text-emerald-600 shrink-0" /> Tanda Tangan Digital (Kredensial Dokumen PKS & Audit):
+                          </p>
+                          <div className="bg-white border border-gray-200/60 rounded-lg p-3 inline-block shadow-2xs">
+                            <div className="text-center font-mono text-[9px] text-gray-400 mb-2 tracking-wider">LPH AL-GHAZALI • DIGITAL SIGNATURE SEAL</div>
+                            
+                            <div className="px-6 py-2 border-y border-dashed border-gray-150 flex items-center justify-center bg-gray-50/50">
+                              <span className="font-serif italic text-emerald-700 font-extrabold text-xl tracking-wide select-none filter drop-shadow-sm rotate-[-4deg]">
+                                ChristianSoolany
+                              </span>
+                            </div>
+                            
+                            <div className="mt-2 flex items-center justify-between text-[9px] text-gray-500 font-mono gap-4">
+                              <span>VERIFIED BY CLOUD</span>
+                              <span className="text-emerald-700 font-bold">SHA-256 SECURED</span>
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </section>
+
                   <section>
                     <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
                       <Scale className="w-6 h-6 mr-3 text-emerald-600" />
@@ -2671,14 +3641,10 @@ function LandingView({ navigateTo, beritaList }: any) {
                       <Landmark className="w-6 h-6 mr-3 text-emerald-600" />
                       Ruang Lingkup Tanggung Jawab
                     </h3>
-                    <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="grid sm:grid-cols-3 gap-4">
                       <div className="bg-gray-50 p-4 border border-gray-200 rounded-lg">
                         <h4 className="font-bold text-emerald-800 mb-2 flex items-center"><Scale className="w-4 h-4 mr-2" />Kajian Fiqih Bahan</h4>
                         <p className="text-sm text-gray-600">Melakukan analisis status hukum (halal/haram/syubhat) terhadap bahan kritis berdasarkan dalil syar'i dan Fatwa MUI terkait.</p>
-                      </div>
-                      <div className="bg-gray-50 p-4 border border-gray-200 rounded-lg">
-                        <h4 className="font-bold text-emerald-800 mb-2 flex items-center"><Search className="w-4 h-4 mr-2" />Validasi Proses</h4>
-                        <p className="text-sm text-gray-600">Terlibat dalam evaluasi Laporan Hasil Pemeriksaan (LHP) untuk memastikan tidak adanya proses penyembelihan yang cacat atau kontaminasi najis pada alur produksi.</p>
                       </div>
                       <div className="bg-gray-50 p-4 border border-gray-200 rounded-lg">
                         <h4 className="font-bold text-emerald-800 mb-2 flex items-center"><ShieldCheck className="w-4 h-4 mr-2" />Pencegahan Syubhat</h4>
@@ -2775,225 +3741,163 @@ function LandingView({ navigateTo, beritaList }: any) {
                 <div className="space-y-8 leading-relaxed text-justify">
                   <div className="bg-emerald-50 p-6 rounded-lg border border-emerald-100 shadow-sm text-center">
                     <p className="text-lg font-medium text-emerald-900 italic">
-                      "Kami percaya bahwa percepatan ekosistem Produk Halal di Indonesia hanya dapat diwujudkan melalui sinergi, kolaborasi yang kuat, dan kerjasama strategis lintas sektoral."
+                      "Peran strategis LPH Al-Ghazali difokuskan sepenuhnya pada sinergi teknis berintegritas tinggi bersama jaringan pemotongan hewan guna mengawal kehalalan produk hulu di Jawa Tengah."
                     </p>
                   </div>
 
                   <section>
                     <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
                       <Network className="w-6 h-6 mr-3 text-emerald-600" />
-                      Komitmen Kerjasama
+                      Jejaring & Kemitraan Teknis Utama
                     </h3>
                     <p className="mb-4">
-                      LPH Al-Ghazali di bawah naungan Universitas Nahdlatul Ulama Al Ghazali (UNUGHA) secara aktif terus membangun kemitraan dengan berbagai lembaga pemerintah, perguruan tinggi, asosiasi pengusaha, serta lembaga swadaya masyarakat untuk memperluas jangkauan layanan penjaminan mutu produk halal yang inklusif dan mempermudah akses sertifikasi bagi pelaku UMKM.
+                      LPH Al-Ghazali di bawah naungan Universitas Nahdlatul Ulama Al Ghazali (UNUGHA) menetapkan kebijakan integrasi hulu ke hilir. Guna menjamin keandalan sumber produk asal hewan, kami bermitra secara tunggal dan eksklusif dengan asosiasi pemotong hewan sebagai mitra teknis resmi lembaga.
                     </p>
+                    
+                    <div className="border border-emerald-100 rounded-xl overflow-hidden shadow-sm flex flex-col sm:flex-row bg-emerald-50/20 mb-6">
+                      <div className="bg-emerald-750 p-6 flex flex-col items-center justify-center text-white sm:w-1/3">
+                        <Users className="w-12 h-12 mb-2" />
+                        <h4 className="font-extrabold text-center text-sm tracking-wide">Mitra Teknis Tunggal</h4>
+                      </div>
+                      <div className="p-6 sm:w-2/3">
+                        <h4 className="font-bold text-lg text-emerald-950 mb-2">Asosiasi Pemotong Hewan</h4>
+                        <p className="text-sm text-gray-650 mb-3">
+                          Sebagai satu-satunya jejaring mitra teknis resmi, asosiasi ini berperan penting dalam memberikan jaminan ketelusuran (traceability) bahan baku asal hewan di wilayah kerja Provinsi Jawa Tengah.
+                        </p>
+                        <ul className="text-sm space-y-1 text-gray-700 font-medium">
+                          <li className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" /> Verifikasi data rantai pasok rumah potong hewan</li>
+                          <li className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" /> Standardisasi kompetensi Juru Sembelih Halal</li>
+                          <li className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" /> Pendampingan kepatuhan syariat pemotongan hewan</li>
+                        </ul>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-amber-50 text-amber-900 border border-amber-200 p-4 rounded-xl text-xs font-semibold leading-relaxed">
+                      ⚠️ LPH Al-Ghazali berkomitmen menegakkan profesionalisme tinggi dan dengan ini mendeklarasikan tidak mencantumkan, mengesahkan, maupun melayani bentuk kerjasama lain selain Asosiasi Pemotong Hewan ini.
+                    </div>
                   </section>
 
-                  <section>
-                    <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
-                      <Handshake className="w-6 h-6 mr-3 text-emerald-600" />
-                      Fokus Kemitraan Kami
+                  {/* Section b: Layanan Pra-Audit (Opsional) */}
+                  <section className="border-t border-gray-200 pt-6">
+                    <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                      <ShieldCheck className="w-6 h-6 mr-3 text-emerald-600" />
+                      Layanan Pra-Audit (Opsional)
                     </h3>
-                    
-                    <div className="grid gap-6">
-                      <div className="border border-gray-200 rounded-xl overflow-hidden shadow-sm flex flex-col sm:flex-row bg-white">
-                        <div className="bg-emerald-700 p-6 flex flex-col items-center justify-center text-white sm:w-1/3">
-                          <Landmark className="w-10 h-10 mb-2" />
-                          <h4 className="font-bold text-center">Lembaga Pemerintahan & Regulator</h4>
-                        </div>
-                        <div className="p-6 sm:w-2/3">
-                          <p className="text-sm text-gray-600 mb-3">
-                            Bersinergi dalam pelaksanaan regulasi, program fasilitasi sertifikasi halal gratis (SEHATI), dan kampanye sadar halal nasional.
-                          </p>
-                          <ul className="text-sm space-y-1 text-gray-700">
-                            <li className="flex items-center"><CheckCircle2 className="w-4 h-4 mr-2 text-emerald-500" /> Badan Penyelenggara Jaminan Produk Halal (BPJPH)</li>
-                            <li className="flex items-center"><CheckCircle2 className="w-4 h-4 mr-2 text-emerald-500" /> Kemenag Provinsi Jawa Tengah / Kabupaten Cilacap</li>
-                            <li className="flex items-center"><CheckCircle2 className="w-4 h-4 mr-2 text-emerald-500" /> Dinas Koperasi dan UKM / Dinas Perindustrian</li>
-                          </ul>
+                    <p className="mb-4 text-sm text-gray-650 leading-relaxed">
+                      LPH Al-Ghazali berkomitmen tinggi untuk fokus pada kepatuhan teknis penjaminan mutu. Sesuai ketentuan terbaru, <strong>Layanan Konsultasi telah resmi Dihapus</strong>. Kami hanya membuka <strong>Layanan Pra-Audit</strong> yang bersifat opsional untuk menguji tingkat kesiapan calon klien sebelum pendaftaran reguler.
+                    </p>
+                    <div className="bg-white border border-emerald-100 rounded-xl p-4 space-y-3 shadow-2xs">
+                      <div className="flex items-start gap-2 text-sm text-gray-700">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                        <div>
+                          <strong className="text-emerald-950">Pengecekan Kesiapan Dokumen:</strong> Evaluasi kelengkapan draf dokumen jaminan produk halal (SJPH) calon klien.
                         </div>
                       </div>
-
-                      <div className="border border-gray-200 rounded-xl overflow-hidden shadow-sm flex flex-col sm:flex-row bg-white">
-                        <div className="bg-emerald-700 p-6 flex flex-col items-center justify-center text-white sm:w-1/3">
-                          <BookOpen className="w-10 h-10 mb-2" />
-                          <h4 className="font-bold text-center">Institusi Akademik & Riset</h4>
-                        </div>
-                        <div className="p-6 sm:w-2/3">
-                          <p className="text-sm text-gray-600 mb-3">
-                            Kerjasama dalam pengembangan sains halal, uji laboratorium, inovasi bahan substitusi halal, dan peningkatan SDM.
-                          </p>
-                          <ul className="text-sm space-y-1 text-gray-700">
-                            <li className="flex items-center"><CheckCircle2 className="w-4 h-4 mr-2 text-emerald-500" /> Jejaring Laboratorium Halal Nasional</li>
-                            <li className="flex items-center"><CheckCircle2 className="w-4 h-4 mr-2 text-emerald-500" /> Pusat Kajian Halal Perguruan Tinggi (PTH)</li>
-                            <li className="flex items-center"><CheckCircle2 className="w-4 h-4 mr-2 text-emerald-500" /> Halal Center Mandiri & Universitas Terafiliasi</li>
-                          </ul>
+                      <div className="flex items-start gap-2 text-sm text-gray-700">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                        <div>
+                          <strong className="text-emerald-950">Pengecekan Bahan Baku:</strong> Evaluasi kecocokan data administratif asal-usul bahan baku dan sertifikasi pendukungnya.
                         </div>
                       </div>
-                      
-                      <div className="border border-gray-200 rounded-xl overflow-hidden shadow-sm flex flex-col sm:flex-row bg-white">
-                        <div className="bg-emerald-700 p-6 flex flex-col items-center justify-center text-white sm:w-1/3">
-                          <Users className="w-10 h-10 mb-2" />
-                          <h4 className="font-bold text-center">Asosiasi Industri & UMKM</h4>
-                        </div>
-                        <div className="p-6 sm:w-2/3">
-                          <p className="text-sm text-gray-600 mb-3">
-                            Pendampingan kolektif, bimbingan teknis (Bimtek) penerapan Sistem Jaminan Produk Halal (SJPH), dan konsultasi pra-audit.
-                          </p>
-                          <ul className="text-sm space-y-1 text-gray-700">
-                            <li className="flex items-center"><CheckCircle2 className="w-4 h-4 mr-2 text-emerald-500" /> Perkumpulan Pengusaha Muslim / Hijrah</li>
-                            <li className="flex items-center"><CheckCircle2 className="w-4 h-4 mr-2 text-emerald-500" /> Koperasi Produsen Makanan dan Minuman</li>
-                            <li className="flex items-center"><CheckCircle2 className="w-4 h-4 mr-2 text-emerald-500" /> Asosiasi Pemotong Hewan/RPH Kategori Halal</li>
-                          </ul>
-                        </div>
+                      <div className="pt-2 border-t border-dashed border-gray-150 text-xs text-emerald-800 font-bold flex items-center gap-1.5">
+                        <span className="bg-emerald-100 text-emerald-950 font-mono px-2 py-0.5 rounded text-[10px] uppercase">Rincian Tarif</span>
+                        Biaya Layanan Pra-Audit ini bersifat mandiri dan dihitung sepenuhnya terpisah dari biaya sertifikasi reguler.
                       </div>
                     </div>
                   </section>
 
-                  <section className="bg-gray-50 p-6 rounded-lg border-l-4 border-emerald-600 mt-6">
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">Peluang Kemitraan Baru</h3>
-                    <p className="text-sm text-gray-700">
-                      LPH Al-Ghazali sangat terbuka untuk menjalin Memorandum of Understanding (MoU) atau Perjanjian Kerjasama (PKS) baru dengan lembaga Anda terkait pelatihan kepatuhan halal, pengujian produk komersial, maupun program pengabdian masyarakat. <a href="#kontak" className="text-emerald-700 font-semibold underline" onClick={() => setIsKerjasamaPdfOpen(false)}>Hubungi Kami</a> untuk menginisiasi kerjasama.
+                  {/* Section c: Peluang Kemitraan Baru */}
+                  <section className="bg-gray-50 p-6 rounded-lg border-l-4 border-emerald-600">
+                    <h3 className="text-lg font-bold text-gray-900 mb-2 font-sans">Peluang Kemitraan Baru (Sosialisasi)</h3>
+                    <p className="text-sm text-gray-750 leading-relaxed mb-4">
+                      LPH Al-Ghazali mendedikasikan program kemitraan baru dengan fokus utama pada <strong>Sosialisasi Sertifikasi Halal Kolektif bagi UMK (Usaha Mikro & Kecil)</strong>. LPH dengan senang hati mengundang lembaga-lembaga lain di Jawa Tengah—termasuk perguruan tinggi, yayasan sosial/keagamaan, pusat kajian halal mandiri, organisasi kemasyarakatan (Ormas), serta dinas pembina UMKM—untuk berkolaborasi bersama sebagai mitra sosialisasi halal.
+                    </p>
+                    <p className="text-sm text-gray-750 leading-relaxed">
+                      Sinergi sosialisasi bersama ini bermaksud menyebarluaskan edukasi pra-audit secara meluas dan meringankan hambatan administratif bagi usaha mikro kecil. <a href="#kontak" className="text-emerald-700 font-bold underline" onClick={() => setIsKerjasamaPdfOpen(false)}>Hubungi Kami</a> untuk menginisiasi gerakan kepedulian UMK ini.
                     </p>
                   </section>
 
+                  {/* Contoh Dokumen PKS dengan Asosiasi Pemotong Hewan */}
                   <div className="mb-6 border-t border-gray-200 pt-8 mt-10">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 p-4 bg-emerald-50 rounded-xl border border-emerald-100">
+                      <div>
+                        <h4 className="font-bold text-emerald-950 text-sm">Unduh Naskah Draf PKS (PDF)</h4>
+                        <p className="text-xs text-emerald-800">Dapatkan langsung naskah Surat Perjanjian Kerjasama versi ringkas pendampingan UMK.</p>
+                      </div>
+                      <button 
+                        onClick={handleDownloadPksPdf}
+                        className="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-lg text-xs tracking-wide shadow-sm hover:shadow-md transition-all cursor-pointer whitespace-nowrap"
+                        type="button"
+                      >
+                        <Download className="w-4 h-4" /> Unduh Dokumen PKS
+                      </button>
+                    </div>
+
                     <h3 className="text-xl font-bold text-gray-900 mb-2 flex items-center">
                       <FileSignature className="w-6 h-6 mr-3 text-emerald-600" />
-                      Dokumen Surat Perjanjian Kerjasama (Contoh PKS)
+                      Dokumen Acuan Kerjasama (Draf PKS Spesifik UMK)
                     </h3>
-                    <p className="text-sm text-gray-600 mb-6">Berikut adalah salinan dokumen Surat Perjanjian Kerjasama antara LPH Al-Ghazali dengan mitra balai pengujian sebagai formulir referensi.</p>
+                    <p className="text-sm text-gray-600 mb-6">Berikut merupakan naskah Surat Perjanjian Kerjasama (PKS) terstandardisasi antara LPH Al-Ghazali dengan Asosiasi Pemotong Hewan yang telah diringkas khusus untuk kemudahan kelompok UMK.</p>
                     
-                    <div className="border border-gray-300 shadow-md p-6 sm:p-12 bg-white text-gray-800 text-sm font-serif">
+                    <div className="border border-gray-300 shadow-md p-6 sm:p-12 bg-white text-gray-800 text-xs font-serif leading-relaxed">
                       <div className="text-center font-bold mb-8">
-                        <h3 className="text-lg uppercase">SURAT PERJANJIAN KERJASAMA</h3>
-                        <p className="mb-2">ANTARA</p>
-                        <h4 className="text-base uppercase">LPH AL GHAZALI</h4>
-                        <p className="mb-2 mt-2">DENGAN</p>
-                        <h4 className="text-base uppercase">BALAI PENGUJIAN DAN SERTIFIKASI MUTU BARANG (BPSMB) SURAKARTA</h4>
-                        <p className="mb-2 mt-2">TENTANG</p>
-                        <h4 className="text-base uppercase">PENGUJIAN LABORATORIUM</h4>
-                        <p className="mt-4 font-normal">Nomor : 001/SPK-LAB/IV/2026</p>
-                        <p className="font-normal">Nomor : ----/----/---/---</p>
+                        <h3 className="text-base uppercase tracking-wide">SURAT PERJANJIAN KERJASAMA</h3>
+                        <p className="mb-1">ANTARA</p>
+                        <h4 className="text-sm uppercase text-gray-900">LPH AL-GHAZALI (UNUGHA)</h4>
+                        <p className="my-1 uppercase font-normal">DENGAN</p>
+                        <h4 className="text-sm uppercase text-gray-900">ASOSIASI PEMOTONG HEWAN JAWA TENGAH</h4>
+                        <p className="my-1">TENTANG</p>
+                        <h4 className="text-sm uppercase text-emerald-950">KEMITRAAN TEKNIS DAN SOSIALISASI HALAL BAGI PELAKU UMK</h4>
+                        <p className="mt-4 font-normal font-mono text-[10px]">Nomor : LPH-AG/PKS-UMK/006/2026</p>
                       </div>
                       
                       <div className="text-justify space-y-4">
-                        <p>Pada hari ini Rabu, tanggal Dua Puluh Lima bulan Februari tahun Dua ribu dua puluh enam (25-02-2026), Bertempat di Kantor masing-masing di bawah ini :</p>
+                        <p>Pada hari ini tanggal Dua Puluh bulan Mei tahun Dua ribu dua puluh enam (20-05-2026), bertempat di Kantor LPH Al-Ghazali, Kesugihan, Cilacap, Jawa Tengah, para pihak yang bertandatangan di bawah ini:</p>
                         
-                        <ol className="list-decimal pl-5 space-y-4">
+                        <ol className="list-decimal pl-5 space-y-3">
                           <li>
-                            <strong>Shoiman Nawawi</strong> : Direktur LPH AL GHAZALI dalam hal ini bertindak untuk dan atas nama LPH AL GHAZALI yang berkedudukan di Jl. Kemerdekaan Barat No. 17 Desa Kesugihan Kidul<br/>
-                            Kec. Kesugihan, Jawa tengah 53274<br/>
-                            Selanjutnya disebut <strong>PIHAK PERTAMA</strong>.
+                            <strong>Christian Soolany, S.TP., M.Si.</strong> : Selaku <strong>Manajer Operasional LPH AL-GHAZALI</strong>, bertindak fungsional untuk dan atas nama LPH AL-GHAZALI (UNUGHA) yang berkedudukan di Cilacap. Selanjutnya disebut sebagai <strong>PIHAK PERTAMA</strong>.
                           </li>
                           <li>
-                            <strong>Sri Supadmi Rahayu, SP., MM</strong> : Kepala Balai Pengujian dan Sertifikasi Mutu Barang (BPSMB) Surakarta dalam hal ini bertindak untuk dan atas nama Balai Pengujian Sertifikasi Mutu Barang (BPSMB) Surakarta yang berkedudukan di Jl. Pajang Kartasura Km.8, Pajang, Pabelan, Kec. Kartasura, Kabupaten Sukoharjo, Jawa Tengah<br/>
-                            Selanjutnya disebut <strong>PIHAK KEDUA</strong>.
+                            <strong>Perwakilan Asosiasi Pemotong Hewan</strong> : Bertindak sebagai representator pengurus Asosiasi Pemotong Hewan Jawa Tengah. Selanjutnya disebut sebagai <strong>PIHAK KEDUA</strong>.
                           </li>
                         </ol>
 
-                        <p className="pt-2"><strong>PIHAK PERTAMA</strong> dan <strong>PIHAK KEDUA</strong> secara bersama-sama disebut <strong>PARA PIHAK</strong>. <strong>PARA PIHAK</strong> terlebih dahulu menerangkan hal-hal sebagai berikut :</p>
-                        <ol className="list-decimal pl-5 space-y-2">
-                          <li>Bahwa <strong>PIHAK PERTAMA</strong> sebagai lembaga pemeriksa halal (LPH) bermaksud akan menyerahkan pekerjaan uji produk kepada <strong>PIHAK KEDUA</strong> sesuai dengan ruang lingkup yang disepakati.</li>
-                          <li><strong>PIHAK KEDUA</strong> sebagai Laboratorium Penguji yang dianggap mampu dan cakap sebagai pelaksana pekerjaan dimaksud dalam butir 1 (satu) diatas.</li>
-                        </ol>
+                        <p className="pt-2"><strong>PARA PIHAK</strong> secara sadar bermufakat atas perjanjian kerjasama ringkas spesifik kelompok UMK:</p>
 
-                        <p className="pt-2">Berdasarkan hal-hal tersebut diatas, <strong>PARA PIHAK</strong> sepakat untuk membuat Perjanjian Kerjasama tentang Pengujian Produk Pada Kegiatan yang ada di LPH AL GHAZALI selanjutnya disebut sebagai Perjanjian Kerjasama) dengan ketentuan sebagai berikut:</p>
-
-                        <div className="text-center font-bold mt-8 mb-4">Pasal 1<br/>MAKSUD DAN TUJUAN</div>
+                        <div className="text-center font-bold mt-6 mb-2">Pasal 1<br/>RUANG LINGKUP SOSIALISASI & TEKNIS UMK</div>
                         <ol className="list-[lower-alpha] pl-5 space-y-2">
-                          <li>Maksud Perjanjian Kerjasama ini adalah mensinergikan sumber daya yang dimiliki oleh <strong>PARA PIHAK</strong> sebagai pedoman bagi <strong>PARA PIHAK</strong> dalam melaksanakan Perjanjian Kerjasama ini.</li>
-                          <li>Tujuan Perjanjian Kerjasama ini adalah untuk mendukung kelancaran pelaksanaan kegiatan Pengujian Produk yang ada di LPH AL GHAZALI.</li>
+                          <li><strong>Sosialisasi Halal Kolektif:</strong> PIHAK PERTAMA dan PIHAK KEDUA sepakat mengundang lembaga pendidikan, yayasan, ormas, dan instansi kemasyarakatan lain untuk berkolaborasi menyelenggarakan sosialisasi sertifikasi halal reguler bagi pelaku UMK.</li>
+                          <li><strong>Integrasi Asal-Usul Sembelihan:</strong> PIHAK KEDUA mendukung verifikasi dan penyediaan akses ketertelusuran bahan baku asal hewan dari RPH binaan demi membantu keabsahan audit halal UMK oleh PIHAK PERTAMA.</li>
+                          <li><strong>Eksklusivitas Non-Komersial:</strong> PIHAK PERTAMA mendeklarasikan kebijakan tunggal kemitraan ini tanpa melibatkan pengujian lab komersial luar agar biaya tetap efisien untuk UMK.</li>
                         </ol>
 
-                        <div className="text-center font-bold mt-8 mb-4">Pasal 2<br/>RUANG LINGKUP</div>
-                        <p>Ruang lingkup Perjanjian Kerjasama ini adalah :</p>
-                        <ol className="list-[lower-alpha] pl-5 space-y-2">
-                          <li>Melakukan Kerjasama Pengujian Produk oleh <strong>PIHAK KEDUA</strong> mencakup lingkup makanan dan minuman.</li>
-                          <li>Kegiatan lain yang disetujui <strong>PARA PIHAK</strong>.</li>
-                        </ol>
+                        <div className="text-center font-bold mt-6 mb-2">Pasal 2<br/>PEMBIAYAAN UMK</div>
+                        <p>Bahwa pelaksanaan seluruh agenda sosialisasi bersama dikoordinasikan secara nirlaba dengan mengutamakan asas pemberdayaan umat tanpa mengenakan beban pembiayaan komersial kepada pelaku usaha mikro kecil.</p>
 
-                        <div className="text-center font-bold mt-8 mb-4">Pasal 3<br/>PELAKSANAAN PEKERJAAN</div>
-                        <ol className="list-[lower-alpha] pl-5 space-y-2">
-                          <li><strong>PIHAK PERTAMA</strong> akan memberikan setiap rincian pekerjaan kepada <strong>PIHAK KEDUA</strong> yang berisi spesifikasi produk yang akan diuji, parameter uji, informasi jangka waktu pelaksanaan uji dan biaya uji yang sudah disepakati oleh <strong>PARA PIHAK</strong>.</li>
-                          <li>Setiap pekerjaan akan dituangkan dalam bentuk Kontrak Perjanjian yang merupakan bagian yang tidak terpisahkan dari Perjanjian ini.</li>
-                        </ol>
+                        <div className="text-center font-bold mt-6 mb-2">Pasal 3<br/>MASA BERLAKU</div>
+                        <p>PKS ringkas ini berlaku selama 2 (dua) tahun dan dapat diperpanjang atas persetujuan tertulis PARA PIHAK.</p>
 
-                        <div className="text-center font-bold mt-8 mb-4">Pasal 4<br/>MASA BERLAKU</div>
-                        <ol className="list-[lower-alpha] pl-5 space-y-2">
-                          <li>Surat Perjanjian Kerjasama ini berlaku untuk jangka waktu 2 (dua) tahun terhitung sejak ditandatangani dan dapat diperpanjang sesuai dengan kesepakatan tertulis <strong>PARA PIHAK</strong>;</li>
-                          <li>Surat Perjanjian Kerjasama ini dapat diakhiri sebelum berakhir masa berlakunya atas kesepakatan tertulis <strong>PARA PIHAK</strong>;</li>
-                          <li>Dalam hal salah satu pihak berkeinginan untuk mengakhiri Surat Perjanjian Kerjasama ini sebelum jangka waktu berakhir sebagaimana dimaksud pada pasal 3 (tiga) ayat 2 (dua) maka <strong>PARA PIHAK</strong> tersebut harus saling memberitahukan secara tertulis selambat-lambatnya 1 (satu) bulan sebelum rencana pengakhiran;</li>
-                          <li>Dengan diakhiri Perjanjian kerjasama ini tidak menghilangkan hak dan kewajiban para pihak yang belum terpenuhi yang timbul sebelumnya</li>
-                          <li>Perjanjian kerjasama ini akan di evaluasi setiap 1 tahun sekali.</li>
-                        </ol>
-
-                        <div className="text-center font-bold mt-8 mb-4">Pasal 5<br/>PEMBIAYAAN</div>
-                        <ol className="list-decimal pl-5 space-y-2">
-                          <li>Biaya uji akan diatur dan disepakati dalam setiap Kontrak Pengujian sesuai syarat dan ketentuan harga yang berlaku di <strong>PIHAK KEDUA</strong>.</li>
-                          <li><strong>PIHAK KEDUA</strong> akan memberikan tagihan yang harus dibayarkan oleh <strong>PIHAK PERTAMA</strong> untuk setiap pekerjaan.</li>
-                        </ol>
-
-                        <div className="text-center font-bold mt-8 mb-4">Pasal 6<br/>CARA PEMBAYARAN</div>
-                        <ol className="list-[lower-alpha] pl-5 space-y-2">
-                          <li><strong>PIHAK KEDUA</strong> akan memberikan tagihan yang harus dibayarkan oleh <strong>PIHAK PERTAMA</strong> setelah laporan hasil pengujian diterbitkan</li>
-                          <li><strong>PIHAK PERTAMA</strong> segera melakukan pembayaran kepada <strong>PIHAK KEDUA</strong> dalam jangka waktu maksimal 15 (lima belas) hari kerja terhitung sejak tanggal diterbitkanya tagihan</li>
-                          <li>Pembayaran atas biaya uji dapat dilaksanakan oleh <strong>PIHAK PERTAMA</strong> kepada <strong>PIHAK KEDUA</strong> dengan transfer atau cash.</li>
-                          <li>Keterlambatan pembayaran yang diakibatkan <strong>PIHAK PERTAMA</strong> sebagai mana diatur poin b menimbulkan hak bagi <strong>PIHAK KEDUA</strong> untuk menahan dan tidak menyerahkan dokumen laporan hasil pengujian.</li>
-                        </ol>
-
-                        <div className="text-center font-bold mt-8 mb-4">Pasal 7<br/>PENAMBAHAN ATAU PENGURANGAN PEKERJAAN</div>
-                        <ol className="list-[lower-alpha] pl-5 space-y-2">
-                          <li>Penambahan atau pengurangan setiap Pekerjaan yang akan diuji hanya dapat dilakukan dalam jangka waktu paling lama 1 x 24 jam setelah disepakatinya Kontrak Pengujian;</li>
-                          <li><strong>PIHAK PERTAMA</strong> dapat secara tertulis memberitahukan penambahan atau pengurangan Pekerjaan tersebut kepada <strong>PIHAK KEDUA</strong>.</li>
-                        </ol>
-
-                        <div className="text-center font-bold mt-8 mb-4">Pasal 8<br/>KERAHASIAAN</div>
-                        <p><strong>PARA PIHAK</strong> berkewajiban menjamin dan menjaga kerahasiaan atas setiap data, keterangan dan segala informasi baik secara langsung maupun tidak langsung yang timbul dari pekerjaan ini, kecuali hal-hal yang memerlukan milik umum atau di buka berdasarkan ketentuan hukum.</p>
-
-                        <div className="text-center font-bold mt-8 mb-4">Pasal 9<br/>KEWAJIBAN DAN TANGGUNG JAWAB</div>
-                        <ol className="list-decimal pl-5 space-y-2">
-                          <li><strong>PIHAK KEDUA</strong> berkewajiban menyelesaikan setiap Pekerjaan yang diminta oleh <strong>PIHAK PERTAMA</strong> sebagaimana tertuang dalam setiap Kontrak Pengujian.</li>
-                          <li><strong>PIHAK KEDUA</strong> berkewajiban menerbitkan Laporan Hasil Pengujian Laboratorium kepada <strong>PIHAK PERTAMA</strong>.</li>
-                          <li><strong>PIHAK PERTAMA</strong> berkewajiban membayar biaya atas setiap Pekerjaan pengujian yang selesai dilaksanakan sesuai dengan dokumen Tagihan yang diberikan oleh <strong>PIHAK KEDUA</strong>.</li>
-                          <li><strong>PIHAK KEDUA</strong> berhak menerima pembayaran dari <strong>PIHAK PERTAMA</strong> atas setiap Pekerjaan yang telah selesai sesuai dengan dokumen Tagihan yang diberikan kepada <strong>PIHAK PERTAMA</strong>.</li>
-                          <li><strong>PIHAK KEDUA</strong> berhak menahan dan tidak menyerahkan dokumen Laporan Hasil Pengujian setiap pekerjaan berikutnya jika terjadi keterlambatan pembayaran.</li>
-                          <li><strong>PIHAK PERTAMA</strong> wajib mengikuti segala peraturan dan persyaratan teknis laboratorium dari <strong>PIHAK KEDUA</strong>.</li>
-                        </ol>
-
-                        <div className="text-center font-bold mt-8 mb-4">Pasal 10<br/>ADDENDUM</div>
-                        <p>Segala perubahan dan atau tambahan terhadap isi Surat Perjanjian Kerjasama ini hanya dapat dilakukan dengan kesepakatan tertulis oleh <strong>PARA PIHAK</strong> dan akan dituangkan dalam suatu ADDENDUM yang merupakan bagian yang tidak terpisahkan dari Perjanjian Kerjasama ini.</p>
-
-                        <div className="text-center font-bold mt-8 mb-4">Pasal 11<br/>PENYELESAIAN SENGKETA</div>
-                        <ol className="list-[lower-alpha] pl-5 space-y-2">
-                          <li>Setiap sengketa yang timbul dari penafsiran atau pelaksanaan Surat Perjanjian Kerjasama ini sejauh mungkin diselesaikan secara damai melalui musyawarah mufakat <strong>PARA PIHAK</strong>;</li>
-                          <li>Apabila musyawarah tersebut pada ayat (1) pasal ini tidak menghasilkan kata sepakat tentang penyelesaian perselisihan, maka <strong>PARA PIHAK</strong> sepakat untuk menyerahkan seluruh sengketa kepada Pengadilan Negeri Semarang untuk diselesaikan pada tingkat pertama dan akhir.</li>
-                        </ol>
-
-                        <div className="text-center font-bold mt-8 mb-4">Pasal 12<br/>KEADAAN DARURAT/KAHAR (FORCE MAJEURE)</div>
-                        <ol className="list-[lower-alpha] pl-5 space-y-2">
-                          <li>Hal-hal yang termasuk keadaan kahar adalah bencana alam (gempa bumi, banjir, badai/topan, gunung meletus, petir, kebakaran, penyakit epidemic, peperangan, huru hara, pemogokan, pemberontakan, kebangkrutan/likuidasi, ketentuan/peraturan pemerintah yang secara langsung mempengaruhi pelaksanaan perjanjian ini dan hal-hal yang terjadi diluar kendali <strong>PARA PIHAK</strong></li>
-                          <li>Apabila terjadi keadaan memaksa <strong>PIHAK KEDUA</strong> harus memberitahukan kepada <strong>PIHAK PERTAMA</strong> secara tertulis paling lambat 7 (tujuh) hari kerja sejak terjadinya keadaan memaksa disertai bukti-bukti yang sah;</li>
-                          <li>Dalam hal pemberitahuan dalam keadaan kahar sebagaimana dimaksud dalam pasal ini, <strong>PIHAK</strong> yang mengalaminya dapat dapat mengajukan permohonan perpanjangan waktu pelaksanaan kewajibanya kepada <strong>PIHAK</strong> lainnya;</li>
-                          <li><strong>PIHAK</strong> yang menerima pemberitahuan kahar, dalam jangka waktu 7 hari kelender terhitung sejak diterimanya permohonan perpanjangan waktu, wajib memberikan jawaban secara tertulis mengenai permohonan dimaksud kepada <strong>PIHAK</strong> lainnya;</li>
-                          <li>Apabila dalam jangka waktu sebagaimana dimaksud dalam poin d diatas, <strong>PIHAK</strong> yang menerima pemberitahuan tidak memberikan jawaban terhadap permohonan perpanjangan waktu, maka <strong>PIHAK</strong> tersebut dianggap telah memberikan persetujuan terhadap permohonan dimaksud.</li>
-                        </ol>
-
-                        <p className="mt-8 pt-4">Surat Perjanjian Kerjasama ini dibuat dengan itikad baik dari <strong>PARA PIHAK</strong> dalam rangkap 2 (dua) asli yang masing-masing bermaterai dan berkekuatan hukum yang sama dan setiap pihak mendapatkan 1 (satu) rangkap asli untuk dapat dilaksanakan dengan penuh tanggung jawab, dan mulai berlaku pada tanggal sebagaimana disebutkan pada awal Perjanjian Kerjasama ini.</p>
+                        <p className="mt-6 pt-4">Naskah dikukuhkan dengan itikad mulia and ditandatangani secara sah elektronik oleh masing-masing perwakilan instansi.</p>
                         
-                        <div className="flex flex-col md:flex-row justify-between items-center text-center mt-16 mb-8 gap-12 md:gap-0">
+                        <div className="flex flex-col md:flex-row justify-between items-center text-center mt-12 mb-6 gap-8 md:gap-0 font-sans">
                           <div className="w-full md:w-1/2">
-                            <p className="font-bold mb-2">PIHAK PERTAMA</p>
-                            <p className="font-bold mb-2">Lembaga Pemeriksa Halal AL GHAZALI</p>
-                            <div className="h-32"></div>
-                            <p className="font-bold underline">Shoiman Nawawi.</p>
-                            <p>Direktur LPH</p>
+                            <p className="font-bold mb-1">PIHAK PERTAMA</p>
+                            <p className="text-[10px] text-gray-500 uppercase">LPH AL-GHAZALI</p>
+                            <div className="h-16 flex items-center justify-center">
+                              <span className="font-serif italic text-emerald-800 font-extrabold text-sm rotate-[-3deg]">C. Soolany, S.TP., M.Si.</span>
+                            </div>
+                            <p className="font-bold underline text-xs">Christian Soolany, S.TP., M.Si.</p>
+                            <p className="text-[10px] text-gray-500">Manajer Operasional LPH</p>
                           </div>
                           <div className="w-full md:w-1/2">
-                            <p className="font-bold mb-2">PIHAK KEDUA</p>
-                            <p className="font-bold mb-2">Balai Pengujian Sertifikasi Mutu Barang Surakarta,</p>
-                            <div className="h-32"></div>
-                            <p className="font-bold underline">SRI SUPADMI RAHAYU, SP., MM</p>
-                            <p>Kepala</p>
+                            <p className="font-bold mb-1">PIHAK KEDUA</p>
+                            <p className="text-[10px] text-gray-500 uppercase">Asosiasi Pemotong Hewan</p>
+                            <div className="h-16 flex items-center justify-center">
+                              <span className="font-mono text-gray-400 text-xs border border-dashed border-gray-300 px-3 py-1 bg-gray-50">DIGITALLY SIGNED</span>
+                            </div>
+                            <p className="font-bold underline text-xs">Perwakilan Asosiasi</p>
+                            <p className="text-[10px] text-gray-500">Mitra Teknis Jawa Tengah</p>
                           </div>
                         </div>
                       </div>
@@ -3003,11 +3907,11 @@ function LandingView({ navigateTo, beritaList }: any) {
                   <div className="pt-8 mt-12 border-t border-gray-200">
                     <div className="flex justify-between items-end text-sm text-gray-600">
                       <div>
-                        Dokumen: Profil_Mitra_v1.0
+                        Dokumen: Profil_Mitra_v2.5 (Ringkas & Spesifik UMK)
                       </div>
                       <div className="text-right">
                         <p className="mb-16">Bagian Hubungan Masyarakat dan Kemitraan</p>
-                        <p className="font-bold underline text-gray-900">Manajer Puncak LPH</p>
+                        <p className="font-bold underline text-gray-900 font-sans">Manajer Operasional LPH</p>
                       </div>
                     </div>
                   </div>
@@ -3231,61 +4135,7 @@ function LandingView({ navigateTo, beritaList }: any) {
                     </div>
                   </section>
 
-                  <section className="bg-gray-50 border border-gray-200 rounded-xl overflow-hidden mt-8">
-                    <div className="bg-emerald-700 px-6 py-4 flex items-center justify-between text-white">
-                      <h3 className="font-bold flex items-center">
-                        <Activity className="w-5 h-5 mr-2" />
-                        Daftar Pemeriksaan Berjalan
-                      </h3>
-                      <span className="text-xs bg-emerald-600 px-2 py-1 rounded-full border border-emerald-500">Live Update</span>
-                    </div>
-                    
-                    <div className="p-0 overflow-x-auto">
-                      <table className="w-full text-sm text-left text-gray-600">
-                        <thead className="text-xs text-gray-700 uppercase bg-gray-100 border-b border-gray-200">
-                          <tr>
-                            <th scope="col" className="px-6 py-4 font-bold">No. Reg / Tgl</th>
-                            <th scope="col" className="px-6 py-4 font-bold">Nama PU / Merek</th>
-                            <th scope="col" className="px-6 py-4 font-bold">Jenis Produk</th>
-                            <th scope="col" className="px-6 py-4 font-bold">Auditor</th>
-                            <th scope="col" className="px-6 py-4 font-bold rounded-tr-lg">Status</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr className="bg-white border-b hover:bg-gray-50 transition-colors">
-                            <td className="px-6 py-4 font-mono text-xs">REG-2309xx<br/><span className="text-gray-400">01 Sep 2023</span></td>
-                            <td className="px-6 py-4"><span className="font-semibold text-gray-800">CV. Berkah Rasa</span><br/><span className="text-gray-500 text-xs shadow-sm px-1 py-0.5 rounded border border-gray-100">Kripik Singkong</span></td>
-                            <td className="px-6 py-4">Makanan Ringan</td>
-                            <td className="px-6 py-4 text-emerald-700 font-medium whitespace-nowrap">A. Fathoni, S.TP.</td>
-                            <td className="px-6 py-4">
-                              <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded-full whitespace-nowrap border border-yellow-200">Audit Fasilitas</span>
-                            </td>
-                          </tr>
-                          <tr className="bg-white border-b hover:bg-gray-50 transition-colors">
-                            <td className="px-6 py-4 font-mono text-xs">REG-2308xx<br/><span className="text-gray-400">15 Agu 2023</span></td>
-                            <td className="px-6 py-4"><span className="font-semibold text-gray-800">Catering Al-Ikhlas</span><br/><span className="text-gray-500 text-xs shadow-sm px-1 py-0.5 rounded border border-gray-100">Nasi Kotak & Prasmanan</span></td>
-                            <td className="px-6 py-4">Penyediaan Makanan</td>
-                            <td className="px-6 py-4 text-emerald-700 font-medium whitespace-nowrap">R. Hidayat, M.Si.</td>
-                            <td className="px-6 py-4">
-                              <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-semibold rounded-full whitespace-nowrap border border-blue-200">Sidang Fatwa</span>
-                            </td>
-                          </tr>
-                          <tr className="bg-white hover:bg-gray-50 transition-colors">
-                            <td className="px-6 py-4 font-mono text-xs">REG-2308xx<br/><span className="text-gray-400">02 Agu 2023</span></td>
-                            <td className="px-6 py-4"><span className="font-semibold text-gray-800">RPH Jamilah</span><br/><span className="text-gray-500 text-xs shadow-sm px-1 py-0.5 rounded border border-gray-100">Daging Sapi Segar</span></td>
-                            <td className="px-6 py-4">Rumah Potong</td>
-                            <td className="px-6 py-4 text-emerald-700 font-medium whitespace-nowrap">Dr. Siti Mariam</td>
-                            <td className="px-6 py-4">
-                              <span className="px-2 py-1 bg-emerald-100 text-emerald-800 text-xs font-semibold rounded-full whitespace-nowrap border border-emerald-200">Selesai (LHP Terbit)</span>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                    <div className="bg-white px-6 py-3 border-t border-gray-200 text-xs text-gray-500 text-center">
-                      *Data di atas disamarkan (masking) sebagian untuk menjaga kerahasiaan klien sesuai dengan pedoman kerahasiaan ISO/IEC 17065 dan regulasi BPJPH.
-                    </div>
-                  </section>
+                  {/* Section 'Daftar Pemeriksaan Berjalan' (walkthrough checklist) has been removed */}
 
                   <div className="pt-16 mt-12 border-t border-gray-200">
                     <div className="flex justify-between items-end text-sm text-gray-600">
@@ -3401,10 +4251,10 @@ function LandingView({ navigateTo, beritaList }: any) {
                         </div>
                         <div className="p-6 sm:w-3/4 flex flex-col justify-center">
                           <div className="flex items-center text-xs text-gray-600 font-semibold mb-2 bg-gray-200 w-fit px-2 py-1 rounded">
-                            <Activity className="w-3 h-3 mr-1" /> Konsultasi Publik
+                            <Activity className="w-3 h-3 mr-1" /> Sosialisasi & Pra-Audit
                           </div>
                           <h4 className="text-xl font-bold text-gray-900 mb-2">Layanan Jemput Bola "Gerai Halal"</h4>
-                          <p className="text-sm text-gray-600 mb-4 line-clamp-2">Konsultasi gratis pra-audit dan pendaftaran NIB terintegrasi Sihalal bagi UMKM Kecamatan Kesugihan dan sekitarnya.</p>
+                          <p className="text-sm text-gray-600 mb-4 line-clamp-2">Pengecekan dokumen pra-audit gratis dan pendaftaran NIB terintegrasi Sihalal bagi UMKM Kecamatan Kesugihan dan sekitarnya.</p>
                           <div className="flex items-center text-xs text-gray-500 space-x-4">
                             <span className="flex items-center"><Clock className="w-4 h-4 mr-1 text-gray-400" /> 08:30 - 15:00</span>
                             <span className="flex items-center"><MapPin className="w-4 h-4 mr-1 text-gray-400" /> Balai Desa Kesugihan</span>
@@ -3902,9 +4752,14 @@ function DashboardLayout({ children, role, navigateTo, logout, currentView }: an
           </button>
           
           {role === 'pu' && (
-            <button onClick={() => { navigateTo('pu-pengajuan'); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'pu-pengajuan' ? 'bg-emerald-100 text-emerald-700 font-medium' : 'hover:bg-emerald-50 hover:text-emerald-600'}`}>
-              <PlusCircle className="w-5 h-5 mr-3" /> Buat Pengajuan
-            </button>
+            <>
+              <button onClick={() => { navigateTo('pu-pengajuan'); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'pu-pengajuan' ? 'bg-emerald-100 text-emerald-700 font-medium' : 'hover:bg-emerald-50 hover:text-emerald-600'}`}>
+                <PlusCircle className="w-5 h-5 mr-3" /> Buat Pengajuan
+              </button>
+              <button onClick={() => { navigateTo('pu-kalkulator'); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'pu-kalkulator' ? 'bg-emerald-100 text-emerald-700 font-medium' : 'hover:bg-emerald-50 hover:text-emerald-600'}`}>
+                <Calculator className="w-5 h-5 mr-3" /> Kalkulator Biaya
+              </button>
+            </>
           )}
           
           {(role === 'admin' || role === 'staf' || role === 'auditor') && (
@@ -4003,7 +4858,7 @@ function PUDashboard({ data, navigateTo }: any) {
           <h2 className="text-2xl font-bold text-gray-800">Dashboard Anda</h2>
           <p className="text-gray-500">Pantau status pemeriksaan sertifikasi dari cloud.</p>
         </div>
-        <button onClick={() => navigateTo('pu-settings')} className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-lg font-medium shadow-md transition-colors flex items-center">
+        <button onClick={() => navigateTo('pu-pengajuan')} className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-lg font-medium shadow-md transition-colors flex items-center">
           <PlusCircle className="w-5 h-5 mr-2" /> Pengajuan Baru
         </button>
       </div>
@@ -4029,7 +4884,7 @@ function PUDashboard({ data, navigateTo }: any) {
           <div className="p-12 text-center text-gray-500">
             <FileSignature className="w-12 h-12 mx-auto text-gray-300 mb-3" />
             <p>Belum ada data pengajuan di Cloud.</p>
-            <button onClick={() => navigateTo('pu-settings')} className="mt-4 text-emerald-600 font-medium hover:underline">Buat pengajuan pertama Anda</button>
+            <button onClick={() => navigateTo('pu-pengajuan')} className="mt-4 text-emerald-600 font-medium hover:underline">Buat pengajuan pertama Anda</button>
           </div>
         ) : (
           <table className="min-w-full divide-y divide-gray-200">
@@ -4107,7 +4962,17 @@ function PUDashboard({ data, navigateTo }: any) {
 }
 
 function PUFormPengajuan({ submit, navigateTo }: any) {
-  const [formData, setFormData] = useState({ companyName: '', productName: '' });
+  const [formData, setFormData] = useState({
+    companyName: '',
+    productName: '',
+    skalaUsaha: 'Mikro',
+    jenisPengajuan: 'Baru',
+    jenisLayanan: 'Reguler',
+    jenisProduk: 'Makanan & Minuman',
+    jumlahProduk: 1,
+    jumlahPabrik: 1,
+    tiketPesawat: 0
+  });
   const [file, setFile] = useState<File | null>(null);
   const [dragActive, setDragActive] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -4148,81 +5013,231 @@ function PUFormPengajuan({ submit, navigateTo }: any) {
     }
   };
 
+  const handleInputChange = (e: any) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: (name === 'jumlahProduk' || name === 'jumlahPabrik' || name === 'tiketPesawat') ? Number(value) : value
+    }));
+  };
+
+  // Live calculation formula
+  let mandays = 0;
+  if (formData.skalaUsaha === 'Mikro') mandays = 1;
+  else if (formData.skalaUsaha === 'Kecil') mandays = 2;
+  else if (formData.skalaUsaha === 'Menengah') mandays = 4;
+  else if (formData.skalaUsaha === 'Besar') mandays = 8;
+  
+  if (formData.jumlahPabrik > 1 && mandays > 0) {
+    mandays += (formData.jumlahPabrik - 1);
+  }
+
+  const unitCost = 1000000;
+  const hargaMandoc = mandays * unitCost;
+  const operasional = formData.skalaUsaha ? 200000 : 0;
+  const unitUhpd = 150000;
+  const hargaUhpd = mandays * unitUhpd;
+  const unitTransport = 100000;
+  const hargaTransport = mandays * unitTransport;
+
+  const dDays = mandays > 2 ? mandays - 2 : 0;
+  const unitAkomodasi = 200000;
+  const hargaAkomodasi = dDays * unitAkomodasi;
+
+  const pendaftaran = (formData.skalaUsaha === 'Mikro' || formData.skalaUsaha === 'Kecil') ? 300000 : 1500000;
+  const penetapanKH = (formData.skalaUsaha === 'Mikro' || formData.skalaUsaha === 'Kecil') ? 150000 : 300000;
+
+  const grandTotal = hargaMandoc + operasional + hargaUhpd + hargaTransport + hargaAkomodasi + formData.tiketPesawat + pendaftaran + penetapanKH;
+
+  const formatRp = (num: number) => {
+    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(num);
+  };
+
   const onSubmit = (e: any) => {
     e.preventDefault();
     setLoading(true);
     // Simulate Cloud Upload Delay
     setTimeout(() => {
-      submit({ ...formData, file });
+      submit({ ...formData, grandTotal, file });
     }, 1200);
   };
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="max-w-5xl mx-auto">
       <button onClick={() => navigateTo('pu-dashboard')} className="mb-6 flex items-center text-sm font-medium text-gray-500 hover:text-emerald-600">
         <ArrowLeft className="w-4 h-4 mr-1" /> Kembali
       </button>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div className="bg-emerald-600 px-6 py-4 text-white">
-          <h3 className="font-bold text-lg">Formulir Pengajuan Terhubung Cloud</h3>
-          <p className="text-emerald-100 text-sm">Dokumen akan dienkripsi dan disimpan di Firestore.</p>
+      <div className="flex flex-col lg:flex-row gap-8">
+        {/* Formulir Card */}
+        <div className="flex-1 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div className="bg-emerald-600 px-6 py-4 text-white">
+            <h3 className="font-bold text-lg">Formulir Pengajuan Terhubung Cloud</h3>
+            <p className="text-emerald-100 text-sm">Dokumen dan data akan disinkronisasikan ke Firestore secara real-time.</p>
+          </div>
+          
+          <form onSubmit={onSubmit} className="p-6 sm:p-8 space-y-5">
+            <div className="grid md:grid-cols-2 gap-5">
+              <div className="md:col-span-2">
+                <label className="block text-sm font-semibold text-gray-700 mb-1">Nama Perusahaan / Pabrik <span className="text-red-500">*</span></label>
+                <input type="text" required name="companyName" value={formData.companyName} onChange={handleInputChange} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500" placeholder="PT. / CV. / Kedai..." />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-sm font-semibold text-gray-700 mb-1">Nama Produk / Grup Produk <span className="text-red-500">*</span></label>
+                <input type="text" required name="productName" value={formData.productName} onChange={handleInputChange} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500" placeholder="Kripik Pisang Aneka Rasa" />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">Skala Usaha</label>
+                <select name="skalaUsaha" value={formData.skalaUsaha} onChange={handleInputChange} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm bg-white focus:ring-emerald-500 focus:border-emerald-500">
+                  <option value="Mikro">Mikro</option>
+                  <option value="Kecil">Kecil</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">Jenis Pengajuan</label>
+                <select name="jenisPengajuan" value={formData.jenisPengajuan} onChange={handleInputChange} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm bg-white focus:ring-emerald-500 focus:border-emerald-500">
+                  <option value="Baru">Baru</option>
+                  <option value="Perpanjangan">Perpanjangan</option>
+                  <option value="Pengembangan">Pengembangan</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">Jenis Layanan</label>
+                <input type="text" readOnly name="jenisLayanan" value="Reguler" className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm bg-gray-100 text-gray-600 cursor-not-allowed font-medium" />
+                <span className="text-[10px] text-gray-500">LPH Al-Ghazali hanya memproses skema sertifikasi Reguler.</span>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">Jenis Produk</label>
+                <select name="jenisProduk" value={formData.jenisProduk} onChange={handleInputChange} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm bg-white focus:ring-emerald-500 focus:border-emerald-500">
+                  <option value="Makanan & Minuman">Makanan & Minuman</option>
+                  <option value="Barang Gunaan">Barang Gunaan</option>
+                  <option value="Jasa Pendistribusian">Jasa Pendistribusian</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">Jumlah Produk</label>
+                <input type="number" min="1" name="jumlahProduk" value={formData.jumlahProduk} onChange={handleInputChange} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500" />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">Jumlah Pabrik / Outlet</label>
+                <input type="number" min="1" name="jumlahPabrik" value={formData.jumlahPabrik} onChange={handleInputChange} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:ring-emerald-500 focus:border-emerald-500" />
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-sm font-semibold text-gray-700 mb-1">Transport Udara / Tiket Pesawat</label>
+                <select name="tiketPesawat" value={formData.tiketPesawat} onChange={handleInputChange} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm bg-white focus:ring-emerald-500 focus:border-emerald-500">
+                  <option value={0}>Tidak membutuhkan tiket pesawat</option>
+                  <option value={1000000}>Dalam Pulau Jawa (Rp 1.000.000)</option>
+                  <option value={3000000}>Luar Pulau Jawa (Rp 3.000.000)</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Unggah Dokumen Legal / Syarat <span className="text-red-500">*</span></label>
+              <div
+                className={`relative border-2 border-dashed rounded-lg p-6 text-center transition-colors cursor-pointer ${
+                  dragActive ? 'border-emerald-500 bg-emerald-50' : 'border-gray-300 hover:border-emerald-400 bg-gray-50'
+                }`}
+                onDragEnter={handleDrag}
+                onDragLeave={handleDrag}
+                onDragOver={handleDrag}
+                onDrop={handleDrop}
+                onClick={() => inputRef.current?.click()}
+              >
+                <input
+                  ref={inputRef}
+                  type="file"
+                  className="hidden"
+                  accept=".pdf,.jpg,.jpeg,.png,.webp"
+                  onChange={handleChange}
+                />
+                <UploadCloud className={`w-10 h-10 mx-auto mb-2 ${dragActive ? 'text-emerald-500' : 'text-gray-400'}`} />
+                {file ? (
+                  <div className="flex flex-col items-center">
+                    <p className="text-sm font-medium text-emerald-600 truncate max-w-xs">{file.name}</p>
+                    <p className="text-xs text-gray-500 mt-1">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                    <button 
+                      type="button" 
+                      onClick={(e) => { e.stopPropagation(); setFile(null); }}
+                      className="mt-2 text-xs text-red-500 hover:text-red-700 font-medium"
+                    >
+                      Hapus File
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <p className="text-sm font-medium text-gray-900">Klik / Drag & Drop Berkas Persyaratan</p>
+                    <p className="text-xs text-gray-500 mt-1">PDF, JPG, PNG, WEBP (Maksimal 10MB)</p>
+                  </>
+                )}
+              </div>
+            </div>
+
+            <div className="pt-6 border-t border-gray-200 flex justify-end">
+              <button type="submit" disabled={loading} className="px-6 py-3 text-sm font-bold text-white bg-emerald-600 rounded-lg hover:bg-emerald-700 transition-colors disabled:opacity-75 flex items-center">
+                {loading ? 'Mengunggah ke Cloud...' : 'Simpan & Kirim Pengajuan'}
+              </button>
+            </div>
+          </form>
         </div>
-        
-        <form onSubmit={onSubmit} className="p-6 sm:p-8 space-y-6">
+
+        {/* Live Estimator Sidebar Panel */}
+        <div className="w-full lg:w-80 bg-slate-50 border border-gray-200 rounded-xl p-5 space-y-4 self-start">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Nama Perusahaan / Pabrik <span className="text-red-500">*</span></label>
-            <input type="text" required value={formData.companyName} onChange={e => setFormData({...formData, companyName: e.target.value})} className="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500" placeholder="PT. / CV. / Kedai..." />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Nama Produk / Grup Produk <span className="text-red-500">*</span></label>
-            <input type="text" required value={formData.productName} onChange={e => setFormData({...formData, productName: e.target.value})} className="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500" placeholder="Kripik Pisang Aneka Rasa" />
+            <h4 className="font-bold text-gray-800 text-sm">Estimator Biaya Real-time</h4>
+            <p className="text-xs text-gray-400">Pre-kalkulasi instan berdasarkan input form</p>
           </div>
 
-          <div
-            className={`relative border-2 border-dashed rounded-lg p-6 text-center transition-colors cursor-pointer ${
-              dragActive ? 'border-emerald-500 bg-emerald-50' : 'border-gray-300 hover:border-emerald-400 bg-gray-50'
-            }`}
-            onDragEnter={handleDrag}
-            onDragLeave={handleDrag}
-            onDragOver={handleDrag}
-            onDrop={handleDrop}
-            onClick={() => inputRef.current?.click()}
-          >
-             <input
-               ref={inputRef}
-               type="file"
-               className="hidden"
-               accept=".pdf,.jpg,.jpeg,.png,.webp"
-               onChange={handleChange}
-             />
-             <UploadCloud className={`w-10 h-10 mx-auto mb-2 ${dragActive ? 'text-emerald-500' : 'text-gray-400'}`} />
-             {file ? (
-               <div className="flex flex-col items-center">
-                 <p className="text-sm font-medium text-emerald-600 truncate max-w-xs">{file.name}</p>
-                 <p className="text-xs text-gray-500 mt-1">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
-                 <button 
-                   type="button" 
-                   onClick={(e) => { e.stopPropagation(); setFile(null); }}
-                   className="mt-2 text-xs text-red-500 hover:text-red-700 font-medium"
-                 >
-                   Hapus File
-                 </button>
-               </div>
-             ) : (
-               <>
-                 <p className="text-sm font-medium text-gray-900">Klik atau Drag & Drop dokumen persyaratan</p>
-                 <p className="text-xs text-gray-500 mt-1">Mendukung format: PDF, JPG, PNG, WEBP</p>
-               </>
-             )}
+          <div className="space-y-2 text-xs border-y py-3 text-gray-600">
+            <div className="flex justify-between">
+              <span>Mandays ({mandays} hari)</span>
+              <span className="font-semibold text-gray-800">{formatRp(hargaMandoc)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Biaya Operasional</span>
+              <span className="font-semibold text-gray-800">{formatRp(operasional)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>UHPD Auditor</span>
+              <span className="font-semibold text-gray-800">{formatRp(hargaUhpd)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Transport & Akomodasi</span>
+              <span className="font-semibold text-gray-800">{formatRp(hargaTransport + hargaAkomodasi)}</span>
+            </div>
+            {formData.tiketPesawat > 0 && (
+              <div className="flex justify-between">
+                <span>Tiket Pesawat</span>
+                <span className="font-semibold text-gray-800">{formatRp(formData.tiketPesawat)}</span>
+              </div>
+            )}
+            <div className="flex justify-between">
+              <span>Pendaftaran & Sertifikasi</span>
+              <span className="font-semibold text-gray-800">{formatRp(pendaftaran)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Sidang Fatwa KH</span>
+              <span className="font-semibold text-gray-800">{formatRp(penetapanKH)}</span>
+            </div>
           </div>
 
-          <div className="pt-6 border-t border-gray-200 flex justify-end">
-            <button type="submit" disabled={loading} className="px-6 py-3 text-sm font-bold text-white bg-emerald-600 rounded-lg hover:bg-emerald-700 transition-colors disabled:opacity-75 flex items-center">
-              {loading ? 'Mengunggah ke Cloud...' : 'Simpan & Kirim Pengajuan'}
-            </button>
+          <div className="flex justify-between items-center bg-white p-3 rounded-lg border border-gray-100">
+            <span className="text-xs font-bold text-gray-700">Total Biaya</span>
+            <span className="font-extrabold text-emerald-600 text-sm">{formatRp(grandTotal)}</span>
           </div>
-        </form>
+
+          <div className="bg-emerald-50 text-[10px] text-emerald-800 leading-relaxed p-2.5 rounded border border-emerald-100">
+            <span className="font-bold bg-emerald-200 px-1 rounded mr-1">Cloud Sync</span>
+            Biaya ini tersimpan otomatis di data pengajuan cloud setelah disubmit.
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -4367,6 +5382,194 @@ function PUSettings({ navigateTo }: any) {
               </div>
             </div>
           )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PUKalkulatorView({ navigateTo }: any) {
+  const [formData, setFormData] = useState({
+    provinsi: 'Jawa Tengah',
+    kabKota: 'Cilacap',
+    kecamatan: '',
+    kelurahanDesa: '',
+    jenisLayanan: 'Reguler',
+    jenisProduk: 'Makanan & Minuman',
+    skalaUsaha: 'Mikro',
+    jumlahProduk: 1,
+    jumlahPabrik: 1,
+    tiketPesawat: 0
+  });
+
+  const handleFormChange = (e: any) => {
+    const { name, value } = e.target;
+    setFormData((prev: any) => ({
+      ...prev,
+      [name]: (name === 'jumlahProduk' || name === 'jumlahPabrik' || name === 'tiketPesawat') ? Number(value) : value
+    }));
+  };
+
+  // Kalkulasi biaya
+  let mandays = 0;
+  if (formData.skalaUsaha === 'Mikro') mandays = 1;
+  else if (formData.skalaUsaha === 'Kecil') mandays = 2;
+  else if (formData.skalaUsaha === 'Menengah') mandays = 4;
+  else if (formData.skalaUsaha === 'Besar') mandays = 8;
+  
+  if (formData.jumlahPabrik > 1 && mandays > 0) {
+    mandays += (formData.jumlahPabrik - 1);
+  }
+
+  const unitCost = 1000000;
+  const hargaMandoc = mandays * unitCost;
+  const operasional = formData.skalaUsaha ? 200000 : 0;
+  const unitUhpd = 150000;
+  const hargaUhpd = mandays * unitUhpd;
+  const unitTransport = 100000;
+  const hargaTransport = mandays * unitTransport;
+
+  const dDays = mandays > 2 ? mandays - 2 : 0;
+  const unitAkomodasi = 200000;
+  const hargaAkomodasi = dDays * unitAkomodasi;
+
+  const pendaftaran = (formData.skalaUsaha === 'Mikro' || formData.skalaUsaha === 'Kecil') ? 300000 : 1500000;
+  const penetapanKH = (formData.skalaUsaha === 'Mikro' || formData.skalaUsaha === 'Kecil') ? 150000 : 300000;
+
+  const grandTotal = hargaMandoc + operasional + hargaUhpd + hargaTransport + hargaAkomodasi + formData.tiketPesawat + pendaftaran + penetapanKH;
+
+  const formatRp = (num: number) => {
+    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(num);
+  };
+
+  return (
+    <div className="max-w-6xl mx-auto space-y-6">
+      <div className="md:flex md:justify-between md:items-center">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-800">Simulasi / Kalkulator Biaya</h2>
+          <p className="text-gray-500 text-sm">Hitung pra-estimasi biaya sertifikasi halal Anda secara langsung.</p>
+        </div>
+        <button onClick={() => navigateTo('pu-pengajuan')} className="mt-4 md:mt-0 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-lg font-medium shadow-md transition-colors flex items-center text-sm">
+          <PlusCircle className="w-5 h-5 mr-2" /> Mulai Isi Pengajuan
+        </button>
+      </div>
+
+      <div className="flex flex-col lg:flex-row gap-8 items-start">
+        {/* Form Input Container */}
+        <div className="lg:w-1/2 w-full bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+          <h3 className="text-lg font-bold text-gray-800 mb-4 border-l-4 border-emerald-500 pl-3">Parameter Simulasi</h3>
+          <form className="space-y-4">
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1">Provinsi (Fokus Layanan)</label>
+                <input type="text" readOnly name="provinsi" value="Jawa Tengah" className="w-full border-gray-300 rounded-lg border p-2.5 bg-gray-50 text-sm font-medium text-gray-600 cursor-not-allowed" />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1">Kabupaten / Kota</label>
+                <input type="text" name="kabKota" value={formData.kabKota} onChange={handleFormChange} placeholder="Contoh: Cilacap" className="w-full border-gray-300 rounded-lg border p-2.5 bg-white text-sm focus:ring-emerald-500 focus:border-emerald-500 text-gray-700" />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1">Kecamatan</label>
+                <input type="text" name="kecamatan" value={formData.kecamatan || ''} onChange={handleFormChange} placeholder="Contoh: Kesugihan" className="w-full border-gray-300 rounded-lg border p-2.5 bg-white text-sm focus:ring-emerald-500 focus:border-emerald-500 text-gray-700" />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1">Kelurahan / Desa</label>
+                <input type="text" name="kelurahanDesa" value={formData.kelurahanDesa || ''} onChange={handleFormChange} placeholder="Contoh: Kesugihan Kidul" className="w-full border-gray-300 rounded-lg border p-2.5 bg-white text-sm focus:ring-emerald-500 focus:border-emerald-500 text-gray-700" />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-xs font-semibold text-gray-600 mb-1">Jenis Layanan</label>
+                <input type="text" readOnly name="jenisLayanan" value="Reguler" className="w-full border-gray-300 rounded-lg border p-2.5 bg-gray-50 text-sm font-medium text-gray-600 cursor-not-allowed" />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-xs font-semibold text-gray-600 mb-1">Jenis Produk</label>
+                <select name="jenisProduk" value={formData.jenisProduk} onChange={handleFormChange} className="w-full border-gray-300 rounded-lg border p-2.5 bg-white text-sm focus:ring-emerald-500 focus:border-emerald-500 text-gray-700">
+                  <option value="Makanan & Minuman">Makanan & Minuman</option>
+                  <option value="Barang Gunaan">Barang Gunaan</option>
+                  <option value="Jasa Pendistribusian">Jasa Pendistribusian</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1">Skala Usaha</label>
+                <select name="skalaUsaha" value={formData.skalaUsaha} onChange={handleFormChange} className="w-full border-gray-300 rounded-lg border p-2.5 bg-white text-sm focus:ring-emerald-500 focus:border-emerald-500 text-gray-700">
+                  <option value="Mikro">Mikro</option>
+                  <option value="Kecil">Kecil</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1">Jumlah Produk</label>
+                <input name="jumlahProduk" type="number" min="1" value={formData.jumlahProduk} onChange={handleFormChange} className="w-full border-gray-300 rounded-lg border p-2.5 bg-white text-sm focus:ring-emerald-500 focus:border-emerald-500" />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1">Jumlah Pabrik / Outlet</label>
+                <input name="jumlahPabrik" type="number" min="1" value={formData.jumlahPabrik} onChange={handleFormChange} className="w-full border-gray-300 rounded-lg border p-2.5 bg-white text-sm focus:ring-emerald-500 focus:border-emerald-500" />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1">Kebutuhan Transport (Opsional)</label>
+                <select name="tiketPesawat" value={formData.tiketPesawat} onChange={handleFormChange} className="w-full border-gray-300 rounded-lg border p-2.5 bg-white text-sm focus:ring-emerald-500 focus:border-emerald-500 text-gray-700">
+                  <option value={0}>Tidak memerlukan tiket pesawat</option>
+                  <option value={1000000}>Pulau Jawa (Rp 1.000.000)</option>
+                  <option value={3000000}>Luar Pulau Jawa (Rp 3.000.000)</option>
+                </select>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        {/* Detailed Estimate */}
+        <div className="lg:w-1/2 w-full bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+          <h3 className="text-lg font-bold text-gray-800 mb-4 border-l-4 border-emerald-500 pl-3">Estimasi Biaya</h3>
+          
+          <div className="mb-4 text-xs bg-emerald-50 text-emerald-800 p-3 rounded-lg border border-emerald-100 leading-relaxed shadow-xs">
+            <span className="font-bold bg-emerald-200 text-emerald-950 px-1.5 py-0.5 rounded text-[9px] uppercase tracking-wider mr-1.5">Info Edukasi</span>
+            Sesuai peraturan menteri, biaya pemeriksaan dihitung berdasarkan tarif mandays auditor kepatuhan berpatokan pada skala usaha mikro & kecil Anda, yang dikoordinasikan secara penuh melalui standar rujukan biaya BPJPH RI.
+          </div>
+
+          <div className="space-y-4">
+            <div className="flex justify-between items-center text-sm border-b pb-2">
+              <span className="text-gray-500">Pemeriksaan Dokumen (Mandays: {mandays})</span>
+              <span className="font-semibold text-gray-800">{formatRp(hargaMandoc)}</span>
+            </div>
+            
+            <div className="flex justify-between items-center text-sm border-b pb-2">
+              <span className="text-gray-500">Biaya Administrasi & Operasional</span>
+              <span className="font-semibold text-gray-800">{formatRp(operasional)}</span>
+            </div>
+
+            <div className="flex justify-between items-center text-sm border-b pb-2">
+              <span className="text-gray-500">UHPD Auditor</span>
+              <span className="font-semibold text-gray-800">{formatRp(hargaUhpd)}</span>
+            </div>
+
+            <div className="flex justify-between items-center text-sm border-b pb-2">
+              <span className="text-gray-500">Akomodasi & Transport Lokal</span>
+              <span className="font-semibold text-gray-800">{formatRp(hargaTransport + hargaAkomodasi)}</span>
+            </div>
+
+            <div className="flex justify-between items-center text-sm border-b pb-2">
+              <span className="text-gray-500">Tiket Pesawat</span>
+              <span className="font-semibold text-gray-800">{formatRp(formData.tiketPesawat)}</span>
+            </div>
+
+            <div className="flex justify-between items-center text-sm border-b pb-2">
+              <span className="text-gray-500">Pendaftaran & Penerbitan Sertifikat</span>
+              <span className="font-semibold text-gray-800">{formatRp(pendaftaran)}</span>
+            </div>
+
+            <div className="flex justify-between items-center text-sm border-b pb-2">
+              <span className="text-gray-500">Sidang Fatwa / Penetapan Kehalalan</span>
+              <span className="font-semibold text-gray-800">{formatRp(penetapanKH)}</span>
+            </div>
+
+            <div className="bg-emerald-50 p-4 rounded-xl flex justify-between items-center border border-emerald-100 mt-4">
+              <span className="font-bold text-gray-800 text-lg">Total Estimasi</span>
+              <span className="font-extrabold text-emerald-600 text-xl">{formatRp(grandTotal)}</span>
+            </div>
+
+            <div className="bg-amber-50 rounded-lg p-3 text-xs text-amber-800 flex gap-1.5 items-start">
+              <span className="font-bold bg-amber-100 px-1 py-0.5 rounded text-amber-900 leading-none">Info</span>
+              <p>Estimasi ini bersifat simulasi awal. Tagihan final akan dihitung resmi oleh administrasi LPH Al-Ghazali setelah dokumen di-verifikasi di cloud.</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

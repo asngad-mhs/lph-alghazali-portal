@@ -46,23 +46,23 @@ service cloud.firestore {
     // 2. Artifacts & Public Data
     match /artifacts/{appId} {
       allow get: if true; 
+    }
 
-      match /public/system_settings {
-        allow read: if true;
-        allow write: if isStaff();
-      }
+    match /artifacts/{appId}/public/system_settings {
+      allow read: if true;
+      allow write: if isStaff();
+    }
 
-      match /public/data/berita/{beritaId} {
-        allow read: if true;
-        allow write: if isStaff();
-      }
+    match /artifacts/{appId}/public/data/berita/{beritaId} {
+      allow read: if true;
+      allow write: if isStaff();
+    }
 
-      match /public/data/pengajuan_halal/{pengajuanId} {
-        allow read: if isStaff() || (isSignedIn() && resource.data.userId == request.auth.uid);
-        allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
-        allow update: if isStaff() || (isSignedIn() && resource.data.userId == request.auth.uid);
-        allow delete: if isStaff();
-      }
+    match /artifacts/{appId}/public/data/pengajuan_halal/{pengajuanId} {
+      allow read: if isStaff() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update: if isStaff() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow delete: if isStaff();
     }
   }
 }
