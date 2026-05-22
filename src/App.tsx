@@ -4,6 +4,7 @@ import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, si
 import { getFirestore, initializeFirestore, collection, onSnapshot, getDoc, addDoc, updateDoc, doc, serverTimestamp, deleteDoc, setDoc, query, where } from 'firebase/firestore';
 import { Leaf, Home, FileText, LogOut, PlusCircle, Settings, CheckCircle, Clock, Search, Briefcase, FileSignature, UploadCloud, ArrowLeft, ArrowRight, ShieldCheck, Zap, MonitorSmartphone, UserCheck, Newspaper, Edit, Trash2, X, Image as ImageIcon, Route, Coins, ChevronDown, ChevronRight, Calculator, Receipt, CalendarDays, Activity, Video, Link, MapPin, Phone, Mail, Facebook, Twitter, Instagram, Linkedin, History, Target, Award, Network, Users, BookOpen, Handshake, Menu, Scale, Landmark, CheckCircle2, FlaskConical, FileEdit, Globe, Key, Download } from 'lucide-react';
 import CryptoJS from 'crypto-js';
+import { jsPDF } from 'jspdf';
 import RegulasiView from './components/RegulasiView';
 
 const OrgCard = ({ title, name, list, className = "", noHover = false, allowUpload = false, defaultImages = {}, onImageChange }: any) => {
@@ -132,7 +133,8 @@ export const db = initializeFirestore(app, {
 // @ts-ignore
 const currentAppId = typeof __app_id !== 'undefined' ? __app_id : 'lph-alghazali-app';
 
-const REKAP_REGULASI_DATA = [
+const REKAP_REGULASI_DATA: any[] = [];
+const DEPRECATED_REGULASI_DATA = [
   {
     id: 'uu-33-2014',
     nomor: 'Undang-Undang Nomor 33 Tahun 2014',
@@ -210,6 +212,27 @@ BAB II: TAHAPAN KEWAJIBAN BERSERTIFIKAT HALAL
 Pasal 2:
 1. Tahapan pertama kewajiban bersertifikat halal bagi produk makanan, minuman serta hasil sembelihan dan jasa penyembelihan berlangsung hingga 17 Oktober 2024.
 2. Penahapan berikutnya diatur lebih rinci bagi obat tradisional, kosmetik, alat kesehatan, dan produk gunaan lainnya.`
+  },
+  {
+    id: 'pp-31-2019',
+    nomor: 'Peraturan Pemerintah Nomor 31 Tahun 2019',
+    kategori: 'Peraturan Pemerintah',
+    tentang: 'Peraturan Pelaksanaan Undang-Undang Nomor 33 Tahun 2014 tentang Jaminan Produk Halal',
+    deskripsi: 'Mengatur pelaksanaan awal kewajiban sertifikasi halal, pembentukan komite akreditasi LPH, peran serta masyarakat, dan tata cara pembinaan pengawasan produk halal.',
+    tahun: '2019',
+    referensiUrl: 'https://bpjph.halal.go.id/',
+    pasalPenting: [
+      { pasal: 'Pasal 5', isi: 'Kerjasama Kementerian Agama dengan instansi terkait dan Majelis Ulama Indonesia (MUI) dalam mengkoordinasikan pengawasan halal.' },
+      { pasal: 'Pasal 22', isi: 'Tata cara permohonan sertifikat halal, penerimaan berkas, hingga penunjukan LPH terdaftar secara kolektif.' }
+    ],
+    isiLengkap: `PERATURAN PEMERINTAH REPUBLIK INDONESIA NOMOR 31 TAHUN 2019 TENTANG PERATURAN PELAKSANAAN UNDANG-UNDANG NOMOR 33 TAHUN 2014 TENTANG JAMINAN PRODUK HALAL
+
+Menimbang:
+Bahwa untuk melaksanakan ketentuan beberapa pasal dalam Undang-Undang Nomor 33 Tahun 2014 perlu menetapkan Peraturan Pemerintah tentang Peraturan Pelaksanaan JPH.
+
+BAB I: TATA CARA KERJASAMA
+Pasal 5:
+BPJPH bekerja sama dengan Kementerian terkait, Lembaga Pemeriksa Halal (LPH), dan MUI dalam bentuk pertukaran data secara integratif.`
   },
   {
     id: 'kma-748-2021',
@@ -316,6 +339,27 @@ Mengatur pengawasan post-market terhadap produk makanan dan minuman yang beredar
 2. Integrasi data sinkron antara BPOM, BPJPH dan produsen pangan olahan.`
   },
   {
+    id: 'bpom-20-2021',
+    nomor: 'Peraturan BPOM Nomor 20 Tahun 2021',
+    kategori: 'Peraturan BPOM',
+    tentang: 'Ketentuan Sanitasi dan Higiene dalam Labelisasi Kemasan Pangan Olahan Halal',
+    deskripsi: 'Menuntut kepatuhan industri pangan olahan dalam memisahkan fasilitas pengemasan produk halal dan non-halal secara higienis, menghindari kontaminasi silang.',
+    tahun: '2021',
+    referensiUrl: 'https://bpjph.halal.go.id/',
+    pasalPenting: [
+      { pasal: 'Pasal 3', isi: 'Industri pangan wajib menjamin kebersihan dan pemisahan peralatan produksi pangan halal.' },
+      { pasal: 'Pasal 9', isi: 'Larangan keras penggunaan peralatan secara bergantian dengan produk berbahan babi.' }
+    ],
+    isiLengkap: `PERATURAN BADAN PENGAWAS OBAT DAN MAKANAN NOMOR 20 TAHUN 2021 TENTANG KETENTUAN SANITASI DAN HIGIENE DALAM LABELISASI KEMASAN PANGAN OLAHAN HALAL
+
+Menimbang:
+Bahwa kesehatan masyarakat dan kepatuhan syariat menuntut pemisahan proses produksi pangan secara steril.
+
+BAB I: PEMISAHAN ALAT PROSES
+Pasal 3:
+Peralatan yang digunakan untuk mengolah pangan yang tidak halal dilarang keras dibersihkan atau disimpan bersamaan dengan penangan bahan baku pangan halal.`
+  },
+  {
     id: 'sni-17065-2012',
     nomor: 'SNI ISO/IEC 17065:2012',
     kategori: 'SNI',
@@ -416,7 +460,6 @@ export default function LPHApp() {
   const [userRole, setUserRole] = useState('pu');
   const [pengajuanList, setPengajuanList] = useState<any[]>([]);
   const [beritaList, setBeritaList] = useState<any[]>([]);
-  const [regulasiList, setRegulasiList] = useState<any[]>(REKAP_REGULASI_DATA);
   const [isLoading, setIsLoading] = useState(true);
 
   // Connection Test - Removed to avoid potential race conditions and SDK assertion failures
@@ -619,51 +662,9 @@ export default function LPHApp() {
         handleFirestoreError(error, OperationType.GET, `artifacts/${currentAppId}/public/data/berita`);
       });
 
-      // Fetch Regulasi
-      const regulasiRef = collection(db, 'artifacts', currentAppId, 'public', 'data', 'regulasi');
-      const unsubscribeRegulasi = onSnapshot(regulasiRef, (snapshot) => {
-        const rData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as any[];
-        if (rData.length > 0) {
-          // Sort them nicely
-          rData.sort((a, b) => {
-            const order = ['Undang-Undang', 'Peraturan Pemerintah', 'Keputusan Menteri Agama', 'Keputusan Kepala BPJPH', 'Peraturan BPOM', 'SNI'];
-            const indexA = order.indexOf(a.kategori);
-            const indexB = order.indexOf(b.kategori);
-            if (indexA !== indexB) {
-              return (indexA === -1 ? 99 : indexA) - (indexB === -1 ? 99 : indexB);
-            }
-            return b.tahun - a.tahun;
-          });
-          setRegulasiList(rData);
-        }
-      }, (error) => {
-        handleFirestoreError(error, OperationType.GET, `artifacts/${currentAppId}/public/data/regulasi`);
-      });
-
-      // Idempotent Seeding for Regulasi
-      const seedRegulasi = async () => {
-        try {
-          for (const reg of REKAP_REGULASI_DATA) {
-            const docRef = doc(db, 'artifacts', currentAppId, 'public', 'data', 'regulasi', reg.id);
-            const docSnap = await getDoc(docRef);
-            if (!docSnap.exists()) {
-              await setDoc(docRef, {
-                ...reg,
-                status: "Masih Berlaku",
-                lastUpdated: "21 Mei 2026"
-              });
-            }
-          }
-        } catch (e) {
-          console.warn("Seeding regulasi not completed:", e);
-        }
-      };
-      seedRegulasi();
-
       return () => {
           unsubscribeData();
           unsubscribeBerita();
-          unsubscribeRegulasi();
       };
     }
   }, [user, userRole]);
@@ -793,7 +794,6 @@ export default function LPHApp() {
         <LandingView 
           navigateTo={navigateTo} 
           beritaList={beritaList}
-          regulasiList={regulasiList}
           user={user}
           userRole={userRole}
           db={db}
@@ -870,9 +870,207 @@ export default function LPHApp() {
 // VIEW COMPONENTS
 // ==========================================
 
-function LandingView({ navigateTo, beritaList, regulasiList, user, userRole, db, currentAppId }: any) {
-  const [settings, setSettings] = useState<any>(null);
+function LandingView({ navigateTo, beritaList, user, userRole, db, currentAppId }: any) {
   const [landingSubView, setLandingSubView] = useState<'home' | 'regulasi'>('home');
+  const [selectedRegulasiCategory, setSelectedRegulasiCategory] = useState<string>('Semua');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [activeDoc, setActiveDoc] = useState<any>(null);
+  const [regulasiList, setRegulasiList] = useState<any[]>(DEPRECATED_REGULASI_DATA);
+  const [settings, setSettings] = useState<any>(null);
+
+  useEffect(() => {
+    // Fetch regulations from firestore in Realtime if any
+    const regulasiRef = collection(db, 'artifacts', currentAppId, 'public', 'data', 'regulasi');
+    const unsubscribe = onSnapshot(regulasiRef, (snapshot) => {
+      try {
+        const rData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as any[];
+        if (rData.length > 0) {
+          setRegulasiList(rData);
+        } else {
+          setRegulasiList(DEPRECATED_REGULASI_DATA);
+        }
+      } catch (err) {
+        console.error("Error mapping regulasi snapshot:", err);
+      }
+    }, (error) => {
+      console.warn("Skipping Firestore regulasi collection error", error);
+    });
+    return () => unsubscribe();
+  }, [currentAppId]);
+
+  const handleDownloadRegulasi = (docObj: any) => {
+    try {
+      const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4',
+      });
+
+      let yPos = 20;
+      const margin = 20;
+      const pageWidth = doc.internal.pageSize.width;
+      const pageHeight = doc.internal.pageSize.height;
+      const maxLineWidth = pageWidth - (margin * 2);
+
+      // Helper to add new page if needed
+      const checkPageBreak = (heightNeeded: number) => {
+        if (yPos + heightNeeded > pageHeight - margin) {
+          doc.addPage();
+          yPos = 20;
+        }
+      };
+
+      // Header Banner Rectangle Accent
+      doc.setFillColor(16, 185, 129); // Emerald 500
+      doc.rect(margin, yPos, maxLineWidth, 3, 'F');
+      yPos += 8;
+
+      // Kategori
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10);
+      doc.setTextColor(16, 185, 129); // Emerald
+      doc.text(docObj.kategori.toUpperCase(), margin, yPos);
+      yPos += 6;
+
+      // Nomor Dokumen
+      doc.setFontSize(13);
+      doc.setTextColor(15, 23, 42); // Slate 900
+      const nomorLines = doc.splitTextToSize(docObj.nomor, maxLineWidth);
+      nomorLines.forEach((line: string) => {
+        checkPageBreak(7);
+        doc.text(line, margin, yPos);
+        yPos += 7;
+      });
+
+      yPos += 2;
+
+      // Tentang
+      doc.setFont('helvetica', 'oblique');
+      doc.setFontSize(10);
+      doc.setTextColor(71, 85, 105); // Slate 600
+      const tentangLines = doc.splitTextToSize(`Tentang: "${docObj.tentang}"`, maxLineWidth);
+      tentangLines.forEach((line: string) => {
+        checkPageBreak(6);
+        doc.text(line, margin, yPos);
+        yPos += 6;
+      });
+
+      yPos += 4;
+
+      // Divider line
+      checkPageBreak(5);
+      doc.setDrawColor(226, 232, 240); // Slate 200
+      doc.line(margin, yPos, pageWidth - margin, yPos);
+      yPos += 8;
+
+      // Deskripsi Umum
+      checkPageBreak(15);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(11);
+      doc.setTextColor(15, 23, 42);
+      doc.text('I. DESKRIPSI & ESENSI UMUM', margin, yPos);
+      yPos += 6;
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
+      doc.setTextColor(51, 65, 85); // Slate 700
+      const deskripsiLines = doc.splitTextToSize(docObj.deskripsi || '-', maxLineWidth);
+      deskripsiLines.forEach((line: string) => {
+        checkPageBreak(5);
+        doc.text(line, margin, yPos);
+        yPos += 5.5;
+      });
+
+      yPos += 6;
+
+      // Pasal Penting
+      if (docObj.pasalPenting && docObj.pasalPenting.length > 0) {
+        checkPageBreak(15);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(11);
+        doc.setTextColor(15, 23, 42);
+        doc.text('II. BUTIR KEBIJAKAN & PASAL KUNCI', margin, yPos);
+        yPos += 7;
+
+        docObj.pasalPenting.forEach((p: any, idx: number) => {
+          checkPageBreak(15);
+          // Highlight pasal title
+          doc.setFont('helvetica', 'bold');
+          doc.setTextColor(16, 185, 129); // Emerald 500
+          doc.text(`${idx + 1}. ${p.pasal.toUpperCase()}`, margin, yPos);
+          yPos += 5;
+
+          // Pasal content
+          doc.setFont('helvetica', 'normal');
+          doc.setTextColor(51, 65, 85);
+          const pasalLines = doc.splitTextToSize(p.isi, maxLineWidth - 5);
+          pasalLines.forEach((line: string) => {
+            checkPageBreak(5);
+            doc.text(line, margin + 5, yPos);
+            yPos += 5.5;
+          });
+          yPos += 3;
+        });
+      }
+
+      yPos += 8;
+
+      // Footer disclaimer
+      checkPageBreak(30);
+      doc.setDrawColor(226, 232, 240); // Slate 200
+      doc.line(margin, yPos, pageWidth - margin, yPos);
+      yPos += 6;
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9);
+      doc.setTextColor(100, 116, 139); // Slate 500
+      doc.text('Catatan Resmi:', margin, yPos);
+      yPos += 5;
+
+      doc.setFont('helvetica', 'italic');
+      doc.setFontSize(8);
+      const disclaimerTxt = 'Salinan Elektronis Ringkas Dokumen Regulasi ini disahkan oleh Pimpinan Lembaga Pemeriksa Halal (LPH) Al-Ghazali Cilacap untuk keperluan kemudahan akses informasi bagi pelaku usaha mikro, kecil, dan menengah.';
+      const disclaimerLines = doc.splitTextToSize(disclaimerTxt, maxLineWidth);
+      disclaimerLines.forEach((line: string) => {
+        checkPageBreak(4);
+        doc.text(line, margin, yPos);
+        yPos += 4;
+      });
+
+      // Save the PDF
+      const fileName = `${docObj.nomor.replace(/[^a-zA-Z0-9]/g, '_')}_Naskah_Ringkas.pdf`;
+      doc.save(fileName);
+    } catch (err) {
+      console.error("PDF generation failed, falling back to TXT download:", err);
+      // Fallback TXT
+      const textContent = `DOKUMEN RESMI REPUBLIK INDONESIA
+==================================================
+KATEGORI: ${docObj.kategori.toUpperCase()}
+NOMOR: ${docObj.nomor}
+TENTANG: ${docObj.tentang}
+STATUS: ${docObj.status || 'Masih Berlaku'}
+==================================================
+
+DESKRIPSI:
+${docObj.deskripsi}
+
+KETENTUAN UTAMA / PASAL PENTING:
+${docObj.pasalPenting?.map((p: any) => `* [${p.pasal}] ${p.isi}`).join('\n') || '- Tidak ada pasal terdaftar -'}
+
+--------------------------------------------------
+Salinan Elektronis Resmi disahkan oleh Pimpinan LPH Al-Ghazali.
+`;
+      const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${docObj.nomor.replace(/[^a-zA-Z0-9]/g, '_')}_Naskah_Ringkas.txt`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+  };
 
   useEffect(() => {
     // Fetch settings to display dynamic structure and images
@@ -922,63 +1120,9 @@ function LandingView({ navigateTo, beritaList, regulasiList, user, userRole, db,
   const [isSejarahPdfOpen, setIsSejarahPdfOpen] = useState(false);
   const [isKebijakanPdfOpen, setIsKebijakanPdfOpen] = useState(false);
   const [isStrukturOrganisasiOpen, setIsStrukturOrganisasiOpen] = useState(false);
-  const [isUndangUndangOpen, setIsUndangUndangOpen] = useState(false);
-  const [isPeraturanPemerintahOpen, setIsPeraturanPemerintahOpen] = useState(false);
-  const [isKeputusanMenagOpen, setIsKeputusanMenagOpen] = useState(false);
-  const [isKeputusanBpjphOpen, setIsKeputusanBpjphOpen] = useState(false);
-  const [isPeraturanBpomOpen, setIsPeraturanBpomOpen] = useState(false);
-  const [isSniOpen, setIsSniOpen] = useState(false);
 
-  const [isMenuRegulasiOpen, setIsMenuRegulasiOpen] = useState(false);
-  const [selectedRegulasiCategory, setSelectedRegulasiCategory] = useState('Semua');
-  const [searchRegulasiQuery, setSearchRegulasiQuery] = useState('');
-  const [activeRegulasiDoc, setActiveRegulasiDoc] = useState<any | null>(null);
 
-  const openRegulasiWithCategory = (category: string) => {
-    setSelectedRegulasiCategory(category);
-    setLandingSubView('regulasi');
-    setIsMenuRegulasiOpen(false);
-    setSearchRegulasiQuery('');
-    setActiveRegulasiDoc(null);
-  };
 
-  const handleDownloadRegulasiDocument = (doc: any) => {
-    const textContent = `--------------------------------------------------------
-DOKUMEN REGULASI RESMI - SINKRONISASI PORTAL BPJPH RI
-Referensi Utama: https://bpjph.halal.go.id/
-Diunduh Melalui: Portal Cloud LPH Al-Ghazali (UNUGHA)
-Terakhir Diperbarui: 20 Mei 2026 (Waktu Sinkronisasi BPJPH)
---------------------------------------------------------
-
-NOMOR DOKUMEN: ${doc.nomor}
-KATEGORI: ${doc.kategori}
-TENTANG: ${doc.tentang}
-TAHUN: ${doc.tahun}
-
-DESKRIPSI:
-${doc.deskripsi}
-
-PASAL-PASAL PENTING:
-${doc.pasalPenting.map((p: any) => `- ${p.pasal}: ${p.isi}`).join('\n')}
-
---------------------------------------------------------
-ISI LENGKAP REGULASI DOKUMEN:
---------------------------------------------------------
-${doc.isiLengkap}
-
---------------------------------------------------------
-Disinkronkan secara sah dari pangkalan data BPJPH RI.
-LPH Al-Ghazali Universitas Nahdlatul Ulama Al Ghazali
-Kesugihan, Cilacap, Jawa Tengah.
-`;
-    const element = document.createElement("a");
-    const file = new Blob([textContent], {type: 'text/plain;charset=utf-8'});
-    element.href = URL.createObjectURL(file);
-    element.download = `${doc.id}.txt`;
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-  };
     const [isAuditorPdfOpen, setIsAuditorPdfOpen] = useState(false);
   const [isSdmPdfOpen, setIsSdmPdfOpen] = useState(false);
   const [isKerjasamaPdfOpen, setIsKerjasamaPdfOpen] = useState(false);
@@ -1229,31 +1373,7 @@ SHA-256 Verified Secure Archive File`;
                   </div>
                 </div>
               </div>
-              <div className="relative group shrink-0">
-                <button onClick={() => openRegulasiWithCategory('Semua')} className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center py-4 cursor-pointer">
-                  <Scale className="w-4 h-4 mr-1" /> Regulasi <ChevronDown className="w-4 h-4 ml-1" />
-                </button>
-                <div className="absolute top-[80%] left-0 w-72 bg-white border border-gray-100 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 overflow-hidden z-50">
-                  <button onClick={() => openRegulasiWithCategory('Undang-Undang')} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
-                    <Scale className="w-4 h-4 mr-2 shrink-0" /> <span className="truncate">Undang-undang RI</span>
-                  </button>
-                  <button onClick={() => openRegulasiWithCategory('Peraturan Pemerintah')} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
-                    <Landmark className="w-4 h-4 mr-2 shrink-0" /> <span className="truncate">Peraturan Pemerintah</span>
-                  </button>
-                  <button onClick={() => openRegulasiWithCategory('Keputusan Menteri Agama')} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
-                    <BookOpen className="w-4 h-4 mr-2 shrink-0" /> <span className="truncate">Keputusan Menteri Agama</span>
-                  </button>
-                  <button onClick={() => openRegulasiWithCategory('Keputusan Kepala BPJPH')} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
-                    <FileSignature className="w-4 h-4 mr-2 shrink-0" /> <span className="truncate">Keputusan Kepala BPJPH</span>
-                  </button>
-                  <button onClick={() => openRegulasiWithCategory('Peraturan BPOM')} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
-                    <ShieldCheck className="w-4 h-4 mr-2 shrink-0" /> <span className="truncate">Peraturan BPOM</span>
-                  </button>
-                  <button onClick={() => openRegulasiWithCategory('SNI')} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center">
-                    <Award className="w-4 h-4 mr-2 shrink-0" /> <span className="truncate">SNI</span>
-                  </button>
-                </div>
-              </div>
+
               <div className="relative group shrink-0">
                 <button className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center py-4">
                   <Newspaper className="w-4 h-4 mr-1" /> Berita <ChevronDown className="w-4 h-4 ml-1" />
@@ -1270,6 +1390,19 @@ SHA-256 Verified Secure Archive File`;
                   </button>
                 </div>
               </div>
+              <button 
+                onClick={() => {
+                  setLandingSubView('regulasi');
+                  setSelectedRegulasiCategory('Semua');
+                }} 
+                className={`transition-colors flex items-center shrink-0 border-b-2 py-4 ${
+                  landingSubView === 'regulasi' 
+                    ? 'text-emerald-600 font-extrabold border-emerald-500' 
+                    : 'text-gray-600 hover:text-emerald-600 border-transparent font-medium'
+                }`}
+              >
+                <Scale className="w-4 h-4 mr-1" /> Regulasi
+              </button>
               <a href="#faq" className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center shrink-0">
                 <Search className="w-4 h-4 mr-1" /> FAQ
               </a>
@@ -1333,17 +1466,7 @@ SHA-256 Verified Secure Archive File`;
               </div>
             </div>
 
-            <div className="px-3 py-2">
-              <div className="text-sm font-bold text-emerald-600 mb-1 flex items-center"><Scale className="w-4 h-4 mr-2" /> Regulasi</div>
-              <div className="ml-6 space-y-1 border-l-2 border-emerald-100 pl-3">
-                <button onClick={() => { openRegulasiWithCategory('Undang-Undang'); setIsMobileMenuOpen(false); }} className="w-full text-left flex items-center py-1.5 text-sm text-gray-600 hover:text-emerald-600"><Scale className="w-4 h-4 mr-2 shrink-0" /> Undang-undang RI</button>
-                <button onClick={() => { openRegulasiWithCategory('Peraturan Pemerintah'); setIsMobileMenuOpen(false); }} className="w-full text-left flex items-center py-1.5 text-sm text-gray-600 hover:text-emerald-600"><Landmark className="w-4 h-4 mr-2 shrink-0" /> Peraturan Pemerintah</button>
-                <button onClick={() => { openRegulasiWithCategory('Keputusan Menteri Agama'); setIsMobileMenuOpen(false); }} className="w-full text-left flex items-center py-1.5 text-sm text-gray-600 hover:text-emerald-600"><BookOpen className="w-4 h-4 mr-2 shrink-0" /> Keputusan Menteri Agama</button>
-                <button onClick={() => { openRegulasiWithCategory('Keputusan Kepala BPJPH'); setIsMobileMenuOpen(false); }} className="w-full text-left flex items-center py-1.5 text-sm text-gray-600 hover:text-emerald-600"><FileSignature className="w-4 h-4 mr-2 shrink-0" /> Keputusan Kepala BPJPH</button>
-                <button onClick={() => { openRegulasiWithCategory('Peraturan BPOM'); setIsMobileMenuOpen(false); }} className="w-full text-left flex items-center py-1.5 text-sm text-gray-600 hover:text-emerald-600"><ShieldCheck className="w-4 h-4 mr-2 shrink-0" /> Peraturan BPOM</button>
-                <button onClick={() => { openRegulasiWithCategory('SNI'); setIsMobileMenuOpen(false); }} className="w-full text-left flex items-center py-1.5 text-sm text-gray-600 hover:text-emerald-600"><Award className="w-4 h-4 mr-2 shrink-0" /> SNI</button>
-              </div>
-            </div>
+
 
             <div className="px-3 py-2">
               <div className="text-sm font-bold text-emerald-600 mb-1 flex items-center"><Newspaper className="w-4 h-4 mr-2" /> Berita</div>
@@ -1353,6 +1476,23 @@ SHA-256 Verified Secure Archive File`;
                 <button onClick={() => { setIsAgendaPdfOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600">Agenda</button>
               </div>
             </div>
+
+
+
+            <button 
+              onClick={() => { 
+                setLandingSubView('regulasi'); 
+                setSelectedRegulasiCategory('Semua'); 
+                setIsMobileMenuOpen(false); 
+              }} 
+              className={`w-full text-left px-3 py-2 text-base font-medium rounded-md flex items-center ${
+                landingSubView === 'regulasi'
+                  ? 'text-emerald-600 bg-emerald-50 font-extrabold'
+                  : 'text-gray-750 hover:text-emerald-600 hover:bg-emerald-50 font-medium'
+              }`}
+            >
+              <Scale className="w-4 h-4 mr-2 text-emerald-600" /> Regulasi
+            </button>
 
             <a href="#faq" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-md">
               <div className="flex items-center"><Search className="w-4 h-4 mr-2" /> FAQ</div>
@@ -1378,21 +1518,19 @@ SHA-256 Verified Secure Archive File`;
       </nav>
 
       {landingSubView === 'regulasi' ? (
-        <RegulasiView
-          navigateTo={navigateTo}
-          regulasiList={regulasiList}
-          selectedCategory={selectedRegulasiCategory}
-          setSelectedCategory={setSelectedRegulasiCategory}
-          searchQuery={searchRegulasiQuery}
-          setSearchQuery={setSearchRegulasiQuery}
-          activeDoc={activeRegulasiDoc}
-          setActiveDoc={setActiveRegulasiDoc}
-          handleDownload={handleDownloadRegulasiDocument}
-          user={user}
-          userRole={userRole}
-          db={db}
-          currentAppId={currentAppId}
-        />
+        <div className="pt-36 sm:pt-44 pb-20 bg-gray-50 min-h-screen">
+          <RegulasiView
+            navigateTo={navigateTo}
+            regulasiList={regulasiList}
+            selectedCategory={selectedRegulasiCategory}
+            setSelectedCategory={setSelectedRegulasiCategory}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            activeDoc={activeDoc}
+            setActiveDoc={setActiveDoc}
+            handleDownload={handleDownloadRegulasi}
+          />
+        </div>
       ) : (
         <>
           {/* Hero */}
@@ -2461,7 +2599,6 @@ SHA-256 Verified Secure Archive File`;
             </div>
         </div>
       </section>
-      </>)}
 
       {/* Footer */}
       <footer className="bg-gray-900 border-t border-gray-800 pt-16 pb-8 text-gray-300">
@@ -2819,610 +2956,16 @@ SHA-256 Verified Secure Archive File`;
 
             </div>
           </div>
-        {isMenuRegulasiOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 md:p-6 overflow-hidden">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-6xl h-[85vh] flex flex-col overflow-hidden border border-emerald-100 ring-1 ring-emerald-500/10">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between p-5 md:p-6 border-b border-gray-100 bg-gradient-to-r from-emerald-50 via-white to-emerald-50/20 shrink-0 gap-4">
-              <div className="flex items-center space-x-4">
-                <div className="bg-emerald-100 p-3 rounded-2xl shadow-sm border border-emerald-200">
-                  <Scale className="w-7 h-7 text-emerald-700" />
-                </div>
-                <div>
-                  <h2 className="text-xl md:text-2xl font-extrabold text-gray-900 tracking-tight">Pusat Regulasi & Dokumen JPH</h2>
-                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1 text-sm">
-                    <span className="text-emerald-700 font-bold flex items-center">
-                      <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 mr-2 animate-pulse" />
-                      Terakhir diperbarui: 20 Mei 2026
-                    </span>
-                    <span className="text-gray-300 hidden md:inline">|</span>
-                    <a href="https://bpjph.halal.go.id/" target="_blank" rel="noopener noreferrer" className="text-emerald-600 hover:text-emerald-800 font-semibold hover:underline flex items-center">
-                      Referensi Utama: BPJPH RI <Globe className="w-3.5 h-3.5 ml-1 inline" />
-                    </a>
-                  </div>
-                </div>
-              </div>
-              <button 
-                onClick={() => setIsMenuRegulasiOpen(false)} 
-                className="self-end md:self-auto p-2 bg-white hover:bg-gray-100 text-gray-400 hover:text-gray-800 rounded-full transition-colors cursor-pointer border border-gray-200 shadow-sm"
-                title="Tutup"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Search & Categories Bar */}
-            <div className="p-4 bg-gray-50 border-b border-gray-100 shrink-0 space-y-3">
-              <div className="flex flex-col md:flex-row gap-3">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                  <input
-                    type="text"
-                    placeholder="Cari regulasi berdasarkan nomor, tentang, atau kata kunci..."
-                    value={searchRegulasiQuery}
-                    onChange={(e) => {
-                      setSearchRegulasiQuery(e.target.value);
-                      setActiveRegulasiDoc(null);
-                    }}
-                    className="w-full pl-9 pr-4 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-colors font-semibold text-gray-800"
-                  />
-                  {searchRegulasiQuery && (
-                    <button
-                      onClick={() => setSearchRegulasiQuery('')}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-xs font-bold"
-                    >
-                      Bersihkan
-                    </button>
-                  )}
-                </div>
-                <div className="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
-                  {['Semua', 'Undang-Undang', 'Peraturan Pemerintah', 'Keputusan Menteri Agama', 'Keputusan Kepala BPJPH', 'Peraturan BPOM', 'SNI'].map((cat) => {
-                    const isActive = selectedRegulasiCategory === cat;
-                    return (
-                      <button
-                        key={cat}
-                        onClick={() => {
-                          setSelectedRegulasiCategory(cat);
-                          setActiveRegulasiDoc(null);
-                        }}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
-                          isActive
-                            ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-600/20'
-                            : 'bg-white border border-gray-200 text-gray-600 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-200'
-                        }`}
-                      >
-                        {cat}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-
-            {/* Content Area split layout */}
-            {(() => {
-              const matchesFilter = REKAP_REGULASI_DATA.filter(doc => {
-                const matchesCategory = selectedRegulasiCategory === 'Semua' || doc.kategori === selectedRegulasiCategory;
-                const matchesSearch = doc.nomor.toLowerCase().includes(searchRegulasiQuery.toLowerCase()) || 
-                                      doc.tentang.toLowerCase().includes(searchRegulasiQuery.toLowerCase()) || 
-                                      doc.deskripsi.toLowerCase().includes(searchRegulasiQuery.toLowerCase());
-                return matchesCategory && matchesSearch;
-              });
-
-              // pick active doc
-              const currentDoc = activeRegulasiDoc || matchesFilter[0] || null;
-
-              return (
-                <div className="flex-1 flex overflow-hidden bg-gray-50/30">
-                  {/* Left Column: List */}
-                  <div className={`w-full ${currentDoc && 'lg:w-[45%]'} border-r border-gray-100 flex flex-col h-full bg-white overflow-y-auto`}>
-                    <div className="p-3 bg-gray-50/50 border-b border-gray-150 flex items-center justify-between text-xs font-bold text-gray-500">
-                      <span>Daftar Regulasi ({matchesFilter.length})</span>
-                      {selectedRegulasiCategory !== 'Semua' && (
-                        <button onClick={() => setSelectedRegulasiCategory('Semua')} className="text-emerald-600 hover:underline">
-                          Reset Filter
-                        </button>
-                      )}
-                    </div>
-                    {matchesFilter.length === 0 ? (
-                      <div className="p-8 text-center flex flex-col items-center justify-center my-auto">
-                        <Scale className="w-10 h-10 text-gray-300 mb-2" />
-                        <p className="text-sm font-bold text-gray-800">Tidak ada regulasi yang cocok</p>
-                        <p className="text-xs text-gray-500 mt-1">Coba sesuaikan kata kunci pencarian atau kategori Anda.</p>
-                      </div>
-                    ) : (
-                      <div className="p-2 space-y-1">
-                        {matchesFilter.map((doc) => {
-                          const isSelected = currentDoc && currentDoc.id === doc.id;
-                          return (
-                            <button
-                              key={doc.id}
-                              onClick={() => setActiveRegulasiDoc(doc)}
-                              className={`w-full text-left p-3.5 rounded-xl transition-all border flex flex-col gap-1.5 cursor-pointer ${
-                                isSelected
-                                  ? 'bg-emerald-50/80 border-emerald-250 text-emerald-950 shadow-sm'
-                                  : 'bg-white border-gray-100 hover:border-gray-300 text-gray-800'
-                              }`}
-                            >
-                              <div className="flex items-center justify-between">
-                                <span className="inline-block bg-emerald-100 text-emerald-700 text-[10px] font-extrabold px-2 py-0.5 rounded uppercase tracking-wider">
-                                  {doc.kategori}
-                                </span>
-                                <span className="text-[11px] text-gray-400 font-mono font-bold">
-                                  Th. {doc.tahun}
-                                </span>
-                              </div>
-                              <div>
-                                <h4 className="text-xs font-extrabold text-gray-900 line-clamp-1 leading-tight">
-                                  {doc.nomor}
-                                </h4>
-                                <p className="text-xs font-bold text-emerald-700 mt-0.5 line-clamp-1">
-                                  {doc.tentang}
-                                </p>
-                              </div>
-                              <p className="text-[11px] text-gray-500 line-clamp-2 mt-0.5 leading-relaxed font-semibold">
-                                {doc.deskripsi}
-                              </p>
-                            </button>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Right Column: Details Pane */}
-                  {currentDoc ? (
-                    <div className="hidden lg:flex w-[55%] flex-col h-full bg-white overflow-hidden">
-                      {/* doc details title bar */}
-                      <div className="p-5 border-b border-gray-100 bg-gray-50/30 flex items-start justify-between shrink-0 gap-3">
-                        <div className="space-y-1">
-                          <span className="inline-block bg-emerald-600 text-white text-[10px] font-extrabold px-2 py-0.5 rounded uppercase tracking-widest">
-                            {currentDoc.kategori}
-                          </span>
-                          <h3 className="text-base font-extrabold text-gray-900 leading-tight">
-                            {currentDoc.nomor}
-                          </h3>
-                          <p className="text-sm font-bold text-emerald-700">
-                            {currentDoc.tentang}
-                          </p>
-                        </div>
-                        <div className="flex items-center gap-2 shrink-0">
-                          <button
-                            onClick={() => handleDownloadRegulasiDocument(currentDoc)}
-                            className="inline-flex items-center justify-center px-3.5 py-1.5 bg-emerald-600 text-white hover:bg-emerald-700 text-xs font-bold rounded-lg shadow-sm transition-all cursor-pointer"
-                            title="Unduh draf regulasi lengkap (.txt)"
-                          >
-                            <Download className="w-3.5 h-3.5 mr-1.5" /> Unduh
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* doc details content */}
-                      <div className="flex-1 p-5 overflow-y-auto space-y-5">
-                        {/* ringkasan */}
-                        <div className="bg-emerald-50/30 border border-emerald-100 rounded-xl p-4">
-                          <h4 className="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-1 flex items-center">
-                            <BookOpen className="w-3.5 h-3.5 mr-1.5 animate-pulse" /> Deskripsi Ringkas
-                          </h4>
-                          <p className="text-xs text-gray-700 leading-relaxed font-semibold">
-                            {currentDoc.deskripsi}
-                          </p>
-                        </div>
-
-                        {/* pasal-pasal kunci */}
-                        <div className="space-y-2">
-                          <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">
-                            Poin Utama / Pasal Penting
-                          </h4>
-                          <div className="grid grid-cols-1 gap-2.5">
-                            {currentDoc.pasalPenting.map((p: any, idx: number) => (
-                              <div key={idx} className="bg-white border border-gray-200 hover:border-emerald-250 rounded-xl p-3.5 transition-colors shadow-none hover:shadow-sm">
-                                <div className="text-xs font-extrabold text-emerald-800 mb-1 flex items-center">
-                                  <ChevronRight className="w-3.5 h-3.5 mr-1" /> {p.pasal}
-                                </div>
-                                <p className="text-xs text-gray-700 font-semibold leading-relaxed">
-                                  {p.isi}
-                                </p>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* full text block */}
-                        <div className="space-y-1.5">
-                          <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">
-                            Naskah & SOP Komparasi Lengkap
-                          </h4>
-                          <pre className="font-mono text-[11px] bg-slate-900 border border-slate-800 text-slate-200 p-4 rounded-xl max-h-[250px] overflow-y-auto whitespace-pre-wrap leading-relaxed">
-                            {currentDoc.isiLengkap}
-                          </pre>
-                        </div>
-                      </div>
-                    </div>
-                  ) : null}
-                </div>
-              );
-            })()}
-
-            {/* Footer with actions for small devices */}
-            <div className="p-4 border-t border-gray-100 bg-white flex flex-col md:flex-row md:items-center justify-between shrink-0 gap-3">
-              <span className="text-xs text-gray-500 font-bold text-center md:text-left">
-                Laman Sinkronisasi Otomatis API-Middleware BPJPH RI v2.1 • Akreditasi SNI Jaminan Mutu
-              </span>
-              <div className="flex items-center gap-2 justify-center md:justify-end">
-                {(() => {
-                  const mFilter = REKAP_REGULASI_DATA.filter(doc => {
-                    const matchesCategory = selectedRegulasiCategory === 'Semua' || doc.kategori === selectedRegulasiCategory;
-                    const matchesSearch = doc.nomor.toLowerCase().includes(searchRegulasiQuery.toLowerCase()) || 
-                                          doc.tentang.toLowerCase().includes(searchRegulasiQuery.toLowerCase()) || 
-                                          doc.deskripsi.toLowerCase().includes(searchRegulasiQuery.toLowerCase());
-                    return matchesCategory && matchesSearch;
-                  });
-                  const activeDoc = activeRegulasiDoc || mFilter[0];
-                  return activeDoc ? (
-                    <button
-                      onClick={() => handleDownloadRegulasiDocument(activeDoc)}
-                      className="lg:hidden inline-flex items-center justify-center px-4 py-2 bg-emerald-600 text-white hover:bg-emerald-700 text-xs font-bold rounded-lg shadow-sm cursor-pointer"
-                    >
-                      <Download className="w-4 h-4 mr-1.5" /> Unduh Dokumen Terpilih
-                    </button>
-                  ) : null;
-                })()}
-                <button 
-                  onClick={() => setIsMenuRegulasiOpen(false)}
-                  className="px-5 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 hover:text-gray-900 transition-colors text-xs font-bold cursor-pointer"
-                >
-                  Tutup Pusat Regulasi
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}        </div>
-      )}
-
-      {isPeraturanPemerintahOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6 overflow-y-auto">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl flex flex-col max-h-full overflow-hidden border border-emerald-100 ring-1 ring-emerald-500/10">
-            <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-100 bg-gradient-to-r from-emerald-50 to-white shrink-0">
-              <div className="flex items-center space-x-4">
-                <div className="bg-emerald-100 p-2.5 rounded-xl shadow-sm border border-emerald-200">
-                    <Landmark className="w-7 h-7 text-emerald-700" />
-                </div>
-                <div>
-                    <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight">Peraturan Pemerintah</h2>
-                    <p className="text-sm text-emerald-600 font-semibold mt-0.5">Regulasi Terkait Jaminan Produk Halal</p>
-                </div>
-              </div>
-              <button 
-                onClick={() => setIsPeraturanPemerintahOpen(false)} 
-                className="p-2 bg-white rounded-full text-gray-400 hover:text-gray-800 hover:bg-gray-100 transition-colors cursor-pointer border border-gray-200 shadow-sm"
-                title="Tutup"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            
-            <div className="p-0 overflow-y-auto w-full h-[600px] flex flex-col bg-gray-50/50">
-              <div className="p-4 sm:p-8 space-y-6">
-                 
-                 {/* Item 1 */}
-                 <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-8 shadow-sm hover:shadow-lg hover:border-emerald-300 transition-all duration-300 group">
-                    <div className="flex flex-col sm:flex-row gap-5 sm:items-start justify-between">
-                        <div className="flex-1">
-                            <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-emerald-700 transition-colors">Peraturan Pemerintah Nomor 39 Tahun 2021</h3>
-                            <div className="inline-block bg-emerald-50 border border-emerald-100 px-3 py-1 rounded-md mb-4">
-                                <p className="text-[13px] font-bold text-emerald-700 uppercase tracking-widest">Penyelenggaraan Bidang Jaminan Produk Halal</p>
-                            </div>
-                            <p className="text-sm text-gray-600 leading-relaxed font-medium">
-                                Peraturan Pemerintah ini merupakan aturan pelaksanaan dari UU No 33 Tahun 2014, yang mengatur lebih detail mengenai tata cara pendaftaran, sertifikasi, pembinaan, pengawasan, serta peran masyarakat dan pelaku usaha dalam ekosistem jaminan produk halal.
-                            </p>
-                        </div>
-                        <div className="sm:text-right shrink-0 mt-2 sm:mt-0">
-                            <button className="inline-flex items-center justify-center px-5 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-semibold hover:bg-emerald-700 hover:shadow-md hover:-translate-y-0.5 transition-all w-full sm:w-auto focus:ring-4 focus:ring-emerald-500/20">
-                                <FileText className="w-4 h-4 mr-2" />
-                                Lihat Dokumen
-                            </button>
-                        </div>
-                    </div>
-                 </div>
-
-              </div>
-            </div>
-            
-            <div className="p-4 sm:p-5 border-t border-gray-100 bg-white flex justify-end shrink-0">
-              <button 
-                onClick={() => setIsPeraturanPemerintahOpen(false)}
-                className="px-6 py-2.5 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 hover:text-gray-900 transition-colors font-bold cursor-pointer"
-              >
-                Tutup
-              </button>
-            </div>
-          </div>
         </div>
       )}
 
-      {isKeputusanMenagOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6 overflow-y-auto">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl flex flex-col max-h-full overflow-hidden border border-emerald-100 ring-1 ring-emerald-500/10">
-            <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-100 bg-gradient-to-r from-emerald-50 to-white shrink-0">
-              <div className="flex items-center space-x-4">
-                <div className="bg-emerald-100 p-2.5 rounded-xl shadow-sm border border-emerald-200">
-                    <BookOpen className="w-7 h-7 text-emerald-700" />
-                </div>
-                <div>
-                    <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight">Keputusan Menteri Agama</h2>
-                    <p className="text-sm text-emerald-600 font-semibold mt-0.5">Regulasi Terkait Jaminan Produk Halal</p>
-                </div>
-              </div>
-              <button 
-                onClick={() => setIsKeputusanMenagOpen(false)} 
-                className="p-2 bg-white rounded-full text-gray-400 hover:text-gray-800 hover:bg-gray-100 transition-colors cursor-pointer border border-gray-200 shadow-sm"
-                title="Tutup"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            
-            <div className="p-0 overflow-y-auto w-full h-[600px] flex flex-col bg-gray-50/50">
-              <div className="p-4 sm:p-8 space-y-6">
-                 
-                 {/* Item 1 */}
-                 <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-8 shadow-sm hover:shadow-lg hover:border-emerald-300 transition-all duration-300 group">
-                    <div className="flex flex-col sm:flex-row gap-5 sm:items-start justify-between">
-                        <div className="flex-1">
-                            <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-emerald-700 transition-colors">KMA Nomor 748 Tahun 2021</h3>
-                            <div className="inline-block bg-emerald-50 border border-emerald-100 px-3 py-1 rounded-md mb-4">
-                                <p className="text-[13px] font-bold text-emerald-700 uppercase tracking-widest">Jenis Produk yang Wajib Bersertifikat Halal</p>
-                            </div>
-                            <p className="text-sm text-gray-600 leading-relaxed font-medium">
-                                Keputusan ini menetapkan daftar jenis produk, baik barang maupun jasa, yang diwajibkan untuk memiliki sertifikat halal, guna memberikan pedoman yang jelas bagi pelaku usaha dan LPH.
-                            </p>
-                        </div>
-                        <div className="sm:text-right shrink-0 mt-2 sm:mt-0">
-                            <button className="inline-flex items-center justify-center px-5 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-semibold hover:bg-emerald-700 hover:shadow-md hover:-translate-y-0.5 transition-all w-full sm:w-auto focus:ring-4 focus:ring-emerald-500/20">
-                                <FileText className="w-4 h-4 mr-2" />
-                                Lihat Dokumen
-                            </button>
-                        </div>
-                    </div>
-                 </div>
-                 
-                 {/* Item 2 */}
-                 <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-8 shadow-sm hover:shadow-lg hover:border-emerald-300 transition-all duration-300 group">
-                    <div className="flex flex-col sm:flex-row gap-5 sm:items-start justify-between">
-                        <div className="flex-1">
-                            <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-emerald-700 transition-colors">KMA Nomor 1360 Tahun 2021</h3>
-                            <div className="inline-block bg-emerald-50 border border-emerald-100 px-3 py-1 rounded-md mb-4">
-                                <p className="text-[13px] font-bold text-emerald-700 uppercase tracking-widest">Bahan yang Dikecualikan</p>
-                            </div>
-                            <p className="text-sm text-gray-600 leading-relaxed font-medium">
-                                Keputusan ini mengatur bahan-bahan yang dikecualikan dari kewajiban bersertifikat halal, karena bahan tersebut sudah dipastikan kehalalannya secara organik atau alamiah, sehingga memudahkan pelaku UMKM dalam proses sertifikasi.
-                            </p>
-                        </div>
-                        <div className="sm:text-right shrink-0 mt-2 sm:mt-0">
-                            <button className="inline-flex items-center justify-center px-5 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-semibold hover:bg-emerald-700 hover:shadow-md hover:-translate-y-0.5 transition-all w-full sm:w-auto focus:ring-4 focus:ring-emerald-500/20">
-                                <FileText className="w-4 h-4 mr-2" />
-                                Lihat Dokumen
-                            </button>
-                        </div>
-                    </div>
-                 </div>
 
-              </div>
-            </div>
-            
-            <div className="p-4 sm:p-5 border-t border-gray-100 bg-white flex justify-end shrink-0">
-              <button 
-                onClick={() => setIsKeputusanMenagOpen(false)}
-                className="px-6 py-2.5 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 hover:text-gray-900 transition-colors font-bold cursor-pointer"
-              >
-                Tutup
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
-      {isKeputusanBpjphOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6 overflow-y-auto">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl flex flex-col max-h-full overflow-hidden border border-emerald-100 ring-1 ring-emerald-500/10">
-            <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-100 bg-gradient-to-r from-emerald-50 to-white shrink-0">
-              <div className="flex items-center space-x-4">
-                <div className="bg-emerald-100 p-2.5 rounded-xl shadow-sm border border-emerald-200">
-                    <FileSignature className="w-7 h-7 text-emerald-700" />
-                </div>
-                <div>
-                    <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight">Keputusan Kepala BPJPH</h2>
-                    <p className="text-sm text-emerald-600 font-semibold mt-0.5">Regulasi Terkait Jaminan Produk Halal</p>
-                </div>
-              </div>
-              <button 
-                onClick={() => setIsKeputusanBpjphOpen(false)} 
-                className="p-2 bg-white rounded-full text-gray-400 hover:text-gray-800 hover:bg-gray-100 transition-colors cursor-pointer border border-gray-200 shadow-sm"
-                title="Tutup"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            
-            <div className="p-0 overflow-y-auto w-full h-[600px] flex flex-col bg-gray-50/50">
-              <div className="p-4 sm:p-8 space-y-6">
-                 
-                 <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-8 shadow-sm hover:shadow-lg hover:border-emerald-300 transition-all duration-300 group">
-                    <div className="flex flex-col sm:flex-row gap-5 sm:items-start justify-between">
-                        <div className="flex-1">
-                            <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-emerald-700 transition-colors">Keputusan Kepala BPJPH Nomor 57 Tahun 2021</h3>
-                            <div className="inline-block bg-emerald-50 border border-emerald-100 px-3 py-1 rounded-md mb-4">
-                                <p className="text-[13px] font-bold text-emerald-700 uppercase tracking-widest">Kriteria Sistem Jaminan Produk Halal</p>
-                            </div>
-                            <p className="text-sm text-gray-600 leading-relaxed font-medium">
-                                Keputusan ini menetapkan kriteria Sistem Jaminan Produk Halal yang harus dipenuhi oleh pelaku usaha, meliputi komitmen dan tanggung jawab, bahan, proses produk halal, produk, serta pemantauan dan evaluasi.
-                            </p>
-                        </div>
-                        <div className="sm:text-right shrink-0 mt-2 sm:mt-0">
-                            <button className="inline-flex items-center justify-center px-5 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-semibold hover:bg-emerald-700 hover:shadow-md hover:-translate-y-0.5 transition-all w-full sm:w-auto focus:ring-4 focus:ring-emerald-500/20">
-                                <FileText className="w-4 h-4 mr-2" />
-                                Lihat Dokumen
-                            </button>
-                        </div>
-                    </div>
-                 </div>
-                 
-              </div>
-            </div>
-            
-            <div className="p-4 sm:p-5 border-t border-gray-100 bg-white flex justify-end shrink-0">
-              <button 
-                onClick={() => setIsKeputusanBpjphOpen(false)}
-                className="px-6 py-2.5 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 hover:text-gray-900 transition-colors font-bold cursor-pointer"
-              >
-                Tutup
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
-      {isPeraturanBpomOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6 overflow-y-auto">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl flex flex-col max-h-full overflow-hidden border border-emerald-100 ring-1 ring-emerald-500/10">
-            <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-100 bg-gradient-to-r from-emerald-50 to-white shrink-0">
-              <div className="flex items-center space-x-4">
-                <div className="bg-emerald-100 p-2.5 rounded-xl shadow-sm border border-emerald-200">
-                    <ShieldCheck className="w-7 h-7 text-emerald-700" />
-                </div>
-                <div>
-                    <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight">Peraturan BPOM</h2>
-                    <p className="text-sm text-emerald-600 font-semibold mt-0.5">Regulasi Terkait Jaminan Produk Halal</p>
-                </div>
-              </div>
-              <button 
-                onClick={() => setIsPeraturanBpomOpen(false)} 
-                className="p-2 bg-white rounded-full text-gray-400 hover:text-gray-800 hover:bg-gray-100 transition-colors cursor-pointer border border-gray-200 shadow-sm"
-                title="Tutup"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            
-            <div className="p-0 overflow-y-auto w-full h-[600px] flex flex-col bg-gray-50/50">
-              <div className="p-4 sm:p-8 space-y-6">
-                 
-                 <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-8 shadow-sm hover:shadow-lg hover:border-emerald-300 transition-all duration-300 group">
-                    <div className="flex flex-col sm:flex-row gap-5 sm:items-start justify-between">
-                        <div className="flex-1">
-                            <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-emerald-700 transition-colors">Peraturan BPOM No 31 Tahun 2018</h3>
-                            <div className="inline-block bg-emerald-50 border border-emerald-100 px-3 py-1 rounded-md mb-4">
-                                <p className="text-[13px] font-bold text-emerald-700 uppercase tracking-widest">Label Pangan Olahan</p>
-                            </div>
-                            <p className="text-sm text-gray-600 leading-relaxed font-medium">
-                                Peraturan ini yang berkaitan dengan pencantuman label halal pada pangan olahan yang telah mendapatkan sertifikat halal dari BPJPH dan persetujuan label dari BPOM.
-                            </p>
-                        </div>
-                        <div className="sm:text-right shrink-0 mt-2 sm:mt-0">
-                            <button className="inline-flex items-center justify-center px-5 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-semibold hover:bg-emerald-700 hover:shadow-md hover:-translate-y-0.5 transition-all w-full sm:w-auto focus:ring-4 focus:ring-emerald-500/20">
-                                <FileText className="w-4 h-4 mr-2" />
-                                Lihat Dokumen
-                            </button>
-                        </div>
-                    </div>
-                 </div>
-                 
-              </div>
-            </div>
-            
-            <div className="p-4 sm:p-5 border-t border-gray-100 bg-white flex justify-end shrink-0">
-              <button 
-                onClick={() => setIsPeraturanBpomOpen(false)}
-                className="px-6 py-2.5 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 hover:text-gray-900 transition-colors font-bold cursor-pointer"
-              >
-                Tutup
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
-      {isSniOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6 overflow-y-auto">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl flex flex-col max-h-full overflow-hidden border border-emerald-100 ring-1 ring-emerald-500/10">
-            <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-100 bg-gradient-to-r from-emerald-50 to-white shrink-0">
-              <div className="flex items-center space-x-4">
-                <div className="bg-emerald-100 p-2.5 rounded-xl shadow-sm border border-emerald-200">
-                    <Award className="w-7 h-7 text-emerald-700" />
-                </div>
-                <div>
-                    <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight">SNI (Standar Nasional Indonesia)</h2>
-                    <p className="text-sm text-emerald-600 font-semibold mt-0.5">Regulasi Terkait Jaminan Produk Halal</p>
-                </div>
-              </div>
-              <button 
-                onClick={() => setIsSniOpen(false)} 
-                className="p-2 bg-white rounded-full text-gray-400 hover:text-gray-800 hover:bg-gray-100 transition-colors cursor-pointer border border-gray-200 shadow-sm"
-                title="Tutup"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            
-            <div className="p-0 overflow-y-auto w-full h-[600px] flex flex-col bg-gray-50/50">
-              <div className="p-4 sm:p-8 space-y-6">
-                 
-                 <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-8 shadow-sm hover:shadow-lg hover:border-emerald-300 transition-all duration-300 group">
-                    <div className="flex flex-col sm:flex-row gap-5 sm:items-start justify-between">
-                        <div className="flex-1">
-                            <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-emerald-700 transition-colors">SNI ISO/IEC 17065:2012</h3>
-                            <div className="inline-block bg-emerald-50 border border-emerald-100 px-3 py-1 rounded-md mb-4">
-                                <p className="text-[13px] font-bold text-emerald-700 uppercase tracking-widest">Penilaian Kesesuaian</p>
-                            </div>
-                            <p className="text-sm text-gray-600 leading-relaxed font-medium">
-                                Persyaratan untuk lembaga sertifikasi produk, proses, dan jasa. Standar ini menjadi acuan utama bagi Lembaga Pemeriksa Halal (LPH) dalam menjalankan operasional dan menjamin ketidakberpihakan.
-                            </p>
-                        </div>
-                        <div className="sm:text-right shrink-0 mt-2 sm:mt-0">
-                            <button className="inline-flex items-center justify-center px-5 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-semibold hover:bg-emerald-700 hover:shadow-md hover:-translate-y-0.5 transition-all w-full sm:w-auto focus:ring-4 focus:ring-emerald-500/20">
-                                <FileText className="w-4 h-4 mr-2" />
-                                Lihat Dokumen
-                            </button>
-                        </div>
-                    </div>
-                 </div>
 
-                 <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-8 shadow-sm hover:shadow-lg hover:border-emerald-300 transition-all duration-300 group">
-                    <div className="flex flex-col sm:flex-row gap-5 sm:items-start justify-between">
-                        <div className="flex-1">
-                            <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-emerald-700 transition-colors">SNI 99001:2016</h3>
-                            <div className="inline-block bg-emerald-50 border border-emerald-100 px-3 py-1 rounded-md mb-4">
-                                <p className="text-[13px] font-bold text-emerald-700 uppercase tracking-widest">Sistem Manajemen Halal</p>
-                            </div>
-                            <p className="text-sm text-gray-600 leading-relaxed font-medium">
-                                Standar Sistem Manajemen Halal yang mengintegrasikan prinsip-prinsip syariat Islam dengan standar manajemen mutu yang diakui secara internasional.
-                            </p>
-                        </div>
-                        <div className="sm:text-right shrink-0 mt-2 sm:mt-0">
-                            <button className="inline-flex items-center justify-center px-5 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-semibold hover:bg-emerald-700 hover:shadow-md hover:-translate-y-0.5 transition-all w-full sm:w-auto focus:ring-4 focus:ring-emerald-500/20">
-                                <FileText className="w-4 h-4 mr-2" />
-                                Lihat Dokumen
-                            </button>
-                        </div>
-                    </div>
-                 </div>
-                 
-              </div>
-            </div>
-            
-            <div className="p-4 sm:p-5 border-t border-gray-100 bg-white flex justify-end shrink-0">
-              <button 
-                onClick={() => setIsSniOpen(false)}
-                className="px-6 py-2.5 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 hover:text-gray-900 transition-colors font-bold cursor-pointer"
-              >
-                Tutup
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+
+
 
       {isKebijakanPdfOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6 overflow-y-auto">
@@ -4550,6 +4093,8 @@ SHA-256 Verified Secure Archive File`;
             </div>
           </div>
         </div>
+      )}
+        </>
       )}
     </div>
   );
