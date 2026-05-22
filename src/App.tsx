@@ -1318,7 +1318,10 @@ SHA-256 Verified Secure Archive File`;
                 <button className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center py-4">
                   <UserCheck className="w-4 h-4 mr-1" /> Profil <ChevronDown className="w-4 h-4 ml-1" />
                 </button>
-                <div className="absolute top-[80%] left-0 w-72 bg-white border border-gray-100 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 overflow-hidden">
+                <div className="absolute top-[80%] left-0 w-80 bg-white border border-gray-100 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 overflow-hidden">
+                  <a href="#profil" onClick={(e) => handleNavClick(e, '#profil')} className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                    <UserCheck className="w-4 h-4 mr-2" /> Profil LPH Al-Ghazali
+                  </a>
                   <button onClick={() => setIsSejarahPdfOpen(true)} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
                     <History className="w-4 h-4 mr-2" /> Sejarah dan Latar Belakang
                   </button>
@@ -1450,6 +1453,7 @@ SHA-256 Verified Secure Archive File`;
             <div className="px-3 py-2">
               <div className="text-sm font-bold text-emerald-600 mb-1 flex items-center"><UserCheck className="w-4 h-4 mr-2" /> Profil</div>
               <div className="ml-6 space-y-1 border-l-2 border-emerald-100 pl-3">
+                <a href="#profil" onClick={(e) => handleNavClick(e, '#profil')} className="block py-1 text-sm text-emerald-700 font-bold hover:text-emerald-600">Profil LPH Al-Ghazali</a>
                 <button onClick={() => { setIsSejarahPdfOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600">Sejarah dan Latar Belakang</button>
                 <button onClick={() => { setIsVisiMisiPdfOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600">Visi Misi</button>
                 <button onClick={() => { setIsKebijakanPdfOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600">Kebijakan Mutu & Sasaran Mutu</button>
