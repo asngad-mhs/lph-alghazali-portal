@@ -1108,6 +1108,21 @@ Salinan Elektronis Resmi disahkan oleh Pimpinan LPH Al-Ghazali.
     tiketPesawat: 0
   });
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, hash: string) => {
+    e.preventDefault();
+    setLandingSubView('home');
+    if (isMobileMenuOpen) {
+      setIsMobileMenuOpen(false);
+    }
+    setTimeout(() => {
+      const element = document.getElementById(hash.replace('#', ''));
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        window.location.hash = hash;
+      }
+    }, 120);
+  };
   const [appealForm, setAppealForm] = useState({
     noRegistrasi: '',
     namaUsaha: '',
@@ -1296,7 +1311,7 @@ SHA-256 Verified Secure Archive File`;
           <div className="flex justify-between h-14 items-center">
             {/* Desktop Navigation */}
             <div className="hidden xl:flex space-x-6 items-center text-sm font-medium">
-              <a href="#beranda" onClick={() => setLandingSubView('home')} className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center shrink-0">
+              <a href="#beranda" onClick={(e) => handleNavClick(e, '#beranda')} className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center shrink-0">
                 <Home className="w-4 h-4 mr-1" /> Beranda
               </a>
               <div className="relative group shrink-0">
@@ -1332,10 +1347,10 @@ SHA-256 Verified Secure Archive File`;
                   <Briefcase className="w-4 h-4 mr-1" /> Layanan <ChevronDown className="w-4 h-4 ml-1" />
                 </button>
                 <div className="absolute top-[80%] left-0 w-80 bg-white border border-gray-100 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 overflow-hidden">
-                  <a href="#pendaftaran" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                  <a href="#pendaftaran" onClick={(e) => handleNavClick(e, '#pendaftaran')} className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
                     <FileSignature className="w-4 h-4 mr-2" /> Pendaftaran Sertifikasi Halal
                   </a>
-                  <a href="#ruang-lingkup" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                  <a href="#ruang-lingkup" onClick={(e) => handleNavClick(e, '#ruang-lingkup')} className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
                     <Search className="w-4 h-4 mr-2" /> Ruang Lingkup dan Layanan Pemeriksaan Halal
                   </a>
                   <button onClick={() => setIsPencarianPdfOpen(true)} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
@@ -1351,22 +1366,22 @@ SHA-256 Verified Secure Archive File`;
                   <FileSignature className="w-4 h-4 mr-1" /> Proses <ChevronDown className="w-4 h-4 ml-1" />
                 </button>
                 <div className="absolute top-[80%] left-0 w-52 bg-white border border-gray-100 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 overflow-hidden">
-                  <a href="#alur-sertifikasi" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                  <a href="#alur-sertifikasi" onClick={(e) => handleNavClick(e, '#alur-sertifikasi')} className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
                     <Route className="w-4 h-4 mr-2" /> Alur Sertifikasi
                   </a>
-                  <a href="#tanggung-gugat" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                  <a href="#tanggung-gugat" onClick={(e) => handleNavClick(e, '#tanggung-gugat')} className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
                     <Scale className="w-4 h-4 mr-2" /> Prosedur Tanggung Gugat
                   </a>
                   <div className="relative group/nested">
-                    <a href="#tarif-layanan" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center justify-between">
+                    <a href="#tarif-layanan" onClick={(e) => handleNavClick(e, '#tarif-layanan')} className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center justify-between">
                       <div className="flex items-center"><Coins className="w-4 h-4 mr-2" /> Tarif Layanan</div>
                       <ChevronRight className="w-4 h-4 text-gray-400" />
                     </a>
                     <div className="absolute top-0 left-full -ml-2 w-56 bg-white border border-gray-100 rounded-lg shadow-lg opacity-0 invisible group-hover/nested:opacity-100 group-hover/nested:visible group-hover/nested:ml-0 transition-all duration-200 overflow-hidden">
-                      <a href="#form-perhitungan-biaya" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                      <a href="#form-perhitungan-biaya" onClick={(e) => handleNavClick(e, '#form-perhitungan-biaya')} className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
                         <Calculator className="w-4 h-4 mr-2" /> Form Perhitungan Biaya
                       </a>
-                      <a href="#detail-hasil-perhitungan" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center">
+                      <a href="#detail-hasil-perhitungan" onClick={(e) => handleNavClick(e, '#detail-hasil-perhitungan')} className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center">
                         <Receipt className="w-4 h-4 mr-2" /> Detail Hasil Perhitungan
                       </a>
                     </div>
@@ -1379,7 +1394,7 @@ SHA-256 Verified Secure Archive File`;
                   <Newspaper className="w-4 h-4 mr-1" /> Berita <ChevronDown className="w-4 h-4 ml-1" />
                 </button>
                 <div className="absolute top-[80%] left-0 w-48 bg-white border border-gray-100 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 overflow-hidden">
-                  <a href="#berita" className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                  <a href="#berita" onClick={(e) => handleNavClick(e, '#berita')} className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
                     <Newspaper className="w-4 h-4 mr-2" /> Berita Utama
                   </a>
                   <button onClick={() => setIsKegiatanPdfOpen(true)} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
@@ -1403,10 +1418,10 @@ SHA-256 Verified Secure Archive File`;
               >
                 <Scale className="w-4 h-4 mr-1" /> Regulasi
               </button>
-              <a href="#faq" className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center shrink-0">
+              <a href="#faq" onClick={(e) => handleNavClick(e, '#faq')} className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center shrink-0">
                 <Search className="w-4 h-4 mr-1" /> FAQ
               </a>
-              <a href="#kontak" className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center shrink-0">
+              <a href="#kontak" onClick={(e) => handleNavClick(e, '#kontak')} className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center shrink-0">
                 <Phone className="w-4 h-4 mr-1" /> Kontak
               </a>
             </div>
@@ -1428,7 +1443,7 @@ SHA-256 Verified Secure Archive File`;
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
           <div className="xl:hidden bg-white px-4 pt-2 pb-4 space-y-1 shadow-lg max-h-[80vh] overflow-y-auto">
-            <a href="#beranda" onClick={() => { setLandingSubView('home'); setIsMobileMenuOpen(false); }} className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-md">
+            <a href="#beranda" onClick={(e) => handleNavClick(e, '#beranda')} className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-md">
               <div className="flex items-center"><Home className="w-4 h-4 mr-2" /> Beranda</div>
             </a>
             
@@ -1448,8 +1463,8 @@ SHA-256 Verified Secure Archive File`;
             <div className="px-3 py-2">
               <div className="text-sm font-bold text-emerald-600 mb-1 flex items-center"><Briefcase className="w-4 h-4 mr-2" /> Layanan</div>
               <div className="ml-6 space-y-1 border-l-2 border-emerald-100 pl-3">
-                <a href="#pendaftaran" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Pendaftaran Sertifikasi Halal</a>
-                <a href="#ruang-lingkup" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Ruang Lingkup dan Layanan Pemeriksaan Halal</a>
+                <a href="#pendaftaran" onClick={(e) => handleNavClick(e, '#pendaftaran')} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Pendaftaran Sertifikasi Halal</a>
+                <a href="#ruang-lingkup" onClick={(e) => handleNavClick(e, '#ruang-lingkup')} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Ruang Lingkup dan Layanan Pemeriksaan Halal</a>
                 <button onClick={() => { setIsPencarianPdfOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600">Pencarian Sertifikasi Halal</button>
                 <button onClick={() => { setIsDaftarAuditPdfOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600">Daftar Audit</button>
               </div>
@@ -1458,26 +1473,22 @@ SHA-256 Verified Secure Archive File`;
             <div className="px-3 py-2">
               <div className="text-sm font-bold text-emerald-600 mb-1 flex items-center"><FileSignature className="w-4 h-4 mr-2" /> Proses</div>
               <div className="ml-6 space-y-1 border-l-2 border-emerald-100 pl-3">
-                <a href="#alur-sertifikasi" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Alur Sertifikasi</a>
-                <a href="#tanggung-gugat" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Prosedur Tanggung Gugat</a>
-                <a href="#tarif-layanan" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Tarif Layanan</a>
-                <a href="#form-perhitungan-biaya" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Form Perhitungan Biaya</a>
-                <a href="#detail-hasil-perhitungan" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Detail Hasil Perhitungan</a>
+                <a href="#alur-sertifikasi" onClick={(e) => handleNavClick(e, '#alur-sertifikasi')} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Alur Sertifikasi</a>
+                <a href="#tanggung-gugat" onClick={(e) => handleNavClick(e, '#tanggung-gugat')} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Prosedur Tanggung Gugat</a>
+                <a href="#tarif-layanan" onClick={(e) => handleNavClick(e, '#tarif-layanan')} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Tarif Layanan</a>
+                <a href="#form-perhitungan-biaya" onClick={(e) => handleNavClick(e, '#form-perhitungan-biaya')} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Form Perhitungan Biaya</a>
+                <a href="#detail-hasil-perhitungan" onClick={(e) => handleNavClick(e, '#detail-hasil-perhitungan')} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Detail Hasil Perhitungan</a>
               </div>
             </div>
-
-
 
             <div className="px-3 py-2">
               <div className="text-sm font-bold text-emerald-600 mb-1 flex items-center"><Newspaper className="w-4 h-4 mr-2" /> Berita</div>
               <div className="ml-6 space-y-1 border-l-2 border-emerald-100 pl-3">
-                <a href="#berita" onClick={() => setIsMobileMenuOpen(false)} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Berita Utama</a>
+                <a href="#berita" onClick={(e) => handleNavClick(e, '#berita')} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Berita Utama</a>
                 <button onClick={() => { setIsKegiatanPdfOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600">Kegiatan</button>
                 <button onClick={() => { setIsAgendaPdfOpen(true); setIsMobileMenuOpen(false); }} className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600">Agenda</button>
               </div>
             </div>
-
-
 
             <button 
               onClick={() => { 
@@ -1494,11 +1505,11 @@ SHA-256 Verified Secure Archive File`;
               <Scale className="w-4 h-4 mr-2 text-emerald-600" /> Regulasi
             </button>
 
-            <a href="#faq" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-md">
+            <a href="#faq" onClick={(e) => handleNavClick(e, '#faq')} className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-md">
               <div className="flex items-center"><Search className="w-4 h-4 mr-2" /> FAQ</div>
             </a>
             
-            <a href="#kontak" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-md">
+            <a href="#kontak" onClick={(e) => handleNavClick(e, '#kontak')} className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-md">
               <div className="flex items-center"><Phone className="w-4 h-4 mr-2" /> Kontak</div>
             </a>
             
