@@ -927,6 +927,7 @@ function LandingView({ navigateTo, beritaList, user, userRole, db, currentAppId 
   const [regulasiList, setRegulasiList] = useState<any[]>(DEPRECATED_REGULASI_DATA);
   const [settings, setSettings] = useState<any>(null);
   const [activeHeroNewsSlide, setActiveHeroNewsSlide] = useState(0);
+  const [selectedBeritaDetail, setSelectedBeritaDetail] = useState<any>(null);
 
   // Auto slide for hero news images
   useEffect(() => {
@@ -1643,28 +1644,17 @@ SHA-256 Verified Secure Archive File`;
         </div>
       ) : (
         <>
-          {/* Hero with Full Background Image Slider */}
+          {/* Hero with Latest News Background Image Pin */}
           <section id="beranda" className="pt-48 sm:pt-56 pb-24 text-white flex-1 flex items-center relative overflow-hidden min-h-[580px] sm:min-h-[640px]">
             
-            {/* Background Slider */}
-            <div className="absolute inset-0 z-0 select-none pointer-events-none">
-              {currentHeroNews.map((slide, sIdx) => (
-                <div 
-                  key={slide.id} 
-                  className={`absolute inset-0 transition-opacity duration-1000 ease-in-out transform ${
-                    sIdx === activeHeroNewsSlide 
-                      ? 'opacity-100 scale-100 z-10' 
-                      : 'opacity-0 scale-105 z-0'
-                  }`}
-                >
-                  <img 
-                    src={slide.imageSrc} 
-                    alt={slide.title} 
-                    className="w-full h-full object-cover object-center"
-                    referrerPolicy="no-referrer"
-                  />
-                </div>
-              ))}
+            {/* Background Image of the Latest News */}
+            <div className="absolute inset-0 z-0 select-none pointer-events-none overflow-hidden">
+              <img 
+                src={currentHeroNews[0]?.imageSrc} 
+                alt="Latest News Background" 
+                className="w-full h-full object-cover object-center animate-slow-pan"
+                referrerPolicy="no-referrer"
+              />
               {/* Dynamic Overlay Mask for flawless typography readability */}
               <div className="absolute inset-0 bg-gradient-to-r from-slate-950/95 via-emerald-950/80 to-teal-900/60 mix-blend-multiply z-10"></div>
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-black/35 z-10"></div>
@@ -1672,117 +1662,31 @@ SHA-256 Verified Secure Archive File`;
               <div className="absolute inset-0 opacity-5 bg-repeat z-10" style={{ backgroundImage: 'radial-gradient(#10b981 1.2px, transparent 1.2px)', backgroundSize: '24px 24px' }}></div>
             </div>
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 text-center lg:text-left w-full">
-              <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-8">
-                
-                {/* Text Content */}
-                <div className="w-full lg:w-7/12 lg:pr-8">
-                  <div className="inline-flex items-center px-4 py-2 rounded-full bg-emerald-800/60 border border-emerald-400/30 text-emerald-100 text-xs sm:text-sm font-semibold mb-6 shadow-md backdrop-blur-sm">
-                    <ShieldCheck className="w-4 h-4 mr-2 text-emerald-400 animate-pulse" /> Terakreditasi BPJPH & MUI Terintegrasi Cloud
-                  </div>
-                  <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6 leading-tight drop-shadow-md">
-                    Sistem Cerdas <br/> <span className="text-emerald-300">Sertifikasi Halal.</span>
-                  </h1>
-                  <p className="text-lg text-emerald-50/90 mb-8 max-w-2xl leading-relaxed drop-shadow-sm font-light">
-                    Ajukan sertifikasi, unggah dokumen, dan pantau status secara real-time dari mana saja dengan infrastruktur Cloud LPH Al-Ghazali yang berkecepatan tinggi.
-                  </p>
-                  <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                    <button 
-                      onClick={() => navigateTo('login')} 
-                      className="bg-emerald-500 hover:bg-emerald-400 text-white border border-emerald-400/20 px-8 py-4 rounded-xl font-bold text-lg hover:shadow-emerald-500/20 shadow-lg hover:-translate-y-0.5 transition-all flex items-center justify-center cursor-pointer"
-                    >
-                      Mulai Pengajuan <ArrowRight className="ml-2 w-5 h-5" />
-                    </button>
-                    <a 
-                      href="#alur"
-                      onClick={(e) => handleNavClick(e, '#alur')}
-                      className="bg-white/10 hover:bg-white/20 text-white border border-white/25 px-8 py-4 rounded-xl font-bold text-lg backdrop-blur-md shadow-md hover:-translate-y-0.5 transition-all flex items-center justify-center cursor-pointer"
-                    >
-                      Pelajari Alur Kerja
-                    </a>
-                  </div>
-                </div>
-                {/* News Highlights Overlay Card */}
-                <div className="w-full lg:w-5/12">
-                  <div className="relative bg-teal-950/45 backdrop-blur-md border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl text-left group/slide">
-                    
-                    {/* Badge */}
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="bg-emerald-500/90 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider border border-emerald-400/20 shadow-sm flex items-center gap-1.5">
-                        <Newspaper className="w-3 h-3 text-emerald-250 animate-bounce" /> Berita Terkini
-                      </span>
-                      {currentHeroNews[activeHeroNewsSlide] && (
-                        <span className="bg-white/10 text-white text-[10px] font-medium px-2.5 py-1 rounded-full border border-white/20">
-                          {currentHeroNews[activeHeroNewsSlide].category}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Meta & Info */}
-                    <div className="space-y-3 min-h-[120px] sm:min-h-[140px] flex flex-col justify-center">
-                      <span className="text-[10px] text-emerald-300 font-mono tracking-wider block">
-                        <Clock className="w-3.5 h-3.5 inline mr-1.5 align-text-bottom text-emerald-400" />
-                        {new Date(currentHeroNews[activeHeroNewsSlide]?.createdAt).toLocaleDateString('id-ID')}
-                      </span>
-                      <h3 className="text-lg sm:text-xl font-bold text-white leading-snug hover:text-emerald-200 transition-colors line-clamp-2" title={currentHeroNews[activeHeroNewsSlide]?.title}>
-                        {currentHeroNews[activeHeroNewsSlide]?.title}
-                      </h3>
-                      <p className="text-gray-300 text-xs sm:text-sm line-clamp-2 leading-relaxed font-light">
-                        {currentHeroNews[activeHeroNewsSlide]?.content}
-                      </p>
-                    </div>
-
-                    {/* Pagination indicators and Controls */}
-                    <div className="flex items-center justify-between mt-6 pt-4 border-t border-white/10">
-                      
-                      {/* Dots */}
-                      <div className="flex space-x-2">
-                        {[0, 1, 2].map((idx) => (
-                          <button
-                            key={idx}
-                            onClick={() => setActiveHeroNewsSlide(idx)}
-                            className={`h-1.5 rounded-full transition-all cursor-pointer ${
-                              idx === activeHeroNewsSlide 
-                                ? 'w-6 bg-emerald-400' 
-                                : 'w-2 bg-white/40 hover:bg-white/60'
-                            }`}
-                            aria-label={`Go to slide ${idx + 1}`}
-                          />
-                        ))}
-                      </div>
-
-                      {/* Manual Arrows & Read Link */}
-                      <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-1.5">
-                          <button 
-                            onClick={() => setActiveHeroNewsSlide((prev) => (prev === 0 ? 2 : prev - 1))}
-                            className="w-7 h-7 rounded-full bg-white/10 hover:bg-emerald-500/80 text-white flex items-center justify-center transition-all cursor-pointer border border-white/10 text-sm font-bold"
-                            aria-label="Previous Slide"
-                          >
-                            &lsaquo;
-                          </button>
-                          <button 
-                            onClick={() => setActiveHeroNewsSlide((prev) => (prev === 2 ? 0 : prev + 1))}
-                            className="w-7 h-7 rounded-full bg-white/10 hover:bg-emerald-500/80 text-white flex items-center justify-center transition-all cursor-pointer border border-white/10 text-sm font-bold"
-                            aria-label="Next Slide"
-                          >
-                            &rsaquo;
-                          </button>
-                        </div>
-
-                        <a 
-                          href="#berita"
-                          onClick={(e) => handleNavClick(e, '#berita')}
-                          className="inline-flex items-center gap-1 text-xs text-emerald-300 hover:text-white font-bold tracking-wide transition-colors group/link cursor-pointer"
-                        >
-                          Baca 
-                          <ArrowRight className="w-3 h-3 group-hover/link:translate-x-0.5 transition-transform" />
-                        </a>
-                      </div>
-
-                    </div>
-                  </div>
-                </div>
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 text-center w-full">
+              {/* Text Content */}
+              <div className="inline-flex items-center px-4 py-2 rounded-full bg-emerald-800/60 border border-emerald-400/30 text-emerald-100 text-xs sm:text-sm font-semibold mb-6 shadow-md backdrop-blur-sm mx-auto">
+                <ShieldCheck className="w-4 h-4 mr-2 text-emerald-400 animate-pulse" /> Terakreditasi BPJPH & MUI Terintegrasi Cloud
+              </div>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6 leading-tight drop-shadow-md">
+                Sistem Cerdas <br/> <span className="text-emerald-300">Sertifikasi Halal.</span>
+              </h1>
+              <p className="text-lg md:text-xl text-emerald-50/90 mb-8 max-w-2xl mx-auto leading-relaxed drop-shadow-sm font-light">
+                Ajukan sertifikasi, unggah dokumen, dan pantau status secara real-time dari mana saja dengan infrastruktur Cloud LPH Al-Ghazali yang berkecepatan tinggi.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <button 
+                  onClick={() => navigateTo('login')} 
+                  className="bg-emerald-500 hover:bg-emerald-400 text-white border border-emerald-400/20 px-8 py-4 rounded-xl font-bold text-lg hover:shadow-emerald-500/20 shadow-lg hover:-translate-y-0.5 transition-all flex items-center justify-center cursor-pointer"
+                >
+                  Mulai Pengajuan <ArrowRight className="ml-2 w-5 h-5" />
+                </button>
+                <a 
+                  href="#alur"
+                  onClick={(e) => handleNavClick(e, '#alur')}
+                  className="bg-white/10 hover:bg-white/20 text-white border border-white/25 px-8 py-4 rounded-xl font-bold text-lg backdrop-blur-md shadow-md hover:-translate-y-0.5 transition-all flex items-center justify-center cursor-pointer"
+                >
+                  Pelajari Alur Kerja
+                </a>
               </div>
             </div>
           </section>
@@ -2454,7 +2358,22 @@ SHA-256 Verified Secure Archive File`;
                                      </a>
                                 )}
                                 
-                                <a href="#" className="mt-auto inline-block text-sm font-semibold text-emerald-600 hover:text-emerald-700">Baca selengkapnya &rarr;</a>
+                                <button 
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        // Ensure imageSrc is mapped for fallback styling if missing inside db list items
+                                        const bObj = {
+                                            ...berita,
+                                            imageSrc: (berita.fileType && berita.fileType.includes('image') && berita.fileData) 
+                                                ? berita.fileData 
+                                                : "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=1200"
+                                        };
+                                        setSelectedBeritaDetail(bObj);
+                                    }}
+                                    className="mt-auto text-left inline-block text-sm font-semibold text-emerald-600 hover:text-emerald-700 cursor-pointer"
+                                >
+                                    Baca selengkapnya &rarr;
+                                </button>
                             </div>
                         </div>
                     ))
@@ -2900,6 +2819,106 @@ SHA-256 Verified Secure Archive File`;
             </div>
         </div>
       </footer>
+
+      {selectedBeritaDetail && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6 overflow-y-auto">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl flex flex-col max-h-[90vh] overflow-hidden">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-5 border-b border-gray-100 bg-gray-50/50 shrink-0">
+              <div className="flex items-center space-x-2">
+                <Newspaper className="w-5 h-5 text-emerald-600" />
+                <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full">
+                  Detail Berita • {selectedBeritaDetail.category || "Berita"}
+                </span>
+              </div>
+              <button 
+                onClick={() => setSelectedBeritaDetail(null)}
+                className="text-gray-400 hover:text-gray-650 p-1.5 hover:bg-gray-150 rounded-lg transition-colors cursor-pointer"
+                aria-label="Tutup"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            {/* Modal Content */}
+            <div className="flex-grow overflow-y-auto p-6 sm:p-8 space-y-6">
+              {/* Media banner */}
+              {selectedBeritaDetail.imageSrc ? (
+                <div className="w-full h-64 sm:h-80 rounded-xl overflow-hidden shadow-inner relative select-none">
+                  <img 
+                    src={selectedBeritaDetail.imageSrc} 
+                    alt={selectedBeritaDetail.title} 
+                    className="w-full h-full object-cover" 
+                    referrerPolicy="no-referrer"
+                  />
+                </div>
+              ) : selectedBeritaDetail.fileData ? (
+                <div className="w-full h-64 sm:h-80 rounded-xl overflow-hidden shadow-inner relative bg-black">
+                  {selectedBeritaDetail.fileType?.includes('video') ? (
+                    <video src={selectedBeritaDetail.fileData} className="w-full h-full object-contain" controls />
+                  ) : selectedBeritaDetail.fileType?.includes('image') ? (
+                    <img src={selectedBeritaDetail.fileData} alt={selectedBeritaDetail.title} className="w-full h-full object-cover" />
+                  ) : null}
+                </div>
+              ) : null}
+              
+              <div className="space-y-3 font-sans">
+                <div className="text-xs text-gray-500 flex items-center">
+                  <Clock className="w-4 h-4 mr-1.5 text-emerald-600" /> 
+                  Diterbitkan pada {new Date(selectedBeritaDetail.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+                </div>
+                <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-gray-950 leading-snug">
+                  {selectedBeritaDetail.title}
+                </h2>
+              </div>
+
+              {/* Text content paragraphs */}
+              <div className="text-gray-700 whitespace-pre-wrap leading-relaxed text-sm sm:text-base border-t border-gray-100 pt-6 font-light">
+                {selectedBeritaDetail.content}
+              </div>
+
+              {/* Attachments / Bio links */}
+              {(selectedBeritaDetail.socialMediaLink || (selectedBeritaDetail.fileType && selectedBeritaDetail.fileType.includes('pdf'))) && (
+                <div className="pt-4 border-t border-gray-100 flex flex-wrap gap-3">
+                  {selectedBeritaDetail.fileType?.includes('pdf') && selectedBeritaDetail.fileData && (
+                    <a 
+                      href={selectedBeritaDetail.fileData}
+                      download={`Lampiran_${selectedBeritaDetail.title?.substring(0,20)}.pdf`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 hover:bg-red-100 text-red-650 text-xs font-bold rounded-lg border border-red-200 transition-colors"
+                    >
+                      <FileText className="w-4 h-4" /> Download Lampiran PDF
+                    </a>
+                  )}
+                  {selectedBeritaDetail.socialMediaLink && (
+                    <a 
+                      href={selectedBeritaDetail.socialMediaLink}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-650 text-xs font-bold rounded-lg border border-blue-200 transition-colors"
+                    >
+                      <Link className="w-4 h-4" /> Lihat Tautan Terkait
+                    </a>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-4 border-t border-gray-100 bg-gray-50 flex justify-end shrink-0">
+              <button 
+                onClick={() => setSelectedBeritaDetail(null)}
+                className="px-5 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-xl font-bold text-sm transition-colors cursor-pointer"
+              >
+                Tutup
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {isVisiMisiPdfOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6 overflow-y-auto">
