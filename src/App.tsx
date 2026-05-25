@@ -609,10 +609,9 @@ export default function LPHApp() {
     return () => unsubscribeAuth();
   }, []);
 
+  // 1. Fetch Berita (publicly readable, no user required)
   useEffect(() => {
-    if (!user) return;
-
-    // Load mock data for UI visualization
+    // Set some default initial mock news as fallback/design placeholder
     setBeritaList([
       {
         id: '1',
@@ -622,7 +621,34 @@ export default function LPHApp() {
         createdAt: Date.now() - 86400000,
       }
     ]);
-    
+
+    if (firebaseConfig.projectId !== 'mock-project') {
+      const beritaRef = collection(db, 'artifacts', currentAppId, 'public', 'data', 'berita');
+      const unsubscribeBerita = onSnapshot(beritaRef, (snapshot) => {
+        const bData = snapshot.docs.map(doc => {
+          const data = doc.data();
+          return { id: doc.id, ...data };
+        }) as any[];
+        bData.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+        setBeritaList(bData);
+      }, (error) => {
+        handleFirestoreError(error, OperationType.GET, `artifacts/${currentAppId}/public/data/berita`);
+      });
+
+      return () => {
+        unsubscribeBerita();
+      };
+    }
+  }, []);
+
+  // 2. Fetch Pengajuan (requires logged-in user)
+  useEffect(() => {
+    if (!user) {
+      setPengajuanList([]);
+      return;
+    }
+
+    // Load mock data for UI visualization
     setPengajuanList([
       {
         id: '1',
@@ -637,7 +663,6 @@ export default function LPHApp() {
     ]);
 
     if (firebaseConfig.projectId !== 'mock-project') {
-      // Fetch Pengajuan
       const pengajuanRef = collection(db, 'artifacts', currentAppId, 'public', 'data', 'pengajuan_halal');
       let q = pengajuanRef as any;
       if (userRole === 'pu') {
@@ -652,19 +677,8 @@ export default function LPHApp() {
         handleFirestoreError(error, OperationType.GET, `artifacts/${currentAppId}/public/data/pengajuan_halal`);
       });
 
-      // Fetch Berita & Artikel
-      const beritaRef = collection(db, 'artifacts', currentAppId, 'public', 'data', 'berita');
-      const unsubscribeBerita = onSnapshot(beritaRef, (snapshot) => {
-        const bData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as any[];
-        bData.sort((a, b) => b.createdAt - a.createdAt);
-        setBeritaList(bData);
-      }, (error) => {
-        handleFirestoreError(error, OperationType.GET, `artifacts/${currentAppId}/public/data/berita`);
-      });
-
       return () => {
-          unsubscribeData();
-          unsubscribeBerita();
+        unsubscribeData();
       };
     }
   }, [user, userRole]);
@@ -731,25 +745,53 @@ export default function LPHApp() {
   const handleAddBerita = async (formData: any) => {
     if (!user) return;
     try {
-      const newBerita = { ...formData, createdAt: Date.now(), id: Math.random().toString(36).substr(2, 9) };
-      setBeritaList([newBerita, ...beritaList]);
-      const beritaRef = collection(db, 'artifacts', currentAppId, 'public', 'data', 'berita');
-      await addDoc(beritaRef, { ...formData, createdAt: Date.now() });
+      if (firebaseConfig.projectId !== 'mock-project') {
+        const beritaRef = collection(db, 'artifacts', currentAppId, 'public', 'data', 'berita');
+        const newDocRef = doc(beritaRef);
+        const newBerita = { 
+          ...formData, 
+          id: newDocRef.id, 
+          createdAt: Date.now(), 
+          author: user.displayName || user.email || 'Admin/Staff',
+          authorRole: userRole 
+        };
+        await setDoc(newDocRef, newBerita);
+      } else {
+        const newBerita = { 
+          ...formData, 
+          createdAt: Date.now(), 
+          id: Math.random().toString(36).substr(2, 9),
+          author: user.displayName || user.email || 'Admin/Staff',
+          authorRole: userRole
+        };
+        setBeritaList([newBerita, ...beritaList]);
+      }
     } catch (error) {
-      console.error("Error adding berita: ", error);
-      alert("Gagal menyimpan berita ke cloud.");
+      if (firebaseConfig.projectId !== 'mock-project') {
+        handleFirestoreError(error, OperationType.CREATE, `artifacts/${currentAppId}/public/data/berita`);
+      } else {
+        console.error("Error adding berita: ", error);
+        alert("Gagal menyimpan berita.");
+      }
     }
   };
 
   const handleUpdateBerita = async (id: string, formData: any) => {
     if (!user) return;
     try {
-      setBeritaList(beritaList.map(b => b.id === id ? { ...b, ...formData, updatedAt: Date.now() } : b));
-      const docRef = doc(db, 'artifacts', currentAppId, 'public', 'data', 'berita', id);
-      await updateDoc(docRef, { ...formData, updatedAt: Date.now() });
+      if (firebaseConfig.projectId !== 'mock-project') {
+        const docRef = doc(db, 'artifacts', currentAppId, 'public', 'data', 'berita', id);
+        await updateDoc(docRef, { ...formData, updatedAt: Date.now() });
+      } else {
+        setBeritaList(beritaList.map(b => b.id === id ? { ...b, ...formData, updatedAt: Date.now() } : b));
+      }
     } catch (error) {
-      console.error("Error updating berita: ", error);
-      alert("Gagal memperbarui berita.");
+      if (firebaseConfig.projectId !== 'mock-project') {
+        handleFirestoreError(error, OperationType.UPDATE, `artifacts/${currentAppId}/public/data/berita/${id}`);
+      } else {
+        console.error("Error updating berita: ", error);
+        alert("Gagal memperbarui berita.");
+      }
     }
   };
 
@@ -757,12 +799,19 @@ export default function LPHApp() {
     if (!user) return;
     if (window.confirm("Apakah Anda yakin ingin menghapus berita ini?")) {
         try {
-          setBeritaList(beritaList.filter(b => b.id !== id));
-          const docRef = doc(db, 'artifacts', currentAppId, 'public', 'data', 'berita', id);
-          await deleteDoc(docRef);
+          if (firebaseConfig.projectId !== 'mock-project') {
+            const docRef = doc(db, 'artifacts', currentAppId, 'public', 'data', 'berita', id);
+            await deleteDoc(docRef);
+          } else {
+            setBeritaList(beritaList.filter(b => b.id !== id));
+          }
         } catch (error) {
-        console.error("Error deleting berita: ", error);
-        alert("Gagal menghapus berita.");
+          if (firebaseConfig.projectId !== 'mock-project') {
+            handleFirestoreError(error, OperationType.DELETE, `artifacts/${currentAppId}/public/data/berita/${id}`);
+          } else {
+            console.error("Error deleting berita: ", error);
+            alert("Gagal menghapus berita.");
+          }
         }
     }
   };

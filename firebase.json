@@ -1,0 +1,8 @@
+{
+  "firestore": [
+    {
+      "database": "ai-studio-lphalghazaliport-e2d7b2e1-3b36-493f-92cd-2c46df07b2dc",
+      "rules": "firestore.rules"
+    }
+  ]
+}
