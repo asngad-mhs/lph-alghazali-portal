@@ -926,6 +926,16 @@ function LandingView({ navigateTo, beritaList, user, userRole, db, currentAppId 
   const [activeDoc, setActiveDoc] = useState<any>(null);
   const [regulasiList, setRegulasiList] = useState<any[]>(DEPRECATED_REGULASI_DATA);
   const [settings, setSettings] = useState<any>(null);
+  const [activeHeroNewsSlide, setActiveHeroNewsSlide] = useState(0);
+
+  // Auto slide for hero news images
+  useEffect(() => {
+    if (landingSubView !== 'home') return;
+    const interval = setInterval(() => {
+      setActiveHeroNewsSlide((prev) => (prev + 1) % 3);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [landingSubView]);
 
   useEffect(() => {
     // Fetch regulations from firestore in Realtime if any
@@ -1311,6 +1321,42 @@ SHA-256 Verified Secure Archive File`;
     }
   };
 
+  const currentHeroNews = (beritaList || [])
+    .slice(0, 3)
+    .map((b: any, index: number) => {
+      const fallbacks = [
+        "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=1200", // Lab/Analytical testing/Precision
+        "https://images.unsplash.com/photo-1519452635265-7b1fbfd1e4e0?auto=format&fit=crop&q=80&w=1200", // Study/Academic/Islamic Info
+        "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?auto=format&fit=crop&q=80&w=1200"  // Success/Collaboration/Teamwork
+      ];
+      const fallbackTitles = [
+        "Infrastruktur Cloud LPH Al-Ghazali Aktif",
+        "Edukasi Sertifikasi Halal Digital",
+        "Sambut Tim Auditor Berintegritas"
+      ];
+      const fallbackContents = [
+        "Infrastruktur Cloud LPH Al-Ghazali aktif penuh 24 jam untuk melayani verifikasi dokumen digital.",
+        "Mendukung program akselerasi sertifikasi halal dari pemerintah untuk UMK Indonesia.",
+        "Tim auditor halal profesional BNSP siap membantu kepatuhan proses jaminan produk halal Anda."
+      ];
+      const fallbackCategories = [
+        "Teknologi",
+        "Edukasi",
+        "Layanan"
+      ];
+
+      return {
+        id: b.id || `mock-${index}`,
+        title: b.title || fallbackTitles[index],
+        content: b.content || fallbackContents[index],
+        category: b.category || fallbackCategories[index],
+        createdAt: b.createdAt || (Date.now() - index * 86400000),
+        imageSrc: (b.fileType && b.fileType.includes('image') && b.fileData)
+          ? b.fileData
+          : fallbacks[index]
+      };
+    });
+
   return (
     <div className="flex flex-col min-h-screen scroll-smooth" style={{ scrollPaddingTop: '160px' }}>
       {/* Navbar */}
@@ -1615,19 +1661,106 @@ SHA-256 Verified Secure Archive File`;
                     Mulai Pengajuan <ArrowRight className="ml-2 w-5 h-5" />
                 </button>
             </div>
-            <div className="lg:w-1/2 mt-16 lg:mt-0 hidden md:block">
-                <div className="bg-white/10 backdrop-blur-lg border border-white/20 p-8 rounded-2xl shadow-2xl relative">
-                    <div className="flex items-center space-x-4 mb-6">
-                        <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-emerald-600"><CheckCircle /></div>
-                        <div>
-                            <h3 className="font-bold text-white">Sinkronisasi Cloud Aktif</h3>
-                            <p className="text-emerald-200 text-sm">Data aman & terenkripsi</p>
-                        </div>
+            <div className="w-full lg:w-1/2 mt-12 lg:mt-0">
+                <div className="relative bg-teal-950/40 backdrop-blur-md border border-white/10 rounded-3xl overflow-hidden shadow-2xl group/slide h-80 sm:h-96 flex flex-col justify-end">
+                    
+                    {/* Background Slider */}
+                    <div className="absolute inset-0 z-0">
+                        {currentHeroNews.map((slide, sIdx) => (
+                            <div 
+                                key={slide.id} 
+                                className={`absolute inset-0 transition-all duration-700 ease-in-out transform ${
+                                    sIdx === activeHeroNewsSlide 
+                                        ? 'opacity-100 scale-100 z-10' 
+                                        : 'opacity-0 scale-105 z-0'
+                                }`}
+                            >
+                                <img 
+                                    src={slide.imageSrc} 
+                                    alt={slide.title} 
+                                    className="w-full h-full object-cover brightness-75 contrast-[0.85] saturate-[1.1]"
+                                    referrerPolicy="no-referrer"
+                                />
+                                {/* Bottom vignette gradient for readability */}
+                                <div className="absolute inset-0 bg-gradient-to-t from-teal-950 via-teal-900/40 to-black/30"></div>
+                            </div>
+                        ))}
                     </div>
-                    <div className="space-y-3">
-                        <div className="h-3 bg-emerald-400/50 rounded w-full animate-pulse"></div>
-                        <div className="h-3 bg-emerald-400/50 rounded w-5/6 animate-pulse" style={{animationDelay: '150ms'}}></div>
-                        <div className="h-3 bg-emerald-400/50 rounded w-4/6 animate-pulse" style={{animationDelay: '300ms'}}></div>
+
+                    {/* Static Badge on top left */}
+                    <div className="absolute top-4 left-4 z-20 flex flex-wrap gap-2">
+                        <span className="bg-emerald-500/90 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider backdrop-blur-sm border border-emerald-400/20 shadow-lg flex items-center gap-1">
+                            <Newspaper className="w-3 h-3" /> Berita Terkini
+                        </span>
+                        {currentHeroNews[activeHeroNewsSlide] && (
+                            <span className="bg-white/10 text-white text-[10px] font-medium px-2.5 py-1 rounded-full backdrop-blur-md border border-white/20">
+                                {currentHeroNews[activeHeroNewsSlide].category}
+                            </span>
+                        )}
+                        <span className="bg-emerald-800/80 text-white text-[10px] font-medium px-2.5 py-1 rounded-full backdrop-blur-md border border-emerald-400/20 shadow-sm flex items-center gap-1">
+                            <CheckCircle className="w-3 h-3 text-emerald-300" /> Cloud Sync
+                        </span>
+                    </div>
+
+                    {/* Left/Right Arrows for manual controls */}
+                    <button 
+                        onClick={() => setActiveHeroNewsSlide((prev) => (prev === 0 ? 2 : prev - 1))}
+                        className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/30 hover:bg-emerald-500/80 text-white flex items-center justify-center opacity-0 group-hover/slide:opacity-100 transition-all z-20 cursor-pointer border border-white/10 text-lg font-bold"
+                        aria-label="Previous Slide"
+                    >
+                        &lsaquo;
+                    </button>
+                    <button 
+                        onClick={() => setActiveHeroNewsSlide((prev) => (prev === 2 ? 0 : prev + 1))}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/30 hover:bg-emerald-500/80 text-white flex items-center justify-center opacity-0 group-hover/slide:opacity-100 transition-all z-20 cursor-pointer border border-white/10 text-lg font-bold"
+                        aria-label="Next Slide"
+                    >
+                        &rsaquo;
+                    </button>
+
+                    {/* Content overlay */}
+                    <div className="relative z-10 p-6 sm:p-8 text-left max-w-full">
+                        <div className="space-y-2">
+                            <span className="text-[10px] text-emerald-300 font-mono tracking-wider block">
+                                <Clock className="w-3.5 h-3.5 inline mr-1.5 align-text-bottom" />
+                                {new Date(currentHeroNews[activeHeroNewsSlide]?.createdAt).toLocaleDateString('id-ID')}
+                            </span>
+                            <h3 className="text-xl sm:text-2xl font-bold text-white leading-snug drop-shadow-md hover:text-emerald-200 transition-colors line-clamp-2" title={currentHeroNews[activeHeroNewsSlide]?.title}>
+                                {currentHeroNews[activeHeroNewsSlide]?.title}
+                            </h3>
+                            <p className="text-gray-200 text-xs sm:text-sm line-clamp-2 leading-relaxed drop-shadow-sm font-light">
+                                {currentHeroNews[activeHeroNewsSlide]?.content}
+                            </p>
+                        </div>
+
+                        {/* Pagination indicators & Read button */}
+                        <div className="flex items-center justify-between mt-6 pt-4 border-t border-white/10">
+                            {/* Slide dots */}
+                            <div className="flex space-x-2">
+                                {[0, 1, 2].map((idx) => (
+                                    <button
+                                        key={idx}
+                                        onClick={() => setActiveHeroNewsSlide(idx)}
+                                        className={`h-1.5 rounded-full transition-all ${
+                                            idx === activeHeroNewsSlide 
+                                                ? 'w-6 bg-emerald-400' 
+                                                : 'w-2 bg-white/40 hover:bg-white/60'
+                                        }`}
+                                        aria-label={`Go to slide ${idx + 1}`}
+                                    />
+                                ))}
+                            </div>
+                            
+                            {/* Action Link to the berita section */}
+                            <a 
+                                href="#berita"
+                                onClick={(e) => handleNavClick(e, '#berita')}
+                                className="inline-flex items-center gap-1.5 text-xs text-emerald-300 hover:text-white font-bold tracking-wide transition-colors group/link cursor-pointer"
+                            >
+                                Selengkapnya 
+                                <ArrowRight className="w-3 h-3 group-hover/link:translate-x-1 transition-transform" />
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
