@@ -3099,7 +3099,7 @@ SHA-256 Verified Secure Archive File`;
 
               {/* Chart Container (Scrollable) */}
               <div className="w-full overflow-x-auto pb-10 scrollbar-thin scrollbar-thumb-emerald-300 scrollbar-track-transparent">
-                  <div className="min-w-[1150px] flex flex-col items-center pt-4">
+                  <div className="min-w-[850px] flex flex-col items-center pt-4">
                       
                       {/* Dewan Pembina */}
                       <div className="relative flex flex-col items-center">
@@ -3123,11 +3123,6 @@ SHA-256 Verified Secure Archive File`;
                               <div className="relative flex flex-col items-center w-[160px]">
                                   <div className="absolute top-[-32px] w-[3px] h-8 bg-emerald-600"></div>
                                   <OrgCard title="Komite Ketidakberpihakan" list={["Istikharoh, M.H.", "Rindrayatni, S.Kep., Ners.", "Abdul Haq, M.Cs."]} className="w-[155px]" />
-                              </div>
-
-                              <div className="relative flex flex-col items-center w-[160px]">
-                                  <div className="absolute top-[-32px] w-[3px] h-8 bg-emerald-600"></div>
-                                  <OrgCard title="Komite Banding" name="Dr. Misbah Khusurur, M.Si." className="w-[155px]" />
                               </div>
 
                               <div className="relative flex flex-col items-center w-[160px]">
@@ -3169,7 +3164,6 @@ SHA-256 Verified Secure Archive File`;
                                           "Anisha Dian I., S.T., M.Sc.": "/anisha.jpg"
                                         }}
                                       />
-                                      <OrgCard title="Evaluator LPH" name="Fathurrohman, S.H." className="w-[155px] z-10 relative" />
                                       <OrgCard title="Petugas Pengambil Sample" list={["Siti Khuzaimah, S.T., M.T.", "dr. Atingul Marifah", "Anisha Dian I., S.T."]} className="w-[155px] z-10 relative" />
                                   </div>
                               </div>
@@ -3177,11 +3171,6 @@ SHA-256 Verified Secure Archive File`;
                               <div className="relative flex flex-col items-center w-[160px]">
                                   <div className="absolute top-[-32px] w-[3px] h-8 bg-emerald-600"></div>
                                   <OrgCard title="Manajer Keuangan" name="Siti Khuzaimah, S.T., M.T." className="w-[155px]" />
-                              </div>
-
-                              <div className="relative flex flex-col items-center w-[160px]">
-                                  <div className="absolute top-[-32px] w-[3px] h-8 bg-emerald-600"></div>
-                                  <OrgCard title="Pengelola LPH" name="Mukti Ali, S.Pd." className="w-[155px]" />
                               </div>
                               
                           </div>
