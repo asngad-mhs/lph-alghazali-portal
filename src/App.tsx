@@ -360,6 +360,98 @@ Pasal 3:
 Peralatan yang digunakan untuk mengolah pangan yang tidak halal dilarang keras dibersihkan atau disimpan bersamaan dengan penangan bahan baku pangan halal.`
   },
   {
+    id: 'bpom-13-2023',
+    nomor: 'Peraturan BPOM Nomor 13 Tahun 2023',
+    kategori: 'Peraturan BPOM',
+    tentang: 'Kategori Pangan',
+    deskripsi: 'Menetapkan standar, definisi, dan karakteristik dasar pangan olahan yang dikelompokkan ke dalam 16 kategori pangan guna menjamin keamanan, mutu, gizi, dan label pangan nasional.',
+    tahun: '2023',
+    referensiUrl: 'https://bpjph.halal.go.id/',
+    pasalPenting: [
+      { pasal: 'Pasal 2', isi: 'Setiap pihak yang memproduksi dan/atau mengimpor pangan olahan wajib memenuhi persyaratan standar Kategori Pangan.' },
+      { pasal: 'Pasal 5', isi: 'Kategori pangan dikelompokkan berdasarkan bahan baku, proses pengolahan, dan target peruntukan menjadi 16 kategori komprehensif.' }
+    ],
+    isiLengkap: `PERATURAN BADAN PENGAWAS OBAT DAN MAKANAN NOMOR 13 TAHUN 2023 TENTANG KATEGORI PANGAN
+
+DENGAN RAHMAT TUHAN YANG MAHA ESA
+KEPALA BADAN PENGAWAS OBAT DAN MAKANAN REPUBLIK INDONESIA,
+
+Menimbang:
+a. bahwa kategori pangan merupakan kriteria dasar dalam penetapan standar dan/atau persyaratan keamanan, mutu, gizi, dan label pangan olahan;
+b. bahwa ketentuan dalam Peraturan BPOM Nomor 34 Tahun 2019 tentang Kategori Pangan sudah tidak sesuai dengan perkembangan sains, teknologi, dan inovasi pangan sehingga perlu diganti;
+
+Pasal 1:
+Kategori Pangan adalah pengelompokan Pangan berdasarkan Bahan Baku, proses pengolahan, dan/atau target peruntukan sesuai dengan jenis Pangan yang bersangkutan.
+
+Pasal 2:
+Setiap Orang yang memproduksi dan/atau mengimpor Pangan Olahan untuk diperdagangkan dalam kemasan eceran harus memenuhi persyaratan Kategori Pangan.
+
+Pasal 5:
+Kategori Pangan dikelompokkan berdasarkan Bahan Baku, proses pengolahan, dan/atau target peruntukan yang terdiri dari 16 Kategori Utama:
+1. Kategori 01.0: Produk-produk susu dan analognya
+2. Kategori 02.0: Lemak, minyak, dan emulsi minyak
+3. Kategori 03.0: Es untuk dimakan (edible ice) termasuk sherbet dan sorbet
+4. Kategori 04.0: Buah dan sayur (termasuk jamur, umbi, kacang, lidah buaya, dll)
+5. Kategori 05.0: Kembang gula/permen dan cokelat
+6. Kategori 06.0: Serealia dan produk serealia turunan
+7. Kategori 07.0: Produk bakeri
+8. Kategori 08.0: Daging dan produk daging (termasuk unggas dan buruan)
+9. Kategori 09.0: Ikan dan produk perikanan (termasuk moluska, krustase)
+10. Kategori 10.0: Telur dan produk-produk telur
+11. Kategori 11.0: Gula dan pemanis, termasuk madu
+12. Kategori 12.0: Garam, rempah, sup, saus, salad, dan produk protein
+13. Kategori 13.0: Pangan olahan untuk keperluan gizi khusus
+14. Kategori 14.0: Minuman, tidak termasuk produk susu
+15. Kategori 15.0: Makanan ringan siap santap
+16. Kategori 16.0: Pangan olahan siap saji (terkemas)
+
+Pasal 11:
+Peraturan Badan Pengawas Obat dan Makanan Nomor 34 Tahun 2019 tentang Kategori Pangan dicabut dan dinyatakan tidak berlaku.`
+  },
+  {
+    id: 'bpom-22-2023',
+    nomor: 'Peraturan BPOM Nomor 22 Tahun 2023',
+    kategori: 'Peraturan BPOM',
+    tentang: 'Bahan Baku yang Dilarang dalam Pangan Olahan dan Bahan yang Dilarang Digunakan sebagai Bahan Tambahan Pangan',
+    deskripsi: 'Regulasi esensial yang membatasi dan melarang senyawa atau spesies hewani/nabati tertentu serta zat aditif berbahaya agar tidak dicampurkan sebagai bahan baku atau BTP demi terjaminnya aspek keselamatan pangan.',
+    tahun: '2023',
+    referensiUrl: 'https://bpjph.halal.go.id/',
+    pasalPenting: [
+      { pasal: 'Pasal 2 ayat (1)', isi: 'Setiap Orang yang memproduksi atau mengimpor Pangan Olahan dilarang menggunakan Bahan Baku yang dilarang dalam Pangan Olahan dan bahan yang dilarang digunakan sebagai BTP.' },
+      { pasal: 'Pasal 3 ayat (1)', isi: 'Bahan Baku yang dilarang meliputi bahan yang dapat mengganggu, merugikan, dan/atau membahayakan kesehatan serta mengandung bahan obat, narkotika, psikotropika/nikotin.' },
+      { pasal: 'Pasal 4', isi: 'Bahan Tambahan Pangan (BTP) yang dilarang tercantum di dalam Lampiran II yang merupakan bagian mutlak tidak terpisahkan dari Peraturan Badan ini.' }
+    ],
+    isiLengkap: `PERATURAN BADAN PENGAWAS OBAT DAN MAKANAN NOMOR 22 TAHUN 2023 TENTANG BAHAN BAKU YANG DILARANG DALAM PANGAN OLAHAN DAN BAHAN YANG DILARANG DIGUNAKAN SEBAGAI BAHAN TAMBAHAN PANGAN
+
+DENGAN RAHMAT TUHAN YANG MAHA ESA
+KEPALA BADAN PENGAWAS OBAT DAN MAKANAN REPUBLIK INDONESIA,
+
+Menimbang:
+a. bahwa masyarakat perlu dilindungi dari penggunaan bahan yang tidak memenuhi persyaratan keamanan, mutu, dan gizi pangan;
+b. bahwa sesuai dengan kajian risiko, Peraturan BPOM Nomor 7 Tahun 2018 tentang Bahan Baku yang Dilarang dalam Pangan Olahan sudah tidak relevan dengan sains terkini sehingga perlu diganti;
+
+Pasal 1:
+- Bahan Baku adalah bahan dasar berupa pangan segar atau olahan untuk memproduksi pangan.
+- Bahan Tambahan Pangan (BTP) adalah bahan yang ditambahkan ke dalam pangan untuk mempengaruhi sifat atau bentuk pangan.
+
+Pasal 2:
+Setiap Orang yang memproduksi atau mengimpor Pangan Olahan dilarang menggunakan:
+a. Bahan Baku yang dilarang dalam Pangan Olahan; dan
+b. bahan yang dilarang digunakan sebagai BTP.
+
+Pasal 3:
+(1) Bahan Baku dilarang sebagaimana Pasal 2 huruf a meliputi:
+    - Bahan Baku yang mengganggu, merugikan, dan/atau membahayakan kesehatan.
+    - Bahan Baku mengandung narkotika, psikotropika, nikotin, bahan obat, tumbuhan terlindungi, atau satwa terlindungi.
+(2) Lampiran I merinci daftar detail tumbuhan/hewan yang dilarang (contoh: Abrus precatorius L [Saga], Annona muricata L [Sirsak - kecuali buah], Cannabis sativa L [Ganja], dll).
+
+Pasal 4:
+Bahan yang dilarang sebagai BTP dicantumkan rinci pada Lampiran II (contoh: Asam Borat, Asam Salisilat, Dulsin, Formaldehida, Kalium Bromat, Kalium Klorat, dll).
+
+Pasal 7:
+Mencabut dan menyatakan tidak berlaku Peraturan Badan Pengawas Obat dan Makanan Nomor 7 Tahun 2018 tentang Bahan Baku yang Dilarang dalam Pangan Olahan.`
+  },
+  {
     id: 'sni-17065-2012',
     nomor: 'SNI ISO/IEC 17065:2012',
     kategori: 'SNI',
