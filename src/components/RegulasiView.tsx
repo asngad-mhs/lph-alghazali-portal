@@ -1,5 +1,6 @@
 import React from 'react';
 import { Scale, Landmark, BookOpen, FileSignature, ShieldCheck, Award, Search, Download, HelpCircle, ArrowLeft } from 'lucide-react';
+import { jsPDF } from 'jspdf';
 
 export interface Pasal {
   pasal: string;
@@ -15,6 +16,8 @@ export interface RegulasiDoc {
   tahun: string;
   referensiUrl: string;
   pasalPenting?: Pasal[];
+  isiLengkap?: string;
+  embedUrl?: string;
 }
 
 interface RegulasiViewProps {
@@ -82,6 +85,210 @@ export default function RegulasiView({
       case 'Keputusan Kepala BPJPH': return FileSignature;
       case 'Peraturan BPOM': return ShieldCheck;
       default: return Award;
+    }
+  };
+
+  const getEmbedUrl = (doc: RegulasiDoc) => {
+    if (doc.embedUrl) return doc.embedUrl;
+    if (doc.referensiUrl && doc.referensiUrl.includes('drive.google.com/file/d/')) {
+      const parts = doc.referensiUrl.split('/file/d/');
+      if (parts.length > 1) {
+        const fileId = parts[1].split('/')[0];
+        return `https://drive.google.com/file/d/${fileId}/preview`;
+      }
+    }
+    return null;
+  };
+
+  const handleDownloadIsiLengkap = (docObj: RegulasiDoc) => {
+    try {
+      const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4',
+      });
+
+      let yPos = 20;
+      const margin = 20;
+      const pageWidth = doc.internal.pageSize.width;
+      const pageHeight = doc.internal.pageSize.height;
+      const maxLineWidth = pageWidth - (margin * 2);
+      let pageNum = 1;
+
+      // Helper to draw footer on current page
+      const drawFooter = (page: number) => {
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        doc.setTextColor(148, 163, 184); // slate-400
+        doc.text(`Halaman ${page}`, pageWidth / 2, pageHeight - 12, { align: 'center' });
+      };
+
+      // Draw page 1 footer initially
+      drawFooter(pageNum);
+
+      // Helper to add new page and reset yPos
+      const checkPageBreakFull = (heightNeeded: number) => {
+        if (yPos + heightNeeded > pageHeight - margin - 5) {
+          doc.addPage();
+          pageNum++;
+          drawFooter(pageNum);
+
+          // Add subtle running header on subsequent pages
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(8);
+          doc.setTextColor(148, 163, 184); // slate-400
+          doc.text(docObj.nomor, margin, 12);
+          doc.setDrawColor(241, 245, 249); // slate-100
+          doc.line(margin, 14, pageWidth - margin, 14);
+          
+          yPos = 22;
+        }
+      };
+
+      // --- Header Block on Page 1 ---
+      // Deep Emerald Banner block
+      doc.setFillColor(6, 95, 70); // Emerald 800
+      doc.rect(margin, yPos, maxLineWidth, 16, 'F');
+      
+      // Banner white text
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(11);
+      doc.setTextColor(255, 255, 255);
+      doc.text("NASKAH LENGKAP REGULASI HALAL", margin + 6, yPos + 10.5);
+      yPos += 24;
+
+      // Kategori
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10);
+      doc.setTextColor(16, 185, 129); // Emerald 500
+      doc.text(docObj.kategori.toUpperCase(), margin, yPos);
+      yPos += 7;
+
+      // Nomor Dokumen
+      doc.setFontSize(14);
+      doc.setTextColor(15, 23, 42); // Slate 900
+      const nomorLines = doc.splitTextToSize(docObj.nomor, maxLineWidth);
+      nomorLines.forEach((line: string) => {
+        checkPageBreakFull(8);
+        doc.text(line, margin, yPos);
+        yPos += 8;
+      });
+
+      yPos += 2;
+
+      // Tentang
+      doc.setFont('helvetica', 'oblique');
+      doc.setFontSize(10);
+      doc.setTextColor(71, 85, 105); // Slate 600
+      const tentangLines = doc.splitTextToSize(`Tentang: "${docObj.tentang}"`, maxLineWidth);
+      tentangLines.forEach((line: string) => {
+        checkPageBreakFull(7);
+        doc.text(line, margin, yPos);
+        yPos += 7;
+      });
+
+      yPos += 5;
+
+      // Elegant separator line
+      checkPageBreakFull(5);
+      doc.setDrawColor(226, 232, 240); // Slate 200
+      doc.setLineWidth(0.5);
+      doc.line(margin, yPos, pageWidth - margin, yPos);
+      yPos += 10;
+
+      // --- Content Section: ISI LENGKAP ---
+      checkPageBreakFull(12);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(11);
+      doc.setTextColor(15, 23, 42);
+      doc.text('KETENTUAN & SALINAN TEKS LENGKAP', margin, yPos);
+      yPos += 8;
+
+      const rawText = docObj.isiLengkap || "Naskah lengkap tidak tersedia.";
+      const paragraphs = rawText.split('\n');
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9.5);
+      doc.setTextColor(51, 65, 85); // Slate 700
+
+      paragraphs.forEach((paragraph) => {
+        const trimmed = paragraph.trim();
+        if (!trimmed) {
+          yPos += 4; // structural spacing for empty fields
+          return;
+        }
+
+        // Check for headings within isiLengkap to style them slightly bolder
+        const isSubHeading = trimmed.startsWith('Pasal') || trimmed.startsWith('BAB') || trimmed.includes('MEMBERIKAN') || trimmed.includes('MEMUTUSKAN') || trimmed.startsWith('Menimbang') || trimmed.startsWith('Mengingat') || trimmed.includes('KEPALA BADAN');
+        
+        if (isSubHeading) {
+          doc.setFont('helvetica', 'bold');
+          doc.setTextColor(15, 23, 42);
+        } else {
+          doc.setFont('helvetica', 'normal');
+          doc.setTextColor(51, 65, 85);
+        }
+
+        const pLines = doc.splitTextToSize(trimmed, maxLineWidth);
+        pLines.forEach((line: string) => {
+          checkPageBreakFull(6);
+          doc.text(line, margin, yPos);
+          yPos += 5.5;
+        });
+        yPos += 2.5; // spacing between paragraphs
+      });
+
+      yPos += 8;
+
+      // Footer signature-like area
+      checkPageBreakFull(30);
+      doc.setDrawColor(22, 163, 74); // Green 600
+      doc.setLineWidth(0.3);
+      doc.line(margin, yPos, pageWidth - margin, yPos);
+      yPos += 6;
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(8.5);
+      doc.setTextColor(100, 116, 139); // Slate 500
+      doc.text('Lembaga Pemeriksa Halal Al-Ghazali Cilacap', margin, yPos);
+      yPos += 4.5;
+
+      doc.setFont('helvetica', 'italic');
+      doc.setFontSize(8);
+      const footnoteTxt = 'Dokumen ini merupakan salinan naskah lengkap digital resmi yang disetujui untuk visualisasi publik dan sosialisasi sertifikasi halal oleh Kantor LPH Al-Ghazali Cilacap.';
+      const footnoteLines = doc.splitTextToSize(footnoteTxt, maxLineWidth);
+      footnoteLines.forEach((line: string) => {
+        checkPageBreakFull(4);
+        doc.text(line, margin, yPos);
+        yPos += 4;
+      });
+
+      const fileName = `${docObj.nomor.replace(/[^a-zA-Z0-9]/g, '_')}_Naskah_Lengkap.pdf`;
+      doc.save(fileName);
+    } catch (err) {
+      console.error("Full PDF generation failed, falling back to TXT:", err);
+      // Fallback TXT
+      const textContent = `NASKAH LENGKAP REGULASI HALAL
+==================================================
+KATEGORI: ${docObj.kategori.toUpperCase()}
+NOMOR: ${docObj.nomor}
+TENTANG: ${docObj.tentang}
+==================================================
+
+${docObj.isiLengkap || "Naskah lengkap tidak tersedia."}
+
+--------------------------------------------------
+Disahkan oleh LPH Al-Ghazali Cilacap.
+`;
+      const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${docObj.nomor.replace(/[^a-zA-Z0-9]/g, '_')}_Naskah_Lengkap.txt`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
     }
   };
 
@@ -232,13 +439,24 @@ export default function RegulasiView({
                   <span className="text-[10px] font-extrabold tracking-wider uppercase bg-emerald-500 text-slate-950 px-3 py-1 rounded-full font-sans">
                     {currentDoc.kategori}
                   </span>
-                  <button
-                    id={`download-btn-${currentDoc.id}`}
-                    onClick={() => handleDownload(currentDoc)}
-                    className="flex items-center gap-1.5 text-xs font-bold leading-none bg-white text-slate-900 px-3.5 py-1.5 rounded-full hover:bg-emerald-500 hover:text-slate-950 transition-all font-sans cursor-pointer shadow-sm"
-                  >
-                    <Download className="w-3.5 h-3.5" /> Download Dokumen (.pdf)
-                  </button>
+                  <div className="flex gap-2.5 flex-wrap">
+                    <button
+                      id={`download-ringkasan-btn-${currentDoc.id}`}
+                      onClick={() => handleDownload(currentDoc)}
+                      className="flex items-center gap-1.5 text-xs font-bold leading-none bg-slate-800 text-emerald-400 border border-slate-700/60 px-3.5 py-2 rounded-full hover:bg-emerald-500 hover:text-slate-950 hover:border-emerald-500 transition-all font-sans cursor-pointer shadow-xs"
+                      title="Download Ringkasan Kebijakan & Pasal Kunci"
+                    >
+                      <Download className="w-3.5 h-3.5" /> Ringkasan (.pdf)
+                    </button>
+                    <button
+                      id={`download-lengkap-btn-${currentDoc.id}`}
+                      onClick={() => handleDownloadIsiLengkap(currentDoc)}
+                      className="flex items-center gap-1.5 text-xs font-bold leading-none bg-white text-slate-900 px-3.5 py-2 rounded-full hover:bg-emerald-500 hover:text-slate-950 transition-all font-sans cursor-pointer shadow-sm"
+                      title="Download Teks / Naskah Lengkap Regulasi"
+                    >
+                      <Download className="w-3.5 h-3.5" /> Naskah Lengkap (.pdf)
+                    </button>
+                  </div>
                 </div>
                 <h2 className="text-lg sm:text-xl font-black tracking-tight leading-snug">
                   {currentDoc.nomor}
@@ -288,6 +506,39 @@ export default function RegulasiView({
                     </div>
                   </div>
                 )}
+
+                {/* Embedded PDF Viewer */}
+                {(() => {
+                  const embedLink = getEmbedUrl(currentDoc);
+                  if (embedLink) {
+                    return (
+                      <div className="space-y-3 pt-2">
+                        <div className="flex items-center justify-between flex-wrap gap-2">
+                          <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest pl-1 flex items-center gap-1.5">
+                            <BookOpen className="w-3.5 h-3.5 text-emerald-600" /> Preview Dokumen Tersemat
+                          </h4>
+                          <a
+                            href={currentDoc.referensiUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[10px] font-bold text-emerald-600 hover:text-emerald-700 hover:underline flex items-center gap-1 font-sans"
+                          >
+                            Buka di Google Drive Tab Baru &rarr;
+                          </a>
+                        </div>
+                        <div className="w-full h-[580px] overflow-hidden rounded-2xl border border-gray-200 shadow-xs relative">
+                          <iframe
+                            src={embedLink}
+                            className="w-full h-full border-0 absolute inset-0 bg-white"
+                            allow="autoplay"
+                            title={`Embed ${currentDoc.nomor}`}
+                          />
+                        </div>
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
 
                 {/* Integration Info Badge */}
                 <div className="p-4 rounded-xl bg-slate-50 border border-gray-100 flex items-start gap-2.5">

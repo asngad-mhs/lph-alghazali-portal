@@ -415,7 +415,8 @@ Peraturan Badan Pengawas Obat dan Makanan Nomor 34 Tahun 2019 tentang Kategori P
     tentang: 'Bahan Baku yang Dilarang dalam Pangan Olahan dan Bahan yang Dilarang Digunakan sebagai Bahan Tambahan Pangan',
     deskripsi: 'Regulasi esensial yang membatasi dan melarang senyawa atau spesies hewani/nabati tertentu serta zat aditif berbahaya agar tidak dicampurkan sebagai bahan baku atau BTP demi terjaminnya aspek keselamatan pangan.',
     tahun: '2023',
-    referensiUrl: 'https://bpjph.halal.go.id/',
+    referensiUrl: 'https://drive.google.com/file/d/1p-Z43_RLSV5x8pAM5S5Y1OcGZ_mMdbFf/view',
+    embedUrl: 'https://drive.google.com/file/d/1p-Z43_RLSV5x8pAM5S5Y1OcGZ_mMdbFf/preview',
     pasalPenting: [
       { pasal: 'Pasal 2 ayat (1)', isi: 'Setiap Orang yang memproduksi atau mengimpor Pangan Olahan dilarang menggunakan Bahan Baku yang dilarang dalam Pangan Olahan dan bahan yang dilarang digunakan sebagai BTP.' },
       { pasal: 'Pasal 3 ayat (1)', isi: 'Bahan Baku yang dilarang meliputi bahan yang dapat mengganggu, merugikan, dan/atau membahayakan kesehatan serta mengandung bahan obat, narkotika, psikotropika/nikotin.' },
