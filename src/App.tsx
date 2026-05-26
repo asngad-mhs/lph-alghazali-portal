@@ -1036,16 +1036,21 @@ function LandingView({ navigateTo, beritaList, user, userRole, db, currentAppId 
     const unsubscribe = onSnapshot(regulasiRef, (snapshot) => {
       try {
         const rData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as any[];
-        if (rData.length > 0) {
-          setRegulasiList(rData);
-        } else {
-          setRegulasiList(DEPRECATED_REGULASI_DATA);
+        // Combine Firestore data with local DEPRECATED_REGULASI_DATA to ensure newly added items are always available
+        const mergedList = [...rData];
+        for (const localReg of DEPRECATED_REGULASI_DATA) {
+          if (!mergedList.some((item) => item.id === localReg.id)) {
+            mergedList.push(localReg);
+          }
         }
+        setRegulasiList(mergedList);
       } catch (err) {
         console.error("Error mapping regulasi snapshot:", err);
+        setRegulasiList(DEPRECATED_REGULASI_DATA);
       }
     }, (error) => {
-      console.warn("Skipping Firestore regulasi collection error", error);
+      console.warn("Skipping Firestore regulasi collection error, falling back to static data", error);
+      setRegulasiList(DEPRECATED_REGULASI_DATA);
     });
     return () => unsubscribe();
   }, [currentAppId]);
