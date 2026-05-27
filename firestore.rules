@@ -2,76 +2,113 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // 0. Global Safety Net
+    // Global Safety Net
     match /{document=**} {
       allow read, write: if false;
     }
 
     // --- Helper Functions ---
+    
+    // Check if user is signed in
     function isSignedIn() {
       return request.auth != null;
     }
 
-    // Unified staff check
-    function isStaff() {
-      return isSignedIn() && (
-        (request.auth.token != null && 'email' in request.auth.token && request.auth.token.email in [
-          'admin@lphalghazali.com', 
-          'auditor@lphalghazali.com', 
-          'editor@lphalghazali.com', 
-          'staf@lphalghazali.com',
-          'asngad@mhs.unugha.ac.id'
-        ]) || (
-          exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('role', 'pu') in ['admin', 'auditor', 'editor', 'staf']
-        )
+    // Check if user is the owner of the document based on auth uid
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Email checks for extra robust auth (supports case insensitivity)
+    function isEmailAdmin() {
+      return request.auth != null && 'email' in request.auth.token && (
+        request.auth.token.email.toLowerCase() == 'admin@lphalghazali.com' ||
+        request.auth.token.email.toLowerCase() == 'asngad@mhs.unugha.ac.id'
       );
     }
 
-    function isOwner(userId) {
-      return isSignedIn() && request.auth.uid == userId;
+    function isEmailAuditor() {
+      return request.auth != null && 'email' in request.auth.token && 
+        request.auth.token.email.toLowerCase() == 'auditor@lphalghazali.com';
+    }
+
+    function isEmailEditor() {
+      return request.auth != null && 'email' in request.auth.token && 
+        request.auth.token.email.toLowerCase() == 'editor@lphalghazali.com';
+    }
+
+    function isEmailStaf() {
+      return request.auth != null && 'email' in request.auth.token && 
+        request.auth.token.email.toLowerCase() == 'staf@lphalghazali.com';
+    }
+
+    // Check if user document lists a specific role
+    function hasRoleInDocument(targetRole) {
+      return exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == targetRole;
+    }
+
+    // Specific roles checking
+    function isAdmin() {
+      return isSignedIn() && (isEmailAdmin() || hasRoleInDocument('admin'));
+    }
+
+    function isAuditor() {
+      return isSignedIn() && (isEmailAuditor() || hasRoleInDocument('auditor'));
+    }
+
+    function isEditor() {
+      return isSignedIn() && (isEmailEditor() || hasRoleInDocument('editor'));
+    }
+
+    function isStaf() {
+      return isSignedIn() && (isEmailStaf() || hasRoleInDocument('staf'));
+    }
+
+    // Global staff check (fits duty functions)
+    function isStaff() {
+      return isSignedIn() && (
+        isEmailAdmin() || isEmailAuditor() || isEmailEditor() || isEmailStaf() ||
+        hasRoleInDocument('admin') || hasRoleInDocument('auditor') || 
+        hasRoleInDocument('editor') || hasRoleInDocument('staf')
+      );
     }
 
     // --- Collection Matches ---
 
     // 1. Users Collection
     match /users/{userId} {
-      allow get: if isOwner(userId) || isStaff();
-      allow list: if isStaff();
-      
-      allow create: if isOwner(userId);
-      allow update: if isOwner(userId) || isStaff();
-      allow delete: if isStaff();
+      allow read, write: if isSignedIn() && (isOwner(userId) || isStaff());
     }
 
     // 2. Artifacts & Public Data
     match /artifacts/{appId} {
-      allow get: if true;
+      allow read: if true;
 
       // Public system settings
       match /public/system_settings {
         allow read: if true;
-        allow write: if isStaff();
+        allow write: if isSignedIn() && isStaff();
       }
 
-      // Public news and articles
+      // Public news and articles (Berita & Agenda)
       match /public/data/berita/{beritaId} {
         allow read: if true;
-        allow write: if isStaff();
+        allow write: if isSignedIn() && isStaff();
       }
 
-      // Public regulations
+      // Public regulations (Regulasi)
       match /public/data/regulasi/{regulasiId} {
         allow read: if true;
-        allow write: if isStaff();
+        allow write: if isSignedIn() && isStaff();
       }
 
       // Applications with private access logic
       match /public/data/pengajuan_halal/{pengajuanId} {
-        allow read: if isStaff() || (isSignedIn() && resource.data.userId == request.auth.uid);
+        allow read: if isSignedIn() && (isStaff() || resource.data.userId == request.auth.uid);
         allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
-        allow update: if isStaff() || (isSignedIn() && resource.data.userId == request.auth.uid);
-        allow delete: if isStaff();
+        allow update: if isSignedIn() && (isStaff() || (resource.data.userId == request.auth.uid && request.resource.data.status == resource.data.status));
+        allow delete: if isSignedIn() && isStaff();
       }
     }
   }

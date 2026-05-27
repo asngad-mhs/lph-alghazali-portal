@@ -89,15 +89,28 @@ export default function RegulasiView({
   };
 
   const getEmbedUrl = (doc: RegulasiDoc) => {
-    if (doc.embedUrl) return doc.embedUrl;
-    if (doc.referensiUrl && doc.referensiUrl.includes('drive.google.com/file/d/')) {
-      const parts = doc.referensiUrl.split('/file/d/');
-      if (parts.length > 1) {
-        const fileId = parts[1].split('/')[0];
+    const url = doc.embedUrl || doc.referensiUrl;
+    if (!url) return null;
+
+    if (url.includes('drive.google.com')) {
+      let fileId = '';
+      if (url.includes('/file/d/')) {
+        const parts = url.split('/file/d/');
+        if (parts.length > 1) {
+          fileId = parts[1].split('/')[0].split('?')[0];
+        }
+      } else if (url.includes('id=')) {
+        const parts = url.split('id=');
+        if (parts.length > 1) {
+          fileId = parts[1].split('&')[0];
+        }
+      }
+
+      if (fileId) {
         return `https://drive.google.com/file/d/${fileId}/preview`;
       }
     }
-    return null;
+    return url;
   };
 
   const handleDownloadIsiLengkap = (docObj: RegulasiDoc) => {
@@ -507,38 +520,7 @@ Disahkan oleh LPH Al-Ghazali Cilacap.
                   </div>
                 )}
 
-                {/* Embedded PDF Viewer */}
-                {(() => {
-                  const embedLink = getEmbedUrl(currentDoc);
-                  if (embedLink) {
-                    return (
-                      <div className="space-y-3 pt-2">
-                        <div className="flex items-center justify-between flex-wrap gap-2">
-                          <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest pl-1 flex items-center gap-1.5">
-                            <BookOpen className="w-3.5 h-3.5 text-emerald-600" /> Preview Dokumen Tersemat
-                          </h4>
-                          <a
-                            href={currentDoc.referensiUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-[10px] font-bold text-emerald-600 hover:text-emerald-700 hover:underline flex items-center gap-1 font-sans"
-                          >
-                            Buka di Google Drive Tab Baru &rarr;
-                          </a>
-                        </div>
-                        <div className="w-full h-[580px] overflow-hidden rounded-2xl border border-gray-200 shadow-xs relative">
-                          <iframe
-                            src={embedLink}
-                            className="w-full h-full border-0 absolute inset-0 bg-white"
-                            allow="autoplay"
-                            title={`Embed ${currentDoc.nomor}`}
-                          />
-                        </div>
-                      </div>
-                    );
-                  }
-                  return null;
-                })()}
+
 
                 {/* Integration Info Badge */}
                 <div className="p-4 rounded-xl bg-slate-50 border border-gray-100 flex items-start gap-2.5">
