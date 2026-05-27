@@ -6630,7 +6630,17 @@ function AdminRegulasi({ data = [], addData, updateData, deleteData }: any) {
     }, 800);
   };
 
-  const categories = ['Semua', 'Undang-Undang', 'Peraturan Pemerintah', 'Keputusan Menteri Agama', 'Peraturan BPJPH', 'Fatwa MUI', 'Lainnya'];
+  const categories = [
+    { label: 'Semua', display: 'Semua' },
+    { label: 'Undang-Undang', display: 'Undang-Undang' },
+    { label: 'Peraturan Pemerintah', display: 'Peraturan Pemerintah' },
+    { label: 'Keputusan Menteri Agama', display: 'Keputusan Menteri Agama' },
+    { label: 'Keputusan Kepala BPJPH', display: 'Keputusan Kepala BPJPH' },
+    { label: 'Peraturan BPOM', display: 'Peraturan BPOM' },
+    { label: 'SNI', display: 'Standar Nasional (SNI)' },
+    { label: 'Fatwa MUI', display: 'Fatwa MUI' },
+    { label: 'Lainnya', display: 'Lainnya' }
+  ];
 
   const filteredData = data.filter((item: any) => {
     const matchesSearch = 
@@ -6672,11 +6682,11 @@ function AdminRegulasi({ data = [], addData, updateData, deleteData }: any) {
         <div className="flex gap-2 overflow-x-auto pb-1 md:pb-0 shrink-0">
           {categories.map((cat) => (
             <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-2 text-xs font-semibold rounded-lg shrink-0 transition-colors ${selectedCategory === cat ? 'bg-emerald-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+              key={cat.label}
+              onClick={() => setSelectedCategory(cat.label)}
+              className={`px-3 py-2 text-xs font-semibold rounded-lg shrink-0 transition-colors ${selectedCategory === cat.label ? 'bg-emerald-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
             >
-              {cat}
+              {cat.display}
             </button>
           ))}
         </div>
@@ -6768,7 +6778,9 @@ function AdminRegulasi({ data = [], addData, updateData, deleteData }: any) {
                       <option value="Undang-Undang">Undang-Undang</option>
                       <option value="Peraturan Pemerintah">Peraturan Pemerintah</option>
                       <option value="Keputusan Menteri Agama">Keputusan Menteri Agama</option>
-                      <option value="Peraturan BPJPH">Peraturan BPJPH</option>
+                      <option value="Keputusan Kepala BPJPH">Keputusan Kepala BPJPH</option>
+                      <option value="Peraturan BPOM">Peraturan BPOM</option>
+                      <option value="SNI">Standar Nasional (SNI)</option>
                       <option value="Fatwa MUI">Fatwa MUI</option>
                       <option value="Lainnya">Lainnya</option>
                     </select>
