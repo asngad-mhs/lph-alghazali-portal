@@ -3268,16 +3268,19 @@ SHA-256 Verified Secure Archive File`;
                     </h4>
                     <ol className="list-decimal list-outside ml-6 space-y-4 marker:text-emerald-600 marker:font-bold">
                       <li className="pl-2">
-                        Menyelenggarakan pemeriksaan dan/atau pengujian kehalalan produk secara komprehensif, independen, dan berintegritas sesuai dengan prinsip Syariah Islam dan regulasi Badan Penyelenggara Jaminan Produk Halal (BPJPH).
+                        Menyelenggarakan layanan pemeriksaan halal yang profesional, independen, objektif, dan sesuai dengan peraturan perundang-undangan yang berlaku.
                       </li>
                       <li className="pl-2">
-                        Mengembangkan sumber daya manusia (Auditor Halal) yang kompeten, mutakhir, profesional, dan menjunjung tinggi kode etik sesuai dengan Standar Kompetensi Kerja Nasional Indonesia (SKKNI).
+                        Meningkatkan kompetensi auditor halal, tenaga ahli, dan sumber daya manusia secara berkelanjutan untuk menjamin kualitas layanan pemeriksaan halal.
                       </li>
                       <li className="pl-2">
-                        Mendorong kolaborasi aktif dengan berbagai pemangku kepentingan, Perguruan Tinggi, pelaku industri, dan asosiasi pengusaha (Pondok Pesantren, UMKM) untuk mempercepat perwujudan ekosistem halal.
+                        Mengembangkan sistem manajemen mutu dan layanan berbasis teknologi informasi guna mewujudkan proses pemeriksaan halal yang efektif, efisien, transparan, dan akuntabel.
                       </li>
                       <li className="pl-2">
-                        Memberikan edukasi, pelatihan, dan pendampingan kepada pelaku usaha terkait standar operasional kehalalan produk, penerapan Sistem Jaminan Produk Halal (SJPH), serta keamanan pangan secara berkelanjutan.
+                        Mendukung implementasi Sistem Jaminan Produk Halal (SJPH) melalui pendampingan, edukasi, dan kerja sama dengan pelaku usaha, pemerintah, akademisi, dan pemangku kepentingan lainnya.
+                      </li>
+                      <li className="pl-2">
+                        Membangun dan memperkuat jejaring kerja sama nasional maupun internasional dalam rangka pengembangan ekosistem halal yang berdaya saing global.
                       </li>
                     </ol>
                   </section>
@@ -3339,18 +3342,28 @@ SHA-256 Verified Secure Archive File`;
                     <p className="text-sm">Dokumen Profil LPH Al-Ghazali</p>
                   </div>
 
-                  <p>
-                    Lembaga Pemeriksa Halal (LPH) Al-Ghazali didirikan sebagai wujud nyata dari komitmen Universitas Nahdlatul Ulama Al Ghazali (UNUGHA) Cilacap dalam mengabdi kepada masyarakat, khususnya dalam mendukung ekosistem produk halal di Indonesia sesuai dengan amanat Undang-Undang Nomor 33 Tahun 2014 tentang Jaminan Produk Halal.
-                  </p>
-                  <p>
-                    Berdirinya LPH Al-Ghazali dilatarbelakangi oleh tingginya kebutuhan masyarakat muslim akan jaminan produk halal, serta komitmen pemerintah dalam mensertifikasi produk Usaha Mikro, Kecil, dan Menengah (UMKM). UNUGHA Cilacap, sebagai salah satu perguruan tinggi Nahdlatul Ulama yang memiliki kapasitas sumber daya manusia di bidang sains, teknologi pangan, dan syariah, mengambil peran strategis ini dengan membentuk LPH.
-                  </p>
-                  <p>
-                    Dengan mengintegrasikan sains dan prinsip-prinsip syariat Islam, LPH Al-Ghazali berdedikasi untuk melakukan pemeriksaan dan pengujian kehalalan produk secara objektif, independen, dan terpercaya. Kami dibekali dengan auditor halal yang telah lulus uji kompetensi dari Badan Nasional Sertifikasi Profesi (BNSP) dan terdaftar resmi di Badan Penyelenggara Jaminan Produk Halal (BPJPH).
-                  </p>
-                  <p>
-                    Hingga saat ini, LPH Al-Ghazali terus berkomitmen untuk memberikan layanan sertifikasi halal yang cepat, transparan, dan dapat diakses dengan mudah oleh seluruh lapisan pelaku usaha melalui portal terintegrasi kami, guna mendukung Indonesia sebagai pusat produsen halal dunia.
-                  </p>
+                  <div className="space-y-4">
+                    <h4 className="text-lg font-bold text-emerald-800 border-b border-emerald-100 pb-1">A. Latar Belakang</h4>
+                    <p>
+                      Perkembangan industri halal di Indonesia menunjukkan peningkatan yang sangat pesat seiring meningkatnya kesadaran masyarakat terhadap pentingnya kehalalan produk yang dikonsumsi dan digunakan. Implementasi Undang-Undang Nomor 33 Tahun 2014 tentang Jaminan Produk Halal telah mendorong seluruh pelaku usaha untuk memenuhi kewajiban sertifikasi halal sebagai bentuk perlindungan konsumen dan peningkatan daya saing produk. Sebagai negara dengan populasi muslim terbesar di dunia, Indonesia membutuhkan dukungan lembaga pemeriksa halal yang kompeten, profesional, dan memiliki sumber daya yang memadai untuk membantu proses sertifikasi halal. Kondisi tersebut membuka peluang sekaligus tantangan bagi perguruan tinggi untuk berkontribusi dalam pengembangan ekosistem halal melalui penyediaan tenaga ahli, auditor halal, serta layanan pemeriksaan halal yang kredibel.
+                    </p>
+                    <p>
+                      Universitas Nahdlatul Ulama Al Ghazali (UNUGHA) Cilacap yang berdiri pada tahun 2014 merupakan perguruan tinggi yang lahir dari semangat pengembangan pendidikan tinggi berbasis nilai-nilai Ahlussunnah wal Jama'ah An-Nahdliyah dan memiliki komitmen kuat dalam pengembangan ilmu pengetahuan, teknologi, serta pengabdian kepada masyarakat. Dengan dukungan berbagai program studi yang relevan, seperti Teknik Kimia, Teknik Industri serta bidang ilmu keislaman, UNUGHA memiliki potensi besar untuk berkontribusi dalam penyelenggaraan layanan halal. Selain itu, keberadaan UNUGHA yang berada di wilayah Kabupaten Cilacap dan sekitarnya yang memiliki banyak pelaku UMKM, industri pangan, kosmetik, obat tradisional, jasa pendistribusian dan produk konsumsi lainnya semakin menguatkan kebutuhan akan lembaga pemeriksa halal yang mudah diakses oleh masyarakat dan dunia usaha. Atas dasar tersebut, didirikanlah Lembaga Pemeriksa Halal (LPH) Al Ghazali UNUGHA Cilacap sebagai wujud komitmen perguruan tinggi dalam mendukung penyelenggaraan Jaminan Produk Halal (JPH), meningkatkan kualitas layanan halal, serta memperkuat daya saing produk halal nasional.
+                    </p>
+                  </div>
+
+                  <div className="space-y-4 pt-4">
+                    <h4 className="text-lg font-bold text-emerald-800 border-b border-emerald-100 pb-1">B. Sejarah Pendirian</h4>
+                    <p>
+                      Gagasan pembentukan LPH Al Ghazali berawal dari meningkatnya kebutuhan layanan pemeriksaan halal di wilayah Jawa Tengah bagian selatan, khususnya Kabupaten Cilacap dan daerah sekitarnya. Kebutuhan tersebut semakin meningkat setelah diberlakukannya kewajiban sertifikasi halal bagi berbagai kategori produk yang beredar di Indonesia.
+                    </p>
+                    <p>
+                      Sebagai institusi pendidikan tinggi yang memiliki sumber daya akademik dan keilmuan yang memadai, UNUGHA Cilacap memandang bahwa perguruan tinggi memiliki tanggung jawab untuk berperan aktif dalam mendukung implementasi kebijakan Jaminan Produk Halal. Oleh karena itu, universitas mulai melakukan berbagai persiapan, antara lain penguatan sumber daya manusia, pengembangan kompetensi auditor halal, penyusunan sistem manajemen mutu, serta pembangunan jejaring kerja sama dengan berbagai pemangku kepentingan di bidang halal.
+                    </p>
+                    <p>
+                      Melalui proses persiapan yang terencana dan berkelanjutan, akhirnya dibentuk Lembaga Pemeriksa Halal Al Ghazali sebagai unit yang bertugas melaksanakan pemeriksaan kehalalan produk sesuai dengan ketentuan yang ditetapkan oleh pemerintah melalui Badan Penyelenggara Jaminan Produk Halal. Nama "Al Ghazali" diambil sebagai identitas yang melekat pada Universitas Nahdlatul Ulama Al Ghazali Cilacap, sekaligus mencerminkan semangat keilmuan, integritas, dan nilai-nilai keislaman yang diwariskan oleh ulama besar Imam Al-Ghazali. Nilai-nilai tersebut menjadi landasan dalam menjalankan tugas pemeriksaan halal secara profesional, independen, objektif, dan bertanggung jawab.
+                    </p>
+                  </div>
                   
                   <div className="pt-16 mt-12 border-t border-gray-200 grid grid-cols-2">
                     <div></div>
