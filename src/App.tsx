@@ -805,6 +805,47 @@ Ditetapkan di: Jakarta
 Pada tanggal: 28 Muharram 1442 H / 16 September 2020 M
 Ketua: PROF. DR. H. HASANUDDIN AF, M.A
 Sekretaris: DR. HM. ASRORUN NI’AM SHOLEH, M.A`
+  },
+  {
+    id: 'fatwa-mui-25-2012',
+    nomor: 'Fatwa MUI Nomor 25 Tahun 2012',
+    kategori: 'Fatwa MUI',
+    tentang: 'Hukum Mengonsumsi Bekicot',
+    deskripsi: 'Ketentuan hukum mengenai status haram dalam mengonsumsi, mengolah, membudidayakan, dan memanfaatkan bekicot untuk kepentingan konsumsi.',
+    tahun: '2012',
+    referensiUrl: 'https://halalmui.org/',
+    pasalPenting: [
+      { pasal: 'Ketentuan Pertama - 1', isi: 'Bekicot merupakan salah satu jenis hewan yang masuk kategori hasyarat.' },
+      { pasal: 'Ketentuan Pertama - 2', isi: 'Hukum memakan hasyarat adalah haram menurut jumhur Ulama (Hanafiyyah, Syafi’iyyah, Hanabilah, Zhahiriyyah), sedangkan Imam Malik menyatakan kehalalannya jika ada manfaat dan tidak membahayakan.' },
+      { pasal: 'Ketentuan Pertama - 3', isi: 'Hukum memakan bekicot adalah haram, demikian juga membudidayakan dan memanfaatkannya untuk kepentingan konsumsi.' }
+    ],
+    isiLengkap: `FATWA MAJELIS ULAMA INDONESIA
+NOMOR: 25 TAHUN 2012
+TENTANG
+HUKUM MENGONSUMSI BEKICOT
+
+A. LATAR BELAKANG & MENIMBANG:
+1. bahwa seiring dengan dinamika yang terjadi di masyarakat, ada sekelompok masyarakat dan rumah makan yang memanfaatkan bekicot sebagai salah satu menu untuk pangan;
+2. bahwa masyarakat memerlukan penjelasan tentang hukum memakan bekicot;
+3. bahwa oleh karena itu, Komisi Fatwa Majelis Ulama Indonesia memandang perlu menetapkan fatwa tentang hukum mengonsumsi bekicot untuk dijadikan pedoman oleh masyarakat.
+
+B. KETENTUAN HUKUM:
+1. Bekicot merupakan salah satu jenis hewan yang masuk kategori hasyarat.
+2. Hukum memakan hasyarat adalah haram menurut jumhur Ulama (Hanafiyyah, Syafi’iyyah, Hanabilah, Zhahiriyyah), sedangkan Imam Malik menyatakan kehalalannya jika ada manfaat dan tidak membahayakan.
+3. Hukum memakan bekicot adalah haram, demikian juga membudidayakan dan memanfaatkannya untuk kepentingan konsumsi.
+
+C. REKOMENDASI:
+1. Agar LPPOM MUI dapat menjadikan Fatwa ini sebagai pedoman dalam melakukan sertifikasi halal produk terkait.
+2. Agar masyarakat secara selektif memilih barang konsumsi yang memenuhi ketentuan syari’ah.
+
+D. KETENTUAN PENUTUP:
+1. Fatwa ini mulai berlaku pada tanggal ditetapkan, dengan ketentuan jika di kemudian hari ternyata membutuhkan penyempurnaan, akan diperbaiki dan disempurnakan sebagaimana mestinya.
+2. Agar setiap muslim dan pihak-pihak yang memerlukan dapat mengetahuinya, menghimbau semua pihak untuk menyebarluaskan fatwa ini.
+
+Ditetapkan di: Jakarta
+Pada tanggal: 10 Rajab 1433 H / 31 Mei 2012 M
+Ketua: PROF. DR. H. HASANUDDIN AF, MA
+Sekretaris: DR. HM. ASRORUN NI’AM SHOLEH, MA`
   }
 ];
 
