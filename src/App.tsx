@@ -544,6 +544,61 @@ Mengatur standarisasi label jaminan kehalalan produk:
 Menetapkan persyaratan konsistensi audit dan kelayakan manajemen industri:
 1. Pembentukan Tim Jaminan Halal dengan pembina syariah tersertifikasi.
 2. Penelusuran silsilah bahan kritis (critical materials lineage) dari pemasok pihak ketiga.`
+  },
+  {
+    id: 'fatwa-mui-10-2018',
+    nomor: 'Fatwa MUI Nomor 10 Tahun 2018',
+    kategori: 'Fatwa MUI',
+    tentang: 'Produk Makanan dan Minuman yang Mengandung Alkohol/Etanol',
+    deskripsi: 'Ketentuan hukum mengenai produk makanan dan minuman yang mengandung alkohol/etanol sebagai panduan sertifikasi halal bagi masyarakat dan produsen.',
+    tahun: '2018',
+    referensiUrl: 'https://halalmui.org/',
+    pasalPenting: [
+      { pasal: 'Ketentuan Kedua - 1', isi: 'Minuman beralkohol yang masuk kategori khamr adalah minuman yang mengandung alkohol/etanol (C2H5OH) minimal 0.5 %, hukumnya najis dan haram, sedikit ataupun banyak.' },
+      { pasal: 'Ketentuan Kedua - 2', isi: 'Penggunaan alkohol/etanol hasil industri non khamr (baik dari sintesis kimiawi ataupun fermentasi non khamr) untuk bahan produk makanan hukumnya mubah, apabila secara medis tidak membahayakan.' },
+      { pasal: 'Ketentuan Kedua - 3', isi: 'Penggunaan alkohol/etanol hasil industri non khamr untuk bahan produk minuman hukumnya mubah, apabila secara medis tidak membahayakan dan kadar pada produk akhir kurang dari 0.5%.' },
+      { pasal: 'Ketentuan Ketiga - 2', isi: 'Produk minuman hasil fermentasi yang mengandung alkohol/etanol minimal 0.5%, hukumnya haram.' },
+      { pasal: 'Ketentuan Keempat - 1', isi: 'Produk makanan hasil fermentasi yang mengandung alkohol/etanol hukumnya halal, selama dalam prosesnya tidak menggunakan bahan haram dan apabila secara medis tidak membahayakan.' }
+    ],
+    isiLengkap: `FATWA MAJELIS ULAMA INDONESIA
+NOMOR: 10 TAHUN 2018
+TENTANG
+PRODUK MAKANAN DAN MINUMAN YANG MENGANDUNG ALKOHOL/ETANOL
+
+A. LATAR BELAKANG & MENIMBANG:
+- Bahwa ajaran Islam bertujuan memelihara keselamatan agama, jiwa, akal, keturunan, dan harta.
+- Bahwa saat ini alkohol banyak digunakan sebagai bahan baku, bahan tambahan, dan/atau bahan penolong dalam produksi makanan dan minuman, baik skala rumahan maupun industri.
+
+B. KETENTUAN HUKUM:
+Pertama: Ketentuan Umum
+1. Khamr adalah setiap minuman yang memabukkan, baik dari anggur maupun yang lainnya, baik dimasak maupun tidak.
+2. Alkohol adalah etil alkohol atau etanol, suatu senyawa kimia dengan rumus (C2H5OH).
+3. Minuman beralkohol adalah:
+   a) Minuman yang mengandung etanol dan senyawa lainnya yang dibuat secara fermentasi dengan rekayasa dari berbagai jenis bahan baku nabati yang mengandung karbohidrat, atau
+   b) Minuman yang ditambahkan etanol dan/atau metanol dengan sengaja.
+
+Kedua: Ketentuan Hukum Utama
+1. Minuman beralkohol yang masuk kategori khamr adalah minuman yang mengandung alkohol/etanol (C2H5OH) minimal 0.5%. Minuman beralkohol yang masuk kategori khamr adalah najis dan hukumnya haram, sedikit ataupun banyak.
+2. Penggunaan alkohol/etanol hasil industri non khamr (baik merupakan hasil sintesis kimiawi ataupun hasil industri fermentasi non khamr) untuk bahan produk makanan hukumnya mubah, apabila secara medis tidak membahayakan.
+3. Penggunaan alkohol/etanol hasil industri non khamr untuk bahan produk minuman hukumnya mubah, apabila secara medis tidak membahayakan dan selama kadar alkohol/etanol (C2H5OH) pada produk akhir kurang dari 0.5%.
+4. Penggunaan produk-antara (intermediate product) yang tidak dikonsumsi langsung seperti flavour yang mengandung alkohol/etanol non khamr untuk bahan produk makanan hukumnya mubah, apabila secara medis tidak membahayakan.
+5. Penggunaan produk-antara (intermediate product) yang tidak dikonsumsi langsung seperti flavour yang mengandung alkohol/etanol non khamr untuk bahan produk minuman hukumnya mubah, apabila secara medis tidak membahayakan dan selama kadar alkohol/etanol (C2H5OH) pada produk akhir kurang dari 0.5%.
+
+Ketiga: Ketentuan Terkait Produk Minuman yang Mengandung Alkohol:
+1. Produk minuman yang mengandung khamr hukumnya haram.
+2. Produk minuman hasil fermentasi yang mengandung alkohol/etanol minimal 0.5%, hukumnya haram.
+3. Produk minuman hasil fermentasi yang mengandung alkohol/etanol kurang dari 0.5% hukumnya halal jika secara medis tidak membahayakan.
+4. Produk minuman non fermentasi yang mengandung alkohol/etanol kurang dari 0.5% yang bukan berasal dari khamr hukumnya halal, apabila secara medis tidak membahayakan.
+
+Keempat: Ketentuan Terkait Produk Makanan yang Mengandung Alkohol/Etanol:
+1. Produk makanan hasil fermentasi yang mengandung alkohol/etanol hukumnya halal, selama dalam prosesnya tidak menggunakan bahan haram dan apabila secara medis tidak membahayakan.
+2. Produk makanan hasil fermentasi dengan penambahan alkohol/etanol non khamr hukumnya halal, selama dalam prosesnya tidak menggunakan bahan haram dan apabila secara medis tidak membahayakan.
+3. Vinegar/cuka yang berasal dari khamr baik terjadi dengan sendirinya maupun melalui rekayasa, hukumnya halal dan suci.
+4. Produk makanan hasil fermentasi susu berbentuk pasta/padat yang mengandung alkohol/etanol adalah halal, selama dalam prosesnya tidak menggunakan bahan haram dan apabila secara medis tidak membahayakan.
+5. Produk makanan yang ditambahkan khamr adalah haram.
+
+Ditetapkan di: Jakarta
+Pada tanggal: 12 Jumadil Akhir 1439 H / 28 Februari 2018 M`
   }
 ];
 
@@ -1733,9 +1788,19 @@ SHA-256 Verified Secure Archive File`;
                       setSelectedRegulasiCategory('SNI');
                       setActiveDoc(null);
                     }} 
-                    className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center cursor-pointer"
+                    className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50 cursor-pointer"
                   >
                     <Award className="w-4 h-4 mr-2 text-emerald-600" /> Setandar Nasional(SNI)
+                  </button>
+                  <button 
+                    onClick={() => {
+                      setLandingSubView('regulasi');
+                      setSelectedRegulasiCategory('Fatwa MUI');
+                      setActiveDoc(null);
+                    }} 
+                    className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center cursor-pointer"
+                  >
+                    <FileText className="w-4 h-4 mr-2 text-emerald-600" /> Fatwa MUI
                   </button>
                 </div>
               </div>
@@ -1889,6 +1954,17 @@ SHA-256 Verified Secure Archive File`;
                   className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600 flex items-center"
                 >
                   Setandar Nasional(SNI)
+                </button>
+                <button 
+                  onClick={() => {
+                    setLandingSubView('regulasi');
+                    setSelectedRegulasiCategory('Fatwa MUI');
+                    setActiveDoc(null);
+                    setIsMobileMenuOpen(false);
+                  }} 
+                  className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600 flex items-center"
+                >
+                  Fatwa MUI
                 </button>
               </div>
             </div>
@@ -6561,10 +6637,41 @@ function AdminRegulasi({ data = [], addData, updateData, deleteData }: any) {
     pasalPenting: [
       { pasal: '', isi: '' }
     ],
-    isiLengkap: ''
+    isiLengkap: '',
+    fileData: '',
+    fileName: '',
+    fileSize: '',
+    fileExtension: ''
   };
 
   const [formData, setFormData] = useState(initialFormState);
+
+  const handleFileSelected = (file: File) => {
+    const ext = file.name.split('.').pop()?.toLowerCase() || '';
+    if (ext !== 'pdf' && ext !== 'xlsx' && ext !== 'xls') {
+      alert('Format file tidak didukung! Hanya file PDF (.pdf) dan Excel (.xlsx, .xls) yang diperbolehkan.');
+      return;
+    }
+    
+    // Check filesize: limit to 2MB to keep Base64 strings reasonable
+    if (file.size > 2 * 1024 * 1024) {
+      alert('Ukuran file terlalu besar! Maksimal ukuran file adalah 2 MB.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target?.result as string;
+      setFormData(prev => ({
+        ...prev,
+        fileData: dataUrl,
+        fileName: file.name,
+        fileSize: (file.size / 1024).toFixed(1) + ' KB',
+        fileExtension: ext
+      }));
+    };
+    reader.readAsDataURL(file);
+  };
 
   const openModal = (regulasi: any = null) => {
     if (regulasi) {
@@ -6579,7 +6686,11 @@ function AdminRegulasi({ data = [], addData, updateData, deleteData }: any) {
         pasalPenting: regulasi.pasalPenting && regulasi.pasalPenting.length > 0
           ? [...regulasi.pasalPenting]
           : [{ pasal: '', isi: '' }],
-        isiLengkap: regulasi.isiLengkap || ''
+        isiLengkap: regulasi.isiLengkap || '',
+        fileData: regulasi.fileData || '',
+        fileName: regulasi.fileName || '',
+        fileSize: regulasi.fileSize || '',
+        fileExtension: regulasi.fileExtension || ''
       });
     } else {
       setEditId(null);
@@ -6858,6 +6969,59 @@ function AdminRegulasi({ data = [], addData, updateData, deleteData }: any) {
                       </div>
                     ))}
                   </div>
+                </div>
+
+                {/* UPLOAD FILE LAMPIRAN (PDF & EXCEL) */}
+                <div className="border border-gray-200 rounded-lg p-4 bg-gray-50/55 space-y-3">
+                  <label className="block text-sm font-bold text-gray-800">Lampiran Dokumen Tambahan (PDF/Excel)</label>
+                  <p className="text-xs text-gray-500">Unggah salinan resmi regulasi ini dalam format PDF (.pdf) atau Excel (.xlsx/.xls) jika ada.</p>
+                  
+                  {formData.fileData ? (
+                    <div className="flex items-center justify-between p-3 bg-white border border-emerald-200 rounded-lg shadow-xs">
+                      <div className="flex items-center gap-3">
+                        <FileText className="w-8 h-8 text-emerald-600 bg-emerald-50 p-1.5 rounded" />
+                        <div className="min-w-0">
+                          <p className="text-xs font-bold text-gray-800 truncate max-w-xs sm:max-w-md">{formData.fileName}</p>
+                          <p className="text-[10px] text-gray-500 font-mono font-bold uppercase">{formData.fileExtension} &bull; {formData.fileSize}</p>
+                        </div>
+                      </div>
+                      <button 
+                        type="button" 
+                        onClick={() => setFormData({ ...formData, fileData: '', fileName: '', fileSize: '', fileExtension: '' })}
+                        className="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 p-2 rounded-lg transition-all"
+                        title="Hapus file lampiran"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div 
+                      onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add('border-emerald-500', 'bg-emerald-50/30'); }}
+                      onDragLeave={(e) => { e.currentTarget.classList.remove('border-emerald-500', 'bg-emerald-50/30'); }}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        e.currentTarget.classList.remove('border-emerald-500', 'bg-emerald-50/30');
+                        const file = e.dataTransfer.files?.[0];
+                        if (file) handleFileSelected(file);
+                      }}
+                      onClick={() => document.getElementById('reg_file_upload')?.click()}
+                      className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-emerald-500 hover:bg-emerald-50/20 transition-all cursor-pointer group"
+                    >
+                      <input 
+                        id="reg_file_upload"
+                        type="file" 
+                        accept=".pdf,.xlsx,.xls"
+                        className="hidden" 
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) handleFileSelected(file);
+                        }}
+                      />
+                      <UploadCloud className="w-10 h-10 text-gray-400 group-hover:text-emerald-600 mx-auto mb-2 transition-colors" />
+                      <span className="block text-xs font-bold text-gray-700">Tarik & Lepas dokumen di sini atau <span className="text-emerald-600 group-hover:underline">Pilih File</span></span>
+                      <span className="block text-[10px] text-gray-400 mt-1">Mendukung format PDF (.pdf) & Excel (.xlsx, .xls) (Maks 2MB)</span>
+                    </div>
+                  )}
                 </div>
 
                 <div>

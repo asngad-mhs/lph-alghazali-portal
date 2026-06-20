@@ -85,6 +85,10 @@
           }
         },
         "isiLengkap": { "type": "string" },
+        "fileData": { "type": "string" },
+        "fileName": { "type": "string" },
+        "fileSize": { "type": "string" },
+        "fileExtension": { "type": "string" },
         "lastUpdated": { "type": "string" }
       },
       "required": ["nomor", "kategori", "tentang", "tahun"]
