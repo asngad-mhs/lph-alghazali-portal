@@ -599,6 +599,212 @@ Keempat: Ketentuan Terkait Produk Makanan yang Mengandung Alkohol/Etanol:
 
 Ditetapkan di: Jakarta
 Pada tanggal: 12 Jumadil Akhir 1439 H / 28 Februari 2018 M`
+  },
+  {
+    id: 'fatwa-mui-07-2010',
+    nomor: 'Fatwa MUI Nomor 07 Tahun 2010',
+    kategori: 'Fatwa MUI',
+    tentang: 'Kopi Luwak',
+    deskripsi: 'Ketentuan hukum mengenai status kehalalan mengonsumsi, memproduksi, serta memperjualbelikan Kopi Luwak.',
+    tahun: '2010',
+    referensiUrl: 'https://halalmui.org/',
+    pasalPenting: [
+      { pasal: 'Ketentuan Pertama', isi: 'Kopi Luwak adalah kopi yang berasal dari biji buah kopi yang dimakan oleh luwak (Paradoxurus hermaphroditus) kemudian keluar bersama kotorannya dengan syarat: biji kopi masih utuh terbungkus kulit tanduk, dan dapat tumbuh jika ditanam kembali.' },
+      { pasal: 'Ketentuan Kedua - 1', isi: 'Kopi Luwak sebagaimana dimaksud dalam ketentuan umum adalah mutanajjis (barang terkena najis), bukan najis.' },
+      { pasal: 'Ketentuan Kedua - 2', isi: 'Kopi Luwak sebagaimana dimaksud dalam ketentuan umum adalah halal setelah disucikan.' },
+      { pasal: 'Ketentuan Kedua - 3', isi: 'Mengonsumsi Kopi Luwak sebagaimana dimaksud angka 2 hukumnya boleh.' },
+      { pasal: 'Ketentuan Kedua - 4', isi: 'Memproduksi dan memperjualbelikan Kopi Luwak hukumnya boleh.' }
+    ],
+    isiLengkap: `FATWA MAJELIS ULAMA INDONESIA
+NOMOR: 07 TAHUN 2010
+TENTANG
+KOPI LUWAK
+
+A. LATAR BELAKANG & MENIMBANG:
+a. bahwa di masyarakat muncul usaha kopi luwak, di mana kopi tersebut berasal dari biji kopi yang dimakan oleh luwak dan kemudian dikeluarkan kembali bersama kotorannya, kemudian diolah menjadi serbuk kopi yang dikonsumsi masyarakat dan dikenal dengan kopi luwak;
+b. bahwa terhadap masalah tersebut, muncul pertanyaan di tengah masyarakat terkait hukum mengonsumsi kopi luwak;
+c. bahwa oleh karena itu dipandang perlu adanya fatwa tentang Kopi Luwak sebagai pedoman bagi masyarakat, baik dalam rangka memproduksi, menjual, maupun mengonsumsi kopi luwak.
+
+B. KETENTUAN HUKUM:
+Pertama: Ketentuan Umum
+Dalam fatwa ini yang dimaksud dengan:
+Kopi Luwak adalah kopi yang berasal dari biji buah kopi yang dimakan oleh luwak (paradoxurus hermaphroditus) kemudian keluar bersama kotorannya dengan syarat:
+1. biji kopi masih utuh terbungkus kulit tanduk.
+2. dapat tumbuh jika ditanam kembali.
+
+Kedua: Ketentuan Hukum Utama
+1. Kopi Luwak sebagaimana dimaksud dalam ketentuan umum adalah mutanajjis (barang terkena najis), bukan najis.
+2. Kopi Luwak sebagaimana dimaksud dalam ketentuan umum adalah halal setelah disucikan.
+3. Mengonsumsi Kopi Luwak sebagaimana dimaksud angka 2 hukumnya boleh.
+4. Memproduksi dan memperjualbelikan Kopi Luwak hukumnya boleh.
+
+Ketiga: Ketentuan Penutup
+1. Fatwa ini berlaku sejak tanggal ditetapkan, dengan ketentuan jika di kemudian hari ternyata terdapat kekeliruan, akan diperbaiki dan disempurnakan sebagaimana mestinya.
+2. Agar setiap muslim dan pihak-pihak yang memerlukan dapat mengetahuinya, menghimbau semua pihak untuk menyebarluaskan fatwa ini.
+
+Ditetapkan di: Jakarta
+Pada tanggal: 8 Sya'ban 1430 H / 20 Juli 2010 M
+Ketua: Dr. H. M. ANWAR IBRAHIM
+Sekretaris: Dr. H. HASANUDIN, M.Ag`
+  },
+  {
+    id: 'fatwa-mui-44-2020',
+    nomor: 'Fatwa MUI Nomor 44 Tahun 2020',
+    kategori: 'Fatwa MUI',
+    tentang: 'Penggunaan Nama, Bentuk dan Kemasan Produk yang Tidak Dapat Disertifikasi Halal',
+    deskripsi: 'Ketentuan standar penggunaan nama, bentuk, dan kemasan produk pangan, obat, kosmetik, serta barang gunaan yang tidak dapat disertifikasi halal.',
+    tahun: '2020',
+    referensiUrl: 'https://halalmui.org/',
+    pasalPenting: [
+      { pasal: 'Ketentuan Kedua - 1', isi: 'Produk yang menggunakan nama dan/atau simbol-simbol kekufuran, kemaksiatan, dan/atau berkonotasi negatif tidak dapat disertifikasi halal.' },
+      { pasal: 'Ketentuan Kedua - 2', isi: 'Produk yang menggunakan nama benda/hewan yang diharamkan tidak dapat disertifikasi halal, kecuali: (a) yang telah mentradisi (\'urf) tanpa bahan haram, (b) tidak mengkhawatirkan penafsiran kebolehan konsumsi hewan tersebut, (c) memiliki makna lain secara umum.' },
+      { pasal: 'Ketentuan Kedua - 3 & 4', isi: 'Produk yang berbentuk babi dan anjing dengan berbagai desainnya, serta produk yang menggunakan kemasan bergambar babi dan anjing sebagai fokus utama tidak dapat disertifikasi halal.' },
+      { pasal: 'Ketentuan Kedua - 5 & 6', isi: 'Produk yang memiliki rasa/aroma (flavour) unsur benda atau hewan yang diharamkan, atau menggunakan kemasan berbentuk dan/atau bergambar erotis dan porno tidak dapat disertifikasi halal.' }
+    ],
+    isiLengkap: `FATWA MAJELIS ULAMA INDONESIA
+NOMOR: 44 TAHUN 2020
+TENTANG
+PENGGUNAAN NAMA, BENTUK DAN KEMASAN PRODUK YANG TIDAK DAPAT DISERTIFIKASI HALAL
+
+A. LATAR BELAKANG & MENIMBANG:
+a. bahwa untuk menjamin kebutuhan masyarakat tentang produk halal, perlu dilakukan sertifikasi halal;
+b. bahwa untuk melaksanakan sertifikasi halal pada produk makanan, minuman, kosmetika, obat-obatan, dan barang gunaan, perlu ditetapkan standar penggunaan nama, bentuk dan kemasan produk halal;
+c. bahwa untuk itu, Majelis Ulama Indonesia memandang perlu menetapkan fatwa tentang penggunaan nama, bentuk dan kemasan produk yang tidak dapat disertifikasi halal.
+
+B. KETENTUAN UMUM:
+Dalam fatwa ini, yang dimaksud dengan:
+1. Produk adalah barang dan/atau jasa yang terkait dengan makanan, minuman, obat, kosmetik, produk kimiawi, produk biologi, produk rekayasa genetik, serta barang gunaan yang dipakai, digunakan, atau dimanfaatkan oleh masyarakat.
+2. Produk yang disertifikasi halal adalah produk yang dapat diproses untuk dilakukan sertifikasi halal.
+3. Produk yang tidak disertifikasi halal adalah produk yang tidak dapat diproses untuk dilakukan sertifikasi halal.
+4. 'Urf adalah segala sesuatu yang sudah dikenal oleh manusia karena telah menjadi kebiasaan atau tradisi, baik bersifat perkataan, perbuatan, atau dalam kaitannya meninggalkan perbuatan tertentu.
+
+C. KETENTUAN HUKUM:
+Produk berikut tidak dapat disertifikasi halal:
+1. Produk yang menggunakan nama dan/atau simbol-simbol kekufuran, kemaksiatan, dan/atau berkonotasi negatif;
+2. Produk yang menggunakan nama benda/hewan yang diharamkan, kecuali:
+   a. yang telah mentradisi ('urf) yang dipastikan tidak mengandung bahan yang diharamkan;
+   b. yang menurut pandangan umum tidak ada kekhawatiran adanya penafsiran kebolehan mengkonsumsi hewan yang diharamkan tersebut;
+   c. yang mempunyai makna lain yang relevan dan secara empirik telah digunakan secara umum.
+3. Produk yang berbentuk babi dan anjing dengan berbagai desainnya;
+4. Produk yang menggunakan kemasan bergambar babi dan anjing sebagai fokus utama;
+5. Produk yang memiliki rasa/aroma (flavour) unsur benda atau hewan yang diharamkan;
+6. Produk yang menggunakan kemasan yang berbentuk dan/atau bergambar erotis dan porno.
+
+D. REKOMENDASI:
+1. Para ulama dihimbau dapat mensosialisasikan fatwa ini kepada umat melalui khutbah, ceramah, dan media yang ada.
+2. Umat Islam dan pelaku usaha dihimbau untuk menjadikan fatwa ini sebagai pedoman dalam penggunaan nama, bungkus dan kemasan pada produk makanan, minuman, kosmetika, obat-obatan, dan barang gunaan lainnya.
+3. Pemerintah diharapkan membuat kebijakan yang sejalan dengan fatwa ini.
+
+E. KETENTUAN PENUTUP:
+1. Fatwa ini mulai berlaku pada tanggal ditetapkan, dengan ketentuan jika di kemudian hari ternyata dibutuhkan perbaikan, akan diperbaiki dan disempurnakan sebagaimana mestinya.
+2. Agar setiap muslim dan pihak-pihak yang memerlukan dapat mengetahuinya, menghimbau semua pihak untuk menyebarluaskan fatwa ini.
+
+Ditetapkan di: Jakarta
+Pada tanggal: 15 Dzulhijjah 1441 H / 5 Agustus 2020 M
+Ketua: PROF. DR. H. HASANUDDIN AF, M.A
+Sekretaris: DR. HM. ASRORUN NI’AM SHOLEH, M.A`
+  },
+  {
+    id: 'fatwa-mui-02-2010',
+    nomor: 'Fatwa MUI Nomor 02 Tahun 2010',
+    kategori: 'Fatwa MUI',
+    tentang: 'Air Daur Ulang',
+    deskripsi: 'Ketentuan hukum mengenai status kesucian dan kehalalan penggunaan air hasil daur ulang (rekayasa teknologi) untuk berwudhu, mandi, ibadah, konsumsi, dan memasak.',
+    tahun: '2010',
+    referensiUrl: 'https://halalmui.org/',
+    pasalPenting: [
+      { pasal: 'Ketentuan Hukum - 1', isi: 'Air daur ulang adalah suci mensucikan (thahir muthahhir), sepanjang diproses sesuai dengan ketentuan fikih.' },
+      { pasal: 'Ketentuan Hukum - 2', isi: 'Pensucian air daur ulang dapat dilakukan dengan tiga cara: Thariqat an-Nazh (pengurasan), Thariqah al-Mukatsarah (penambahan air), atau Thariqah Taghyir (alat bantu suci dengan volume > 2 kullah).' },
+      { pasal: 'Ketentuan Hukum - 3', isi: 'Air daur ulang boleh digunakan untuk berwudhu, mandi, mensucikan najis, istinja\', serta halal diminum dan digunakan untuk memasak selama tidak membahayakan kesehatan.' }
+    ],
+    isiLengkap: `FATWA MAJELIS ULAMA INDONESIA
+NOMOR: 02 TAHUN 2010
+TENTANG
+AIR DAUR ULANG
+
+A. LATAR BELAKANG & MENIMBANG:
+a. bahwa perkembangan teknologi memungkinkan daur ulang air yang semula berasal dari limbah yang bercampur dengan kotoran, benda najis, dan komponen lain yang merubah kemutlakan air;
+b. bahwa penggunaan air daur ulang dalam masyarakat meningkat seiring dengan peningkatan pesat kebutuhan air dan penurunan kualitas sumber air akibat dari peningkatan jumlah penduduk, laju urbanisasi dan perkembangan industri;
+c. bahwa selama ini belum ada standar baku kehalalan dalam pemanfaatan air daur ulang sehingga muncul pertanyaan seputar hukum pemanfaatannya;
+d. bahwa oleh karena itu dipandang perlu menetapkan fatwa tentang pemanfaatan air daur ulang guna dijadikan pedoman.
+
+B. KETENTUAN UMUM:
+1. Dalam fatwa ini yang dimaksud dengan air daur ulang adalah air hasil olahan (rekayasa teknologi) dari air yang telah digunakan (musta'mal), terkena najis (mutanajjis) atau yang telah berubah salah satu sifatnya, yakni rasa, warna, dan bau (mutaghayyir) sehingga dapat dimanfaatkan kembali.
+2. Air dua kullah adalah air yang volumenya mencapai paling kurang 270 liter.
+
+C. KETENTUAN HUKUM:
+1. Air daur ulang adalah suci mensucikan (thahir muthahhir), sepanjang diproses sesuai dengan ketentuan fikih.
+2. Ketentuan fikih sebagaimana dimaksud dalam ketentuan hukum nomor 1 adalah dengan salah satu dari tiga cara berikut:
+   a. Thariqat an-Nazh: yaitu dengan cara menguras air yang terkena najis atau yang telah berubah sifatnya tersebut; sehingga yang tersisa tinggal air yang aman dari najis dan yang tidak berubah salah satu sifatnya.
+   b. Thariqah al-Mukatsarah: yaitu dengan cara menambahkan air suci lagi mensucikan (thahir muthahhir) pada air yang terkena najis (mutanajjis) atau yang berubah (mutaghayyir) tersebut hingga mencapai volume paling kurang dua kullah; serta unsur najis dan semua sifat yang menyebabkan air itu berubah menjadi hilang.
+   c. Thariqah Taghyir: yaitu dengan cara mengubah air yang terkena najis atau yang telah berubah sifatnya tersebut dengan menggunakan alat bantu yang dapat mengembalikan sifat-sifat asli air itu menjadi suci lagi mensucikan (thahir muthahhir), dengan syarat:
+      1) Volume airnya lebih dari dua kullah.
+      2) Alat bantu yang digunakan harus suci.
+3. Air daur ulang sebagaimana dimaksud dalam angka 1 boleh dipergunakan untuk berwudlu, mandi, mensucikan najis dan istinja', serta halal diminum, digunakan untuk memasak dan untuk kepentingan lainnya, selama tidak membahayakan kesehatan.
+
+D. REKOMENDASI:
+1. Meminta Pemerintah untuk memasukkan standar kehalalan air dalam penetapan ketentuan mengenai standar air bersih dan standar air minum di samping standar kesehatannya, sesuai dengan ketentuan fatwa ini.
+2. Meminta Pemerintah, PDAM dan pihak yang mengelola daur ulang air serta seluruh pemangku kepentingan diharapkan meningkatkan mutu dan kualitas kecanggihan alat yang dipergunakannya sejalan dengan kemajuan zaman dengan menjadikan fatwa ini sebagai pedoman.
+
+E. KETENTUAN PENUTUP:
+1. Fatwa ini mulai berlaku pada tanggal ditetapkan, dengan ketentuan jika di kemudian hari ternyata dibutuhkan perbaikan, akan diperbaiki dan disempurnakan sebagaimana mestinya.
+2. Agar setiap muslim dan pihak-pihak yang memerlukan dapat mengetahuinya, menghimbau semua pihak untuk menyebarluaskan fatwa ini.
+
+Ditetapkan di: Jakarta
+Pada tanggal: 11 Shafar 1431 H / 27 Januari 2010 M
+Ketua: Dr. H. M. ANWAR IBRAHIM
+Sekretaris: Dr. H. HASANUDIN, M.Ag`
+  },
+  {
+    id: 'fatwa-mui-53-2020',
+    nomor: 'Fatwa MUI Nomor 53 Tahun 2020',
+    kategori: 'Fatwa MUI',
+    tentang: 'Penyucian (Tathhir) Menggunakan Cara Wet Cleaning',
+    deskripsi: 'Ketentuan hukum dan tata cara penyucian (tathhir) secara syar\'i menggunakan metode wet cleaning (mencuci basah) dengan air.',
+    tahun: '2020',
+    referensiUrl: 'https://halalmui.org/',
+    pasalPenting: [
+      { pasal: 'Ketentuan Kedua - 1', isi: 'Penyucian dengan cara wet cleaning hukumnya boleh (jawaz) dengan syarat bahan pencucinya tidak mengandung najis dan prosesnya secara syar’i.' },
+      { pasal: 'Ketentuan Kedua - 2', isi: 'Penyucian secara syar’i dilakukan dengan mengucurkan air hingga hilang rasa, bau, dan warna najis, atau memasukkannya ke dalam air banyak.' },
+      { pasal: 'Ketentuan Kedua - 3 & 4', isi: 'Jika pakaian dicuci dengan air kurang dari 2 Qullah terdapat najis, harus dihilangkan dahulu. Najis mughallazhah dicuci 7 kali, salah satunya dengan tanah/debu.' },
+      { pasal: 'Ketentuan Kedua - 5', isi: 'Apabila pencucian telah maksimal tetapi salah satu dari bau atau warna masih ada karena sulit dihilangkan, maka hukumnya suci.' }
+    ],
+    isiLengkap: `FATWA MAJELIS ULAMA INDONESIA
+NOMOR: 53 TAHUN 2020
+TENTANG
+PENYUCIAN (TATHHIR) MENGGUNAKAN CARA WET CLEANING
+
+A. LATAR BELAKANG & MENIMBANG:
+a. bahwa umat Islam diwajibkan untuk menghilangkan najis (izalah al-najahah) terutama yang ada pada tubuh, pakaian, dan peralatan yang dikenakan pada saat shalat;
+b. bahwa kewajiban menghilangakan najis sebagaimana pada huruf a dipergunakan air yang suci dan menyucikan;
+c. bahwa menghilangkan najis menggunakan air yang suci dan menyucikan sebagaimana pada huruf b bisa dilakukan melalui penyucian (tathhir) menggunakan cara wet Cleaning;
+d. bahwa berdasarkan hal di atas, muncul pertanyaan masyarakat tentang status hukumnya;
+e. bahwa oleh karena itu, Komisi Fatwa MUI memandang perlu menetapkan fatwa tentang penyucian (tathir) menggunakan cara wet cleaning sebagai pedoman.
+
+B. KETENTUAN UMUM:
+Dalam Fatwa ini, yang dimaksud dengan:
+1. Wet cleaning atau mencuci basah adalah mencuci dengan menggunakan air dengan atau tanpa menggunakan sabun, deterjen atau bahan pencuci lain untuk menyucikan pakaian dan bahan-bahan lain.
+2. Air banyak adalah air yang jumlahnya minimal 2 qullah (270 liter).
+3. Najis mutawassithah adalah najis sedang, yaitu najis yang ditimbulkan karena bersentuhan dengan barang najis selain najis mukhaffafah dan najis mughallazhah.
+4. Najis Mughallazhah adalah najis berat, yaitu najisnya babi, anjing, dan turunan keduanya.
+
+C. KETENTUAN HUKUM:
+1. Penyucian dengan cara wet cleaning sebagaimana dimaksud pada ketentuan umum di atas hukumnya boleh (jawaz) dengan syarat bahan-bahan pencucinya tidak mengandung najis dan proses penyuciannya dilakukan secara syar’i.
+2. Penyucian secara syar’i sebagaimana dimaksud pada poin 1 (satu) adalah dengan salah satu cara sebagai berikut:
+   a. Mengucurkan air hingga hilang rasa, bau dan warna najisnya.
+   b. Memasukkan ke dalam air yang banyak hingga hilang rasa, bau dan warna najisnya.
+3. Dalam hal pakaian yang akan dicuci dengan air yang kurang dari 2 Qullah terdapat benda najis, baik najis mutawassitah maupun mughalladzah, maka najis tersebut harus dihilangkan lebih dahulu.
+4. Dalam hal bahan yang dicuci terdapat najis mughallazhah, cara mencucinya dengan menggunakan air sebanyak tujuh kali, salah satunya dengan tanah/debu atau penggantinya yang memiliki daya pembersih yang sama.
+5. Apabila telah dilakukan pencucian sebagaimana pada poin 2 (dua) secara maksimal akan tetapi salah satu dari bau atau warna, masih ada karena sulit dihilangkan maka hukumnya suci.
+
+D. KETENTUAN PENUTUP:
+1. Fatwa ini mulai berlaku pada tanggal ditetapkan, dengan ketentuan jika di kemudian hari ternyata dan/atau dibutuhkan perbaikan, akan diperbaiki dan disempurnakan sebagaimana mestinya.
+2. Agar setiap muslim dan pihak-pihak yang memerlukan dapat mengetahuinya, menghimbau semua pihak untuk menyebarluaskan fatwa ini.
+
+Ditetapkan di: Jakarta
+Pada tanggal: 28 Muharram 1442 H / 16 September 2020 M
+Ketua: PROF. DR. H. HASANUDDIN AF, M.A
+Sekretaris: DR. HM. ASRORUN NI’AM SHOLEH, M.A`
   }
 ];
 
