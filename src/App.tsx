@@ -3924,7 +3924,7 @@ SHA-256 Verified Secure Archive File`;
                     <div></div>
                     <div className="text-center text-sm">
                       <p className="mb-16">Cilacap, Jawa Tengah</p>
-                      <p className="font-bold underline">Manajer Puncak LPH Al-Ghazali</p>
+                      <p className="font-bold underline">Direktur LPH Al Ghazali</p>
                       <p>NIP. -</p>
                     </div>
                   </div>
