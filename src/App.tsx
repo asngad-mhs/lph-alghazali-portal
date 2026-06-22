@@ -2560,9 +2560,18 @@ SHA-256 Verified Secure Archive File`;
                         <div className="md:w-1/2 md:pr-12 md:text-right text-center mb-4 md:mb-0">
                             <h3 className="text-xl font-bold text-gray-900 mb-2 font-sans">3. Upload Dokumen Persyaratan</h3>
                             <p className="text-gray-650 text-sm">Unggah dokumen pelengkap secara digital sesuai dengan jenis produk spesifik yang didaftarkan.</p>
-                            <div className="mt-3 text-xs bg-emerald-50 text-emerald-800 p-3 rounded-xl border border-emerald-100 inline-block text-left shadow-sm">
-                                <span className="font-bold text-emerald-950 uppercase tracking-wide bg-emerald-200 px-1.5 py-0.5 rounded text-[10px] mr-2">Edukasi Dokumen</span>
-                                Persyaratan mencakup data profil, formulasi bahan, serta bagan alir proses. Dokumen yang diunggah secara lengkap di awal akan mempercepat verifikasi berkas tanpa kendala revisi.
+                            <div className="mt-3 text-[10px] md:text-xs bg-emerald-50 text-emerald-800 p-3 rounded-xl border border-emerald-100 inline-block text-left shadow-sm max-w-md">
+                                <span className="font-bold text-emerald-950 uppercase tracking-wide bg-emerald-200 px-1.5 py-0.5 rounded text-[9px] mr-2 block w-fit mb-2">Edukasi Dokumen</span>
+                                <ul className="list-disc list-inside space-y-1">
+                                    <li>Surat Permohonan Pelaku Usaha</li>
+                                    <li>Formulir Pendaftaran (input di SIHALAL)</li>
+                                    <li>Aspek Legal: NIB RBA (Berbasis Risiko)</li>
+                                    <li>Daftar Nama Produk & Bahan/Menu (input di SIHALAL)</li>
+                                    <li>Manual Sistem Jaminan Produk Halal/SJPH (input di SIHALAL)</li>
+                                    <li>Proses Pengolahan Produk</li>
+                                    <li>Dokumen pendukung bahan & catatan implementasi (pembelian & pemeriksaan bahan)</li>
+                                    <li>Dokumen Penyelia Halal (KTP, SK Penetapan, NIK terintegrasi SIHALAL, & Sertifikat Pelatihan)</li>
+                                </ul>
                             </div>
                         </div>
                         <div className="w-12 h-12 bg-emerald-600 text-white rounded-full flex items-center justify-center font-bold text-xl relative z-10 mx-auto md:mx-0 shadow-lg border-4 border-gray-50 shrink-0">3</div>
@@ -2621,7 +2630,7 @@ SHA-256 Verified Secure Archive File`;
                             <p className="text-gray-650 text-sm">Penyusunan laporan akhir pemeriksaan halal dan perumusan keputusan rekomendasi kehalalan oleh Tim Ahli LPH.</p>
                             <div className="mt-3 text-xs bg-emerald-50 text-emerald-800 p-3 rounded-xl border border-emerald-100 inline-block text-left shadow-sm">
                                 <span className="font-bold text-emerald-950 uppercase tracking-wide bg-emerald-200 px-1.5 py-0.5 rounded text-[10px] mr-2">Edukasi Fatwa</span>
-                                LPH Al-Ghazali mendukung penyelesaian laporan dalam hari ke-3 secara presisi untuk langsung diteruskan ke Komisi Fatwa MUI demi pengesahan Ketetapan Halal.
+                                LPH Al-Ghazali mendukung penyelesaian laporan dalam hari ke-3 secara presisi untuk langsung diteruskan ke MUI : Majelis Ulama Indonesia yang berwenang dalam penetapan fatwa halal
                             </div>
                         </div>
                         <div className="w-12 h-12 bg-emerald-600 text-white rounded-full flex items-center justify-center font-bold text-xl relative z-10 mx-auto md:mx-0 shadow-lg border-4 border-gray-50 shrink-0">7</div>
@@ -2637,7 +2646,7 @@ SHA-256 Verified Secure Archive File`;
                             <p className="text-gray-650 text-sm">Sertifikat Halal resmi berbasis format digital diterbitkan oleh BPJPH dan dapat diunduh kapan saja oleh pelaku usaha.</p>
                             <div className="mt-3 text-xs bg-emerald-50 text-emerald-800 p-3 rounded-xl border border-emerald-100 inline-block text-left shadow-sm">
                                 <span className="font-bold text-emerald-950 uppercase tracking-wide bg-emerald-200 px-1.5 py-0.5 rounded text-[10px] mr-2">Edukasi Regulasi</span>
-                                Sesuai regulasi UU No. 6 Tahun 2023, Sertifikat Halal digital yang terbit kini berlaku penuh seumur hidup (selamanya) selama pelaku usaha tidak merubah bahan baku atau proses pengolahan yang disepakati.
+                                Sesuai regulasi UU No. 6 Tahun 2023 Pasal 42 (1) Sertifikat Halal berlaku sejak diterbitkan oleh BPJPH dan tetap berlaku sepanjang tidak terdapat perubahan komposisi Bahan dan/atau PPH.
                             </div>
                         </div>
                     </div>
