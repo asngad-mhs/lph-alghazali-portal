@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInAnonymously, onAuthStateChanged, signOut, updateProfile, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail } from 'firebase/auth';
 import { getFirestore, initializeFirestore, collection, onSnapshot, getDoc, addDoc, updateDoc, doc, serverTimestamp, deleteDoc, setDoc, query, where } from 'firebase/firestore';
-import { Leaf, Home, FileText, LogOut, PlusCircle, Settings, CheckCircle, Clock, Search, Briefcase, FileSignature, UploadCloud, ArrowLeft, ArrowRight, ShieldCheck, Zap, MonitorSmartphone, UserCheck, Newspaper, Edit, Trash2, X, Image as ImageIcon, Route, Coins, ChevronDown, ChevronRight, Calculator, Receipt, CalendarDays, Activity, Video, Link, MapPin, Phone, Mail, Facebook, Twitter, Instagram, Linkedin, History, Target, Award, Network, Users, BookOpen, Handshake, Menu, Scale, Landmark, CheckCircle2, FlaskConical, FileEdit, Globe, Key, Download } from 'lucide-react';
+import { Leaf, Home, FileText, LogOut, PlusCircle, Settings, CheckCircle, Clock, Search, Briefcase, FileSignature, UploadCloud, ArrowLeft, ArrowRight, ShieldCheck, Zap, MonitorSmartphone, UserCheck, Newspaper, Edit, Trash2, X, Image as ImageIcon, Route, Coins, ChevronDown, ChevronRight, Calculator, Receipt, CalendarDays, Activity, Video, Link, MapPin, Phone, Mail, Facebook, Twitter, Instagram, Linkedin, History, Target, Award, Network, Users, BookOpen, Handshake, Menu, Scale, Landmark, CheckCircle2, FlaskConical, FileEdit, Globe, Key, Download, UserPlus, Send, Info } from 'lucide-react';
 import CryptoJS from 'crypto-js';
 import { jsPDF } from 'jspdf';
 import RegulasiView from './components/RegulasiView';
@@ -1952,7 +1952,7 @@ SHA-256 Verified Secure Archive File`;
                   <FileSignature className="w-4 h-4 mr-1" /> Proses <ChevronDown className="w-4 h-4 ml-1" />
                 </button>
                 <div className="absolute top-[80%] left-0 w-52 bg-white border border-gray-100 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 overflow-hidden">
-                  <a href="#alur-sertifikasi" onClick={(e) => handleNavClick(e, '#alur-sertifikasi')} className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
+                  <a href="#alur" onClick={(e) => handleNavClick(e, '#alur')} className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
                     <Route className="w-4 h-4 mr-2" /> Alur Sertifikasi
                   </a>
                   <a href="#tanggung-gugat" onClick={(e) => handleNavClick(e, '#tanggung-gugat')} className="px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50">
@@ -2126,7 +2126,7 @@ SHA-256 Verified Secure Archive File`;
             <div className="px-3 py-2">
               <div className="text-sm font-bold text-emerald-600 mb-1 flex items-center"><FileSignature className="w-4 h-4 mr-2" /> Proses</div>
               <div className="ml-6 space-y-1 border-l-2 border-emerald-100 pl-3">
-                <a href="#alur-sertifikasi" onClick={(e) => handleNavClick(e, '#alur-sertifikasi')} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Alur Sertifikasi</a>
+                <a href="#alur" onClick={(e) => handleNavClick(e, '#alur')} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Alur Sertifikasi</a>
                 <a href="#tanggung-gugat" onClick={(e) => handleNavClick(e, '#tanggung-gugat')} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Prosedur Tanggung Gugat</a>
                 <a href="#tarif-layanan" onClick={(e) => handleNavClick(e, '#tarif-layanan')} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Tarif Layanan</a>
                 <a href="#form-perhitungan-biaya" onClick={(e) => handleNavClick(e, '#form-perhitungan-biaya')} className="block py-1 text-sm text-gray-600 hover:text-emerald-600">Form Perhitungan Biaya</a>
@@ -2516,8 +2516,88 @@ SHA-256 Verified Secure Archive File`;
         </div>
       </section>
 
+      {/* Alur Kerja Sistem Aplikasi Section */}
+      <section id="alur" className="py-24 bg-emerald-950 text-white overflow-hidden relative">
+        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#10b981 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-bold mb-4 font-sans tracking-tight">Cara Kerja Sistem Aplikasi</h2>
+            <p className="text-emerald-200/80 max-w-2xl mx-auto text-lg font-light">Panduan mudah menggunakan portal digital LPH Al-Ghazali untuk percepatan sertifikasi halal Anda.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+            {[
+              {
+                step: "01",
+                title: "Pendaftaran Akun",
+                desc: "Klik menu Login/Masuk, pilih Pendaftaran Pelaku Usaha, dan isi data email aktif Anda.",
+                icon: <UserPlus className="w-8 h-8 text-emerald-400" />
+              },
+              {
+                step: "02",
+                title: "Lengkapi Profil & NIB",
+                desc: "Setelah login, lengkapi profil usaha dan nomor NIB RBA Anda di menu Pengaturan.",
+                icon: <FileText className="w-8 h-8 text-emerald-400" />
+              },
+              {
+                step: "03",
+                title: "Ajukan Sertifikasi",
+                desc: "Buka menu Pengajuan, pilih layanan Reguler, dan unggah dokumen persyaratan digital.",
+                icon: <Send className="w-8 h-8 text-emerald-400" />
+              },
+              {
+                step: "04",
+                title: "Audit & Verifikasi",
+                desc: "Auditor kami akan melakukan verifikasi data dan kunjungan lapangan secara transparan.",
+                icon: <ShieldCheck className="w-8 h-8 text-emerald-400" />
+              },
+              {
+                step: "05",
+                title: "Pantau Dashboard",
+                desc: "Cek progres sertifikasi Anda secara real-time melalui Dashboard akun portal.",
+                icon: <Activity className="w-8 h-8 text-emerald-400" />
+              },
+              {
+                step: "06",
+                title: "Unduh Sertifikat",
+                desc: "Sertifikat Halal Digital yang telah terbit dapat langsung diunduh dari akun Anda.",
+                icon: <Download className="w-8 h-8 text-emerald-400" />
+              }
+            ].map((item, idx) => (
+              <div 
+                key={idx}
+                className="bg-emerald-900/40 backdrop-blur-md border border-emerald-500/20 p-8 rounded-3xl hover:bg-emerald-800/50 transition-all group"
+              >
+                <div className="flex justify-between items-start mb-6">
+                  <div className="p-3 bg-emerald-500/10 rounded-2xl group-hover:scale-110 transition-transform">
+                    {item.icon}
+                  </div>
+                  <span className="text-4xl font-black text-emerald-500/20">{item.step}</span>
+                </div>
+                <h3 className="text-xl font-bold mb-3 text-white">{item.title}</h3>
+                <p className="text-emerald-100/70 text-sm leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center flex-shrink-0 animate-pulse">
+                <Info className="w-6 h-6 text-white" />
+              </div>
+              <p className="text-emerald-100 text-sm md:text-base font-medium">
+                Sistem kami dirancang untuk fleksibilitas tinggi, memungkinkan Anda mengunggah dokumen kapan saja dan di mana saja.
+              </p>
+            </div>
+            <a href="#alur-detil" className="whitespace-nowrap px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-white rounded-xl font-bold transition-all shadow-lg hover:shadow-emerald-500/30">
+              Lihat Detail Alur Teknis
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* Proses Sertifikasi Section */}
-      <section id="alur-sertifikasi" className="py-20 bg-gray-50">
+      <section id="alur-detil" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
                 <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 font-sans">Alur Layanan Reguler (Ringkas)</h2>
@@ -3411,7 +3491,7 @@ SHA-256 Verified Secure Archive File`;
                     <ul className="space-y-3 text-sm text-gray-400">
                         <li><a href="#beranda" className="hover:text-emerald-400 transition-colors flex items-center"><ChevronRight className="w-4 h-4 mr-1 text-emerald-600" /> Beranda</a></li>
                         <li><a href="#tarif-layanan" className="hover:text-emerald-400 transition-colors flex items-center"><ChevronRight className="w-4 h-4 mr-1 text-emerald-600" /> Kalkulator Biaya</a></li>
-                        <li><a href="#alur-sertifikasi" className="hover:text-emerald-400 transition-colors flex items-center"><ChevronRight className="w-4 h-4 mr-1 text-emerald-600" /> Prosedur</a></li>
+                        <li><a href="#alur" className="hover:text-emerald-400 transition-colors flex items-center"><ChevronRight className="w-4 h-4 mr-1 text-emerald-600" /> Prosedur</a></li>
                         <li><a href="#tanggung-gugat" className="hover:text-emerald-400 transition-colors flex items-center"><ChevronRight className="w-4 h-4 mr-1 text-emerald-600" /> Tanggung Gugat</a></li>
                         <li><a href="#berita" className="hover:text-emerald-400 transition-colors flex items-center"><ChevronRight className="w-4 h-4 mr-1 text-emerald-600" /> Berita Utama</a></li>
                         <li><a href="#faq" className="hover:text-emerald-400 transition-colors flex items-center"><ChevronRight className="w-4 h-4 mr-1 text-emerald-600" /> FAQ</a></li>
