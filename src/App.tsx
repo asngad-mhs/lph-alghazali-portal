@@ -1012,7 +1012,7 @@ export default function LPHApp() {
       {
         id: '1',
         title: 'LPH Al-Ghazali Siap Layani Sertifikasi Halal Tahun 2026',
-        category: 'Berita',
+        category: 'Umum',
         content: 'Kami siap memberikan pelayanan terbaik untuk pelaku usaha dalam mendapatkan sertifikat halal.',
         createdAt: Date.now() - 86400000,
       }
@@ -1425,6 +1425,7 @@ export default function LPHApp() {
 // ==========================================
 
 function LandingView({ navigateTo, beritaList, regulasiList: passedRegulasiList, user, userRole, db, currentAppId }: any) {
+  const [newsCategoryFilter, setNewsCategoryFilter] = useState('Semua');
   const [landingSubView, setLandingSubView] = useState<'home' | 'regulasi'>('home');
   const [selectedRegulasiCategory, setSelectedRegulasiCategory] = useState<string>('Semua');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -2455,7 +2456,7 @@ SHA-256 Verified Secure Archive File`;
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
                 <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Ruang Lingkup & Layanan Pemeriksaan Halal</h2>
-                <h3 className="text-xl md:text-2xl font-semibold text-emerald-600">LPH Al ghazali Halal Indonesia</h3>
+                <h3 className="text-xl md:text-2xl font-semibold text-emerald-600">LPH Al ghazali</h3>
             </div>
             <div className="prose prose-lg max-w-none text-gray-700 bg-gray-50 p-8 rounded-2xl border border-gray-100 shadow-sm leading-relaxed">
                 <p className="mb-6 text-justify">
@@ -2938,17 +2939,41 @@ SHA-256 Verified Secure Archive File`;
       {/* Berita & Edukasi Section */}
       <section id="berita" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-end mb-12">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
                 <div>
                     <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Berita & Edukasi Halal</h2>
                     <p className="text-gray-500 max-w-2xl text-lg">Update seputar regulasi halal, kegiatan LPH Al-Ghazali, dan edukasi sertifikasi untuk masyarakat.</p>
                 </div>
+                <div className="flex flex-wrap gap-2">
+                    {['Semua', 'Regulasi', 'Kegiatan', 'Umum'].map((cat) => (
+                        <button
+                            key={cat}
+                            onClick={() => setNewsCategoryFilter(cat)}
+                            className={`px-4 py-2 rounded-full text-sm font-semibold transition-all shadow-sm ${
+                                newsCategoryFilter === cat
+                                    ? 'bg-emerald-600 text-white shadow-emerald-200'
+                                    : 'bg-white text-gray-600 hover:bg-emerald-50 border border-gray-100'
+                            }`}
+                        >
+                            {cat}
+                        </button>
+                    ))}
+                </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {beritaList && beritaList.length > 0 ? (
-                    beritaList.slice(0, 3).map((berita: any) => (
-                        <div key={berita.id} className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all group flex flex-col">
+                {(() => {
+                    const filtered = beritaList.filter((b: any) => {
+                        if (newsCategoryFilter === 'Semua') return true;
+                        if (newsCategoryFilter === 'Regulasi') return b.category?.includes('Regulasi') || b.category === 'Regulasi';
+                        if (newsCategoryFilter === 'Kegiatan') return b.category?.includes('Kegiatan') || b.category?.includes('Agenda') || b.category === 'Kegiatan';
+                        if (newsCategoryFilter === 'Umum') return b.category?.includes('Berita') || b.category?.includes('Info') || b.category === 'Umum';
+                        return b.category === newsCategoryFilter;
+                    });
+
+                    return filtered && filtered.length > 0 ? (
+                        filtered.slice(0, 6).map((berita: any) => (
+                            <div key={berita.id} className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all group flex flex-col">
                             <div className="h-48 bg-gray-200 relative overflow-hidden flex items-center justify-center">
                                 {berita.fileType && berita.fileType.includes('image') && berita.fileData ? (
                                     <img src={berita.fileData} alt={berita.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -2999,12 +3024,13 @@ SHA-256 Verified Secure Archive File`;
                             </div>
                         </div>
                     ))
-                ) : (
-                    <div className="col-span-3 text-center py-12 text-gray-500">
-                        <Newspaper className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                        <p>Belum ada artikel yang dipublikasikan.</p>
-                    </div>
-                )}
+                    ) : (
+                        <div className="col-span-3 text-center py-12 text-gray-500">
+                            <Newspaper className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                            <p>{newsCategoryFilter === 'Semua' ? 'Belum ada artikel yang dipublikasikan.' : `Tidak ada artikel dalam kategori "${newsCategoryFilter}".`}</p>
+                        </div>
+                    );
+                })()}
             </div>
         </div>
       </section>
@@ -3256,7 +3282,7 @@ SHA-256 Verified Secure Archive File`;
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
                 <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Hubungi Kami</h2>
-                <p className="text-emerald-700 font-medium text-lg">LPH Al Ghazali Halal Indonesia</p>
+                <p className="text-emerald-700 font-medium text-lg">LPH Al Ghazali</p>
             </div>
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
@@ -3799,7 +3825,6 @@ SHA-256 Verified Secure Archive File`;
                                           "Anisha Dian I., S.T., M.Sc.": "/anisha.jpg"
                                         }}
                                       />
-                                      <OrgCard title="Petugas Pengambil Sample" list={["Siti Khuzaimah, S.T., M.T.", "dr. Atingul Marifah", "Anisha Dian I., S.T."]} className="w-[155px] z-10 relative" />
                                   </div>
                               </div>
 
@@ -4024,7 +4049,7 @@ SHA-256 Verified Secure Archive File`;
                     <div className="flex justify-end text-center text-sm">
                       <div>
                         <p className="mb-16">Divisi Sumber Daya Manusia</p>
-                        <p className="font-bold underline">Manajer Administrasi LPH</p>
+                        <p className="font-bold underline">Direktur LPH Al Ghazali</p>
                         <p>NIP. -</p>
                       </div>
                     </div>
@@ -4223,7 +4248,7 @@ SHA-256 Verified Secure Archive File`;
                     <div className="flex justify-end text-center text-sm">
                       <div>
                         <p className="mb-16">Divisi Sumber Daya Manusia</p>
-                        <p className="font-bold underline">Manajer Administrasi LPH</p>
+                        <p className="font-bold underline">Direktur LPH Al Ghazali</p>
                         <p>NIP. -</p>
                       </div>
                     </div>
@@ -6642,7 +6667,7 @@ function AdminBerita({ data, addData, updateData, deleteData }: any) {
   const [editId, setEditId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   
-  const initialFormState = { title: '', category: 'Berita Utama', content: '', fileName: '', fileType: '', fileData: '', socialMediaLink: '' };
+  const initialFormState = { title: '', category: 'Umum', content: '', fileName: '', fileType: '', fileData: '', socialMediaLink: '' };
   const [formData, setFormData] = useState(initialFormState);
 
   const openModal = (berita: any = null) => {
@@ -6803,12 +6828,10 @@ function AdminBerita({ data, addData, updateData, deleteData }: any) {
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
-                  <select value={formData.category} onChange={(e) => setFormData({...formData, category: e.target.value})} className="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500">
-                    <option value="Berita Utama">Berita Utama</option>
-                    <option value="Kegiatan">Kegiatan LPH</option>
-                    <option value="Agenda">Agenda LPH</option>
-                    <option value="Regulasi BPJPH">Regulasi BPJPH/MUI</option>
-                    <option value="Info Halal">Info Halal Edukatif</option>
+                  <select value={formData.category} onChange={(e) => setFormData({...formData, category: e.target.value})} className="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white">
+                    <option value="Regulasi">Regulasi</option>
+                    <option value="Kegiatan">Kegiatan</option>
+                    <option value="Umum">Umum</option>
                   </select>
                 </div>
 
