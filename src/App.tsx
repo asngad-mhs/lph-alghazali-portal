@@ -130,6 +130,7 @@ export const db = initializeFirestore(app, {
   experimentalAutoDetectLongPolling: true,
   forceLongPolling: true,
 } as any, firebaseConfig.firestoreDatabaseId);
+
 // @ts-ignore
 const currentAppId = typeof __app_id !== 'undefined' ? __app_id : 'lph-alghazali-app';
 
@@ -3725,9 +3726,9 @@ SHA-256 Verified Secure Archive File`;
                   <div className="pt-16 mt-12 border-t border-gray-200 grid grid-cols-2">
                     <div></div>
                     <div className="text-center text-sm">
-                      <p className="mb-16">Disahkan pada Direktur Utama,</p>
-                      <p className="font-bold underline">Direktur LPH Al-Ghazali</p>
-                      <p>NIP. -</p>
+                      <p className="mb-16"></p>
+                      <p className="font-bold underline"></p>
+                      <p></p>
                     </div>
                   </div>
                 </div>
@@ -3805,9 +3806,9 @@ SHA-256 Verified Secure Archive File`;
                   <div className="pt-16 mt-12 border-t border-gray-200 grid grid-cols-2">
                     <div></div>
                     <div className="text-center text-sm">
-                      <p className="mb-16">Cilacap, Jawa Tengah</p>
-                      <p className="font-bold underline">Rektor UNUGHA / Direktur LPH</p>
-                      <p>NIP. -</p>
+                      <p className="mb-16"></p>
+                      <p className="font-bold underline"></p>
+                      <p></p>
                     </div>
                   </div>
                 </div>
@@ -4002,9 +4003,9 @@ SHA-256 Verified Secure Archive File`;
                   <div className="pt-16 mt-12 border-t border-gray-200 grid grid-cols-2">
                     <div></div>
                     <div className="text-center text-sm">
-                      <p className="mb-16">Cilacap, Jawa Tengah</p>
-                      <p className="font-bold underline">Direktur LPH Al Ghazali</p>
-                      <p>NIP. -</p>
+                      <p className="mb-16"></p>
+                      <p className="font-bold underline"></p>
+                      <p></p>
                     </div>
                   </div>
                 </div>
@@ -4073,7 +4074,7 @@ SHA-256 Verified Secure Archive File`;
                       </li>
                       <li className="flex items-start">
                         <CheckCircle2 className="w-5 h-5 mr-3 text-emerald-500 shrink-0 mt-0.5" />
-                        <span>Memiliki latar belakang pendidikan spesifik di bidang sains yang relevan, seperti Teknologi Pangan, Biologi, Kimia, Pertanian, Peternakan, dan keilmuan serumpun lainnya.</span>
+                        <span>Memiliki latar belakang pendidikan spesifik di bidang sains yang relevan, seperti Teknik Kimia, Teknik Indsutri dan Kedokteran</span>
                       </li>
                     </ul>
                   </section>
@@ -4136,9 +4137,6 @@ SHA-256 Verified Secure Archive File`;
                   <div className="pt-16 mt-12 border-t border-gray-200">
                     <div className="flex justify-end text-center text-sm">
                       <div>
-                        <p className="mb-16">Divisi Sumber Daya Manusia</p>
-                        <p className="font-bold underline">Direktur LPH Al Ghazali</p>
-                        <p>NIP. -</p>
                       </div>
                     </div>
                   </div>
@@ -4335,9 +4333,9 @@ SHA-256 Verified Secure Archive File`;
                   <div className="pt-16 mt-12 border-t border-gray-200">
                     <div className="flex justify-end text-center text-sm">
                       <div>
-                        <p className="mb-16">Divisi Sumber Daya Manusia</p>
-                        <p className="font-bold underline">Direktur LPH Al Ghazali</p>
-                        <p>NIP. -</p>
+                        <p className="mb-16"></p>
+                        <p className="font-bold underline"></p>
+                        <p></p>
                       </div>
                     </div>
                   </div>
@@ -4556,8 +4554,8 @@ SHA-256 Verified Secure Archive File`;
                         Dokumen: Profil_Mitra_v2.5 (Ringkas & Spesifik UMK)
                       </div>
                       <div className="text-right">
-                        <p className="mb-16">Bagian Hubungan Masyarakat dan Kemitraan</p>
-                        <p className="font-bold underline text-gray-900 font-sans">Manajer Operasional LPH</p>
+                        <p className="mb-16"></p>
+                        <p className="font-bold underline text-gray-900 font-sans"></p>
                       </div>
                     </div>
                   </div>
@@ -4789,8 +4787,8 @@ SHA-256 Verified Secure Archive File`;
                         Dokumen: Rekam_Jejak_Audit
                       </div>
                       <div className="text-right">
-                        <p className="mb-16">Divisi Layanan & Operasional LPH</p>
-                        <p className="font-bold underline text-gray-900">Manajer Operasional LPH</p>
+                        <p className="mb-16"></p>
+                        <p className="font-bold underline text-gray-900"></p>
                       </div>
                     </div>
                   </div>
@@ -4929,8 +4927,8 @@ SHA-256 Verified Secure Archive File`;
                         Modul: Informasi_Agenda_Tahunan
                       </div>
                       <div className="text-right">
-                        <p className="mb-16">Bagian Publikasi & Informasi</p>
-                        <p className="font-bold underline text-gray-900">Admin Portal Publik LPH</p>
+                        <p className="mb-16"></p>
+                        <p className="font-bold underline text-gray-900"></p>
                       </div>
                     </div>
                   </div>
@@ -5045,8 +5043,8 @@ SHA-256 Verified Secure Archive File`;
                         Modul: Laporan_Giat_Publik
                       </div>
                       <div className="text-right">
-                        <p className="mb-16">Divisi Humas & Publikasi</p>
-                        <p className="font-bold underline text-gray-900">Redaksi LPH Al-Ghazali</p>
+                        <p className="mb-16"></p>
+                        <p className="font-bold underline text-gray-900"></p>
                       </div>
                     </div>
                   </div>

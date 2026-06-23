@@ -2,5 +2,5 @@
   "name": "LPH Al-Ghazali Portal",
   "description": "Portal layanan sertifikasi halal terintegrasi cloud",
   "requestFramePermissions": [],
-  "majorCapabilities": []
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
