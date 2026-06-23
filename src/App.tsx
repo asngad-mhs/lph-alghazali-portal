@@ -3680,13 +3680,12 @@ SHA-256 Verified Secure Archive File`;
                   <Logo className="h-16 w-16 mx-auto mb-4" />
                   <h1 className="text-2xl font-bold text-gray-900 uppercase tracking-wide">Lembaga Pemeriksa Halal (LPH)</h1>
                   <h2 className="text-xl font-bold text-emerald-700 uppercase tracking-widest mt-1">Al-Ghazali</h2>
-                  <p className="text-sm text-gray-500 mt-2">Jl. Kemerdekaan Barat No.12, Kesugihan, Cilacap, Jawa Tengah 53274</p>
+                  <p className="text-sm text-gray-500 mt-2"></p>
                 </div>
                 
                 <div className="space-y-8 text-gray-800 leading-relaxed">
                   <div className="text-center mb-10">
                     <h3 className="text-2xl font-bold underline mb-2">VISI DAN MISI</h3>
-                    <p className="text-sm">Dokumen Profil LPH Al-Ghazali</p>
                   </div>
 
                   <section>
@@ -3771,13 +3770,12 @@ SHA-256 Verified Secure Archive File`;
                   <Logo className="h-16 w-16 mx-auto mb-4" />
                   <h1 className="text-2xl font-bold text-gray-900 uppercase tracking-wide">Lembaga Pemeriksa Halal (LPH)</h1>
                   <h2 className="text-xl font-bold text-emerald-700 uppercase tracking-widest mt-1">Al-Ghazali</h2>
-                  <p className="text-sm text-gray-500 mt-2">Universitas Nahdlatul Ulama Al Ghazali (UNUGHA) Cilacap</p>
+                  <p className="text-sm text-gray-500 mt-2"></p>
                 </div>
                 
                 <div className="space-y-6 text-gray-800 leading-relaxed text-justify">
                   <div className="text-center mb-8">
                     <h3 className="text-2xl font-bold underline mb-2">SEJARAH & LATAR BELAKANG</h3>
-                    <p className="text-sm">Dokumen Profil LPH Al-Ghazali</p>
                   </div>
 
                   <div className="space-y-4">
@@ -3964,13 +3962,12 @@ SHA-256 Verified Secure Archive File`;
                   <Logo className="h-16 w-16 mx-auto mb-4" />
                   <h1 className="text-2xl font-bold text-gray-900 uppercase tracking-wide">Lembaga Pemeriksa Halal (LPH)</h1>
                   <h2 className="text-xl font-bold text-emerald-700 uppercase tracking-widest mt-1">Al-Ghazali</h2>
-                  <p className="text-sm text-gray-500 mt-2">Universitas Nahdlatul Ulama Al Ghazali (UNUGHA) Cilacap</p>
+                  <p className="text-sm text-gray-500 mt-2"></p>
                 </div>
                 
                 <div className="space-y-6 text-gray-800 leading-relaxed text-justify">
                   <div className="text-center mb-8">
                     <h3 className="text-2xl font-bold underline mb-2">KEBIJAKAN MUTU & SASARAN MUTU</h3>
-                    <p className="text-sm">Dokumen Profil LPH Al-Ghazali</p>
                   </div>
 
                   <section className="mb-6">
@@ -4496,52 +4493,52 @@ SHA-256 Verified Secure Archive File`;
                       </div>
                       
                       <div className="text-justify space-y-4">
-                        <p>Pada hari ini tanggal Dua Puluh bulan Mei tahun Dua ribu dua puluh enam (20-05-2026), bertempat di Kantor LPH Al-Ghazali, Kesugihan, Cilacap, Jawa Tengah, para pihak yang bertandatangan di bawah ini:</p>
+                        <p></p>
                         
                         <ol className="list-decimal pl-5 space-y-3">
                           <li>
-                            <strong>Christian Soolany, S.TP., M.Si.</strong> : Selaku <strong>Manajer Operasional LPH AL-GHAZALI</strong>, bertindak fungsional untuk dan atas nama LPH AL-GHAZALI (UNUGHA) yang berkedudukan di Cilacap. Selanjutnya disebut sebagai <strong>PIHAK PERTAMA</strong>.
+                            <strong></strong> : Selaku <strong></strong>, bertindak fungsional untuk dan atas nama LPH AL-GHAZALI (UNUGHA) yang berkedudukan di Cilacap. Selanjutnya disebut sebagai <strong>PIHAK PERTAMA</strong>.
                           </li>
                           <li>
-                            <strong>Perwakilan Asosiasi Pemotong Hewan</strong> : Bertindak sebagai representator pengurus Asosiasi Pemotong Hewan Jawa Tengah. Selanjutnya disebut sebagai <strong>PIHAK KEDUA</strong>.
+                            <strong></strong> : Bertindak sebagai representator pengurus Asosiasi Pemotong Hewan Jawa Tengah. Selanjutnya disebut sebagai <strong>PIHAK KEDUA</strong>.
                           </li>
                         </ol>
 
                         <p className="pt-2"><strong>PARA PIHAK</strong> secara sadar bermufakat atas perjanjian kerjasama ringkas spesifik kelompok UMK:</p>
 
-                        <div className="text-center font-bold mt-6 mb-2">Pasal 1<br/>RUANG LINGKUP SOSIALISASI & TEKNIS UMK</div>
+                        <div className="text-center font-bold mt-6 mb-2">Pasal 1<br/></div>
                         <ol className="list-[lower-alpha] pl-5 space-y-2">
-                          <li><strong>Sosialisasi Halal Kolektif:</strong> PIHAK PERTAMA dan PIHAK KEDUA sepakat mengundang lembaga pendidikan, yayasan, ormas, dan instansi kemasyarakatan lain untuk berkolaborasi menyelenggarakan sosialisasi sertifikasi halal reguler bagi pelaku UMK.</li>
-                          <li><strong>Integrasi Asal-Usul Sembelihan:</strong> PIHAK KEDUA mendukung verifikasi dan penyediaan akses ketertelusuran bahan baku asal hewan dari RPH binaan demi membantu keabsahan audit halal UMK oleh PIHAK PERTAMA.</li>
-                          <li><strong>Eksklusivitas Non-Komersial:</strong> PIHAK PERTAMA mendeklarasikan kebijakan tunggal kemitraan ini tanpa melibatkan pengujian lab komersial luar agar biaya tetap efisien untuk UMK.</li>
+                          <li><strong></strong> PIHAK PERTAMA dan PIHAK KEDUA sepakat mengundang lembaga pendidikan, yayasan, ormas, dan instansi kemasyarakatan lain untuk berkolaborasi menyelenggarakan sosialisasi sertifikasi halal reguler bagi pelaku UMK.</li>
+                          <li><strong></strong> PIHAK KEDUA mendukung verifikasi dan penyediaan akses ketertelusuran bahan baku asal hewan dari RPH binaan demi membantu keabsahan audit halal UMK oleh PIHAK PERTAMA.</li>
+                          <li><strong></strong> PIHAK PERTAMA mendeklarasikan kebijakan tunggal kemitraan ini tanpa melibatkan pengujian lab komersial luar agar biaya tetap efisien untuk UMK.</li>
                         </ol>
 
-                        <div className="text-center font-bold mt-6 mb-2">Pasal 2<br/>PEMBIAYAAN UMK</div>
-                        <p>Bahwa pelaksanaan seluruh agenda sosialisasi bersama dikoordinasikan secara nirlaba dengan mengutamakan asas pemberdayaan umat tanpa mengenakan beban pembiayaan komersial kepada pelaku usaha mikro kecil.</p>
+                        <div className="text-center font-bold mt-6 mb-2">Pasal 2<br/></div>
+                        <p></p>
 
-                        <div className="text-center font-bold mt-6 mb-2">Pasal 3<br/>MASA BERLAKU</div>
-                        <p>PKS ringkas ini berlaku selama 2 (dua) tahun dan dapat diperpanjang atas persetujuan tertulis PARA PIHAK.</p>
+                        <div className="text-center font-bold mt-6 mb-2">Pasal 3<br/></div>
+                        <p></p>
 
-                        <p className="mt-6 pt-4">Naskah dikukuhkan dengan itikad mulia and ditandatangani secara sah elektronik oleh masing-masing perwakilan instansi.</p>
+                        <p className="mt-6 pt-4"></p>
                         
                         <div className="flex flex-col md:flex-row justify-between items-center text-center mt-12 mb-6 gap-8 md:gap-0 font-sans">
                           <div className="w-full md:w-1/2">
-                            <p className="font-bold mb-1">PIHAK PERTAMA</p>
-                            <p className="text-[10px] text-gray-500 uppercase">LPH AL-GHAZALI</p>
+                            <p className="font-bold mb-1"></p>
+                            <p className="text-[10px] text-gray-500 uppercase"></p>
                             <div className="h-16 flex items-center justify-center">
-                              <span className="font-serif italic text-emerald-800 font-extrabold text-sm rotate-[-3deg]">C. Soolany, S.TP., M.Si.</span>
+                              <span className="font-serif italic text-emerald-800 font-extrabold text-sm rotate-[-3deg]"></span>
                             </div>
-                            <p className="font-bold underline text-xs">Christian Soolany, S.TP., M.Si.</p>
-                            <p className="text-[10px] text-gray-500">Manajer Operasional LPH</p>
+                            <p className="font-bold underline text-xs"></p>
+                            <p className="text-[10px] text-gray-500"></p>
                           </div>
                           <div className="w-full md:w-1/2">
-                            <p className="font-bold mb-1">PIHAK KEDUA</p>
-                            <p className="text-[10px] text-gray-500 uppercase">Asosiasi Pemotong Hewan</p>
+                            <p className="font-bold mb-1"></p>
+                            <p className="text-[10px] text-gray-500 uppercase"></p>
                             <div className="h-16 flex items-center justify-center">
-                              <span className="font-mono text-gray-400 text-xs border border-dashed border-gray-300 px-3 py-1 bg-gray-50">DIGITALLY SIGNED</span>
+                              <span className="font-mono text-gray-400 text-xs border border-dashed border-gray-300 px-3 py-1 bg-gray-50"></span>
                             </div>
-                            <p className="font-bold underline text-xs">Perwakilan Asosiasi</p>
-                            <p className="text-[10px] text-gray-500">Mitra Teknis Jawa Tengah</p>
+                            <p className="font-bold underline text-xs"></p>
+                            <p className="text-[10px] text-gray-500"></p>
                           </div>
                         </div>
                       </div>
@@ -4551,7 +4548,7 @@ SHA-256 Verified Secure Archive File`;
                   <div className="pt-8 mt-12 border-t border-gray-200">
                     <div className="flex justify-between items-end text-sm text-gray-600">
                       <div>
-                        Dokumen: Profil_Mitra_v2.5 (Ringkas & Spesifik UMK)
+                        
                       </div>
                       <div className="text-right">
                         <p className="mb-16"></p>
@@ -4784,7 +4781,7 @@ SHA-256 Verified Secure Archive File`;
                   <div className="pt-16 mt-12 border-t border-gray-200">
                     <div className="flex justify-between items-end text-sm text-gray-600">
                       <div>
-                        Dokumen: Rekam_Jejak_Audit
+                        
                       </div>
                       <div className="text-right">
                         <p className="mb-16"></p>
@@ -4924,7 +4921,7 @@ SHA-256 Verified Secure Archive File`;
                   <div className="pt-16 mt-12 border-t border-gray-200">
                     <div className="flex justify-between items-end text-sm text-gray-600">
                       <div>
-                        Modul: Informasi_Agenda_Tahunan
+                        
                       </div>
                       <div className="text-right">
                         <p className="mb-16"></p>
@@ -5040,7 +5037,7 @@ SHA-256 Verified Secure Archive File`;
                   <div className="pt-16 mt-12 border-t border-gray-200">
                     <div className="flex justify-between items-end text-sm text-gray-600">
                       <div>
-                        Modul: Laporan_Giat_Publik
+                        
                       </div>
                       <div className="text-right">
                         <p className="mb-16"></p>
