@@ -1855,9 +1855,8 @@ SHA-256 Verified Secure Archive File`;
             <div className="flex justify-between items-center h-24 sm:h-32 py-2">
               <div onClick={() => setLandingSubView('home')} className="flex items-center space-x-3 sm:space-x-4 cursor-pointer">
                 <Logo className="h-16 w-16 sm:h-24 sm:w-24 drop-shadow-md" />
-                <div className="flex flex-col">
-                  <span className="font-bold text-2xl sm:text-3xl tracking-tight text-gray-900 leading-none mb-1">LPH AL-GHAZALI</span>
-                  <span className="text-sm sm:text-base font-semibold text-emerald-700 tracking-wider">HALAL INDONESIA</span>
+                <div className="flex flex-col justify-center">
+                  <span className="font-bold text-2xl sm:text-3xl tracking-tight text-gray-900 leading-none">LPH AL-GHAZALI</span>
                 </div>
               </div>
               <div className="flex items-center space-x-2 sm:space-x-4 text-sm mt-1 sm:mt-0">
