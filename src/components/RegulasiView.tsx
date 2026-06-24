@@ -366,13 +366,25 @@ Disahkan oleh LPH Al-Ghazali Cilacap.
     try {
       if (!docObj.fileData) return;
       
-      const blob = base64ToBlob(docObj.fileData, 'application/pdf');
-      const url = URL.createObjectURL(blob);
-      setPreviewState({
-        title: `Pratinjau Lampiran: ${docObj.fileName || docObj.nomor}`,
-        url,
-        isBlob: true
-      });
+      const isImage = docObj.fileExtension === 'jpg' || docObj.fileExtension === 'jpeg' || docObj.fileExtension === 'png' || docObj.fileExtension === 'webp';
+      
+      if (isImage) {
+        setPreviewState({
+          title: `Pratinjau Gambar: ${docObj.fileName || docObj.nomor}`,
+          url: docObj.fileData,
+          isBlob: false
+        });
+      } else if (docObj.fileExtension === 'pdf') {
+        const blob = base64ToBlob(docObj.fileData, 'application/pdf');
+        const url = URL.createObjectURL(blob);
+        setPreviewState({
+          title: `Pratinjau Lampiran: ${docObj.fileName || docObj.nomor}`,
+          url,
+          isBlob: true
+        });
+      } else {
+        alert("Pratinjau tidak tersedia untuk format ini. Silakan unduh dokumen.");
+      }
     } catch (err) {
       console.error("Gagal mendownload dan menampilkan file lampiran:", err);
       alert("Gagal menyiapkan pratinjau lampiran.");
@@ -555,12 +567,12 @@ Disahkan oleh LPH Al-Ghazali Cilacap.
                     </div>
                     {currentDoc.fileData && (
                       <div className="flex gap-1.5">
-                        {currentDoc.fileExtension === 'pdf' && (
+                        {(currentDoc.fileExtension === 'pdf' || currentDoc.fileExtension === 'jpg' || currentDoc.fileExtension === 'jpeg' || currentDoc.fileExtension === 'png' || currentDoc.fileExtension === 'webp') && (
                           <button
                             id={`preview-lampiran-btn-${currentDoc.id}`}
                             onClick={() => handlePreviewAttached(currentDoc)}
-                            className="flex items-center gap-1.5 text-xs font-bold leading-none bg-blue-600 text-white px-3.5 py-2 rounded-full hover:bg-blue-500 hover:text-slate-955 transition-all font-sans cursor-pointer shadow-sm"
-                            title={`Pratinjau PDF (${currentDoc.fileName})`}
+                            className="flex items-center gap-1.5 text-xs font-bold leading-none bg-blue-600 text-white px-3.5 py-2 rounded-full hover:bg-blue-500 hover:text-slate-950 transition-all font-sans cursor-pointer shadow-sm"
+                            title={`Pratinjau ${currentDoc.fileExtension?.toUpperCase()} (${currentDoc.fileName})`}
                           >
                             <Eye className="w-3.5 h-3.5" /> Pratinjau Lampiran
                           </button>
@@ -688,13 +700,19 @@ Disahkan oleh LPH Al-Ghazali Cilacap.
               </div>
             </div>
 
-            {/* Document body / iframe */}
+            {/* Document body / iframe or image */}
             <div className="flex-1 bg-slate-100 flex items-center justify-center p-0 relative overflow-hidden">
-              <iframe
-                src={`${previewState.url}#toolbar=1&navpanes=0`}
-                className="w-full h-full border-0"
-                title="Pratinjau PDF"
-              />
+              {previewState.url.startsWith('data:image/') || (previewState.isBlob && previewState.title.toLowerCase().includes('pratinjau lampiran') && !previewState.url.includes('application/pdf')) ? (
+                <div className="w-full h-full overflow-auto flex items-center justify-center p-4">
+                  <img src={previewState.url} alt="Pratinjau Gambar" className="max-w-full max-h-full object-contain shadow-lg" />
+                </div>
+              ) : (
+                <iframe
+                  src={`${previewState.url}#toolbar=1&navpanes=0`}
+                  className="w-full h-full border-0"
+                  title="Pratinjau Dokumen"
+                />
+              )}
             </div>
             
             {/* Footer containing help text */}

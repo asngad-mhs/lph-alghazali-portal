@@ -1048,14 +1048,13 @@ export default function LPHApp() {
       const unsubscribeRegulasi = onSnapshot(regulasiRef, (snapshot) => {
         try {
           const rData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as any[];
-          // Combine Firestore data with local DEPRECATED_REGULASI_DATA to ensure newly added items are always available
-          const mergedList = [...rData];
-          for (const localReg of DEPRECATED_REGULASI_DATA) {
-            if (!mergedList.some((item) => item.id === localReg.id)) {
-              mergedList.push(localReg);
-            }
+          // If admin has managed items in Firestore, use them. 
+          // Otherwise, fall back to default deprecated data if Firestore is empty.
+          if (rData.length > 0) {
+            setRegulasiList(rData);
+          } else {
+            setRegulasiList(DEPRECATED_REGULASI_DATA);
           }
-          setRegulasiList(mergedList);
         } catch (err) {
           console.error("Error mapping regulasi snapshot:", err);
           setRegulasiList(DEPRECATED_REGULASI_DATA);
@@ -7217,14 +7216,15 @@ function AdminRegulasi({ data = [], addData, updateData, deleteData }: any) {
 
   const handleFileSelected = (file: File) => {
     const ext = file.name.split('.').pop()?.toLowerCase() || '';
-    if (ext !== 'pdf' && ext !== 'xlsx' && ext !== 'xls') {
-      alert('Format file tidak didukung! Hanya file PDF (.pdf) dan Excel (.xlsx, .xls) yang diperbolehkan.');
+    const allowed = ['pdf', 'xlsx', 'xls', 'jpg', 'jpeg', 'png', 'webp'];
+    if (!allowed.includes(ext)) {
+      alert(`Format file tidak didukung! Hanya file PDF, Excel, dan Gambar (${allowed.join(', ')}) yang diperbolehkan.`);
       return;
     }
     
-    // Check filesize: limit to 2MB to keep Base64 strings reasonable
-    if (file.size > 2 * 1024 * 1024) {
-      alert('Ukuran file terlalu besar! Maksimal ukuran file adalah 2 MB.');
+    // Check filesize: limit to 5MB
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Ukuran file terlalu besar! Maksimal ukuran file adalah 5 MB.');
       return;
     }
 
@@ -7540,10 +7540,10 @@ function AdminRegulasi({ data = [], addData, updateData, deleteData }: any) {
                   </div>
                 </div>
 
-                {/* UPLOAD FILE LAMPIRAN (PDF & EXCEL) */}
+                {/* UPLOAD FILE LAMPIRAN (PDF, EXCEL, GAMBAR) */}
                 <div className="border border-gray-200 rounded-lg p-4 bg-gray-50/55 space-y-3">
-                  <label className="block text-sm font-bold text-gray-800">Lampiran Dokumen Tambahan (PDF/Excel)</label>
-                  <p className="text-xs text-gray-500">Unggah salinan resmi regulasi ini dalam format PDF (.pdf) atau Excel (.xlsx/.xls) jika ada.</p>
+                  <label className="block text-sm font-bold text-gray-800">Lampiran Dokumen Tambahan (PDF/Excel/Gambar)</label>
+                  <p className="text-xs text-gray-500">Unggah salinan resmi regulasi ini dalam format PDF, Excel, atau Gambar jika ada.</p>
                   
                   {formData.fileData ? (
                     <div className="flex items-center justify-between p-3 bg-white border border-emerald-200 rounded-lg shadow-xs">
@@ -7579,7 +7579,7 @@ function AdminRegulasi({ data = [], addData, updateData, deleteData }: any) {
                       <input 
                         id="reg_file_upload"
                         type="file" 
-                        accept=".pdf,.xlsx,.xls"
+                        accept=".pdf,.xlsx,.xls,.jpg,.jpeg,.png,.webp"
                         className="hidden" 
                         onChange={(e) => {
                           const file = e.target.files?.[0];
