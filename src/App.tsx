@@ -334,24 +334,6 @@ Menetapkan aturan teknis terstruktur mengenai:
 - Validitas penugasan auditor halal di lokasi usaha.`
   },
   {
-    id: 'bpom-8-2021',
-    nomor: 'Peraturan BPOM Nomor 8 Tahun 2021',
-    kategori: 'Peraturan BPOM',
-    tentang: 'Pengawasan Penggunaan Label Halal pada Pangan Olahan',
-    deskripsi: 'Kerjasama integratif BPOM dan BPJPH pasca perubahan logo halal nasional untuk memastikan label kemasan beredar sesuai ketentuan regulasi kesehatan dan syariat.',
-    tahun: '2021',
-    referensiUrl: 'https://bpjph.halal.go.id/',
-    pasalPenting: [
-      { pasal: 'Pasal 5', isi: 'Pangan olahan yang bersertifikat wajib mencantumkan logo kemasan Halal Indonesia beserta nomor registrasi pendaftaran.' },
-      { pasal: 'Pasal 12', isi: 'Sanksi pencantuman klaim halal sepihak tanpa sertifikasi resmi dari BPJPH mulai dari teguran hingga penarikan izin edar.' }
-    ],
-    isiLengkap: `PERATURAN BADAN PENGAWAS OBAT DAN MAKANAN NOMOR 8 TAHUN 2021 TENTANG PENGAWASAN PENGGUNAAN LABEL HALAL
-
-Mengatur pengawasan post-market terhadap produk makanan dan minuman yang beredar di pasaran:
-1. Label halal wajib dicetak pada posisi yang mudah terlihat dan terbaca di kemasan utama.
-2. Integrasi data sinkron antara BPOM, BPJPH dan produsen pangan olahan.`
-  },
-  {
     id: 'bpom-20-2021',
     nomor: 'Peraturan BPOM Nomor 20 Tahun 2021',
     kategori: 'Peraturan BPOM',
