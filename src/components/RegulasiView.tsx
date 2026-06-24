@@ -37,7 +37,7 @@ interface RegulasiViewProps {
 }
 
 const CATEGORY_META = [
-  { label: 'Undang-Undang', display: 'Undang-Undang RI', icon: Scale, colorBg: 'bg-blue-50/75 text-blue-700 hover:bg-blue-100' },
+  { label: 'Undang-Undang', display: 'Undang-Undang RIi', icon: Scale, colorBg: 'bg-blue-50/75 text-blue-700 hover:bg-blue-100' },
   { label: 'Peraturan Pemerintah', display: 'Peraturan Pemerintah', icon: Landmark, colorBg: 'bg-emerald-50/75 text-emerald-700 hover:bg-emerald-100' },
   { label: 'Keputusan Menteri Agama', display: 'Keputusan Menteri Agama', icon: BookOpen, colorBg: 'bg-amber-50/75 text-amber-700 hover:bg-amber-100' },
   { label: 'Keputusan Kepala BPJPH', display: 'Keputusan Kepala BPJPH', icon: FileSignature, colorBg: 'bg-purple-50/75 text-purple-700 hover:bg-purple-100' },
