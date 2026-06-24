@@ -121,6 +121,11 @@ function handleFirestoreError(error: unknown, operationType: OperationType, path
   };
   console.error('Firestore Error: ', JSON.stringify(errInfo));
   
+  // Don't show alert for permission-denied if the user is not logged in (likely public visitor)
+  if (errorMessage.includes('permission-denied') && !auth.currentUser) {
+    return;
+  }
+
   // Alert the user so they know it didn't actually save/load correctly
   const pathInfo = path ? ` (Path: ${path})` : '';
   alert(`Gagal ${operationType === OperationType.CREATE ? 'menambah' : operationType === OperationType.UPDATE ? 'memperbarui' : operationType === OperationType.DELETE ? 'menghapus' : 'memuat'} data.${pathInfo} ${errorMessage.includes('permission-denied') ? 'Anda tidak memiliki izin yang cukup.' : errorMessage}`);
