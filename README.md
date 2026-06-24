@@ -1,20 +1,38 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# Panduan Deployment ke Cloudflare Pages
 
-# Run and deploy your AI Studio app
+Dokumen ini berisi langkah-langkah untuk mendeploy aplikasi LPH Al-Ghazali ke **Cloudflare Pages**.
 
-This contains everything you need to run your app locally.
+## Persyaratan
+1. Akun [GitHub](https://github.com/).
+2. Akun [Cloudflare](https://dash.cloudflare.com/).
 
-View your app in AI Studio: https://ai.studio/apps/e2d7b2e1-3b36-493f-92cd-2c46df07b2dc
+## Langkah-langkah Deployment
 
-## Run Locally
+### 1. Persiapan Repositori
+Unggah kode sumber aplikasi Anda ke repositori GitHub.
 
-**Prerequisites:**  Node.js
+### 2. Konfigurasi Cloudflare Pages
+1. Masuk ke dashboard Cloudflare.
+2. Navigasi ke **Workers & Pages** > **Create application** > **Pages** > **Connect to Git**.
+3. Pilih repositori GitHub Anda.
+4. Pada bagian **Build settings**, gunakan konfigurasi berikut:
+   - **Framework preset**: `Vite`
+   - **Build command**: `npm run build`
+   - **Build output directory**: `dist`
+5. Klik **Save and Deploy**.
 
+### 3. Penanganan Routing SPA (Single Page Application)
+Karena aplikasi ini menggunakan React Router (Vite), Anda perlu menambahkan file `_redirects` agar routing berfungsi dengan benar saat halaman direfresh atau diakses langsung lewat URL tertentu.
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+Kami telah menyediakan file `public/_redirects` untuk Anda. Pastikan file tersebut terikut saat Anda melakukan build.
+
+### 4. Variabel Lingkungan (Environment Variables)
+Aplikasi ini menggunakan konfigurasi Firebase yang tersimpan di `firebase-applet-config.json`. Pastikan file tersebut tersedia di repositori Anda atau pindahkan nilainya ke variabel lingkungan di dashboard Cloudflare Pages jika Anda ingin menyembunyikannya dari repositori publik.
+
+Untuk menambahkan variabel di Cloudflare Pages:
+1. Buka proyek Anda di Cloudflare Pages.
+2. Navigasi ke **Settings** > **Environment variables**.
+3. Klik **Add variables**.
+
+## Pemeliharaan
+Setiap kali Anda melakukan `push` ke branch utama di GitHub, Cloudflare Pages akan secara otomatis melakukan build ulang dan mendeploy versi terbaru aplikasi Anda.

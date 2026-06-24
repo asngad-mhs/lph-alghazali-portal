@@ -50,65 +50,59 @@ service cloud.firestore {
 
     // Specific roles checking
     function isAdmin() {
-      return isSignedIn() && (isEmailAdmin() || hasRoleInDocument('admin'));
+      return isSignedIn() && (isEmailAdmin() || (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'));
     }
 
     function isAuditor() {
-      return isSignedIn() && (isEmailAuditor() || hasRoleInDocument('auditor'));
+      return isSignedIn() && (isEmailAuditor() || (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'auditor'));
     }
 
     function isEditor() {
-      return isSignedIn() && (isEmailEditor() || hasRoleInDocument('editor'));
+      return isSignedIn() && (isEmailEditor() || (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'editor'));
     }
 
     function isStaf() {
-      return isSignedIn() && (isEmailStaf() || hasRoleInDocument('staf'));
+      return isSignedIn() && (isEmailStaf() || (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'staf'));
     }
 
     // Global staff check (fits duty functions)
     function isStaff() {
-      return isSignedIn() && (
-        isEmailAdmin() || isEmailAuditor() || isEmailEditor() || isEmailStaf() ||
-        hasRoleInDocument('admin') || hasRoleInDocument('auditor') || 
-        hasRoleInDocument('editor') || hasRoleInDocument('staf')
-      );
+      return isAdmin() || isAuditor() || isEditor() || isStaf();
     }
 
     // --- Collection Matches ---
 
     // 1. Users Collection
     match /users/{userId} {
-      allow read, write: if isSignedIn() && (isOwner(userId) || isStaff());
+      allow read: if isSignedIn() && (isOwner(userId) || isStaff());
+      allow write: if isSignedIn() && (isOwner(userId) || isAdmin());
     }
 
     // 2. Artifacts & Public Data
     match /artifacts/{appId} {
       allow read: if true;
 
+      // Public data nested structure
+      match /public/data/{collectionName}/{docId} {
+        // Allow public read for news, regulations, and documents
+        allow read: if collectionName in ['berita', 'regulasi', 'dokumen'] || 
+                     (collectionName == 'pengajuan_halal' && isSignedIn() && (isStaff() || (resource != null && resource.data.userId == request.auth.uid)));
+        
+        // Write access for staff
+        allow write: if isSignedIn() && isStaff();
+        
+        // Special logic for creating pengajuan (users can create their own)
+        allow create: if collectionName == 'pengajuan_halal' && isSignedIn() && request.resource.data.userId == request.auth.uid;
+        
+        // Special logic for updating pengajuan (users can update their own if status doesn't change)
+        allow update: if collectionName == 'pengajuan_halal' && isSignedIn() && 
+                        (isStaff() || (resource.data.userId == request.auth.uid && request.resource.data.status == resource.data.status));
+      }
+
       // Public system settings
       match /public/system_settings {
         allow read: if true;
         allow write: if isSignedIn() && isStaff();
-      }
-
-      // Public news and articles (Berita & Agenda)
-      match /public/data/berita/{beritaId} {
-        allow read: if true;
-        allow write: if isSignedIn() && isStaff();
-      }
-
-      // Public regulations (Regulasi)
-      match /public/data/regulasi/{regulasiId} {
-        allow read: if true;
-        allow write: if isSignedIn() && isStaff();
-      }
-
-      // Applications with private access logic
-      match /public/data/pengajuan_halal/{pengajuanId} {
-        allow read: if isSignedIn() && (isStaff() || resource.data.userId == request.auth.uid);
-        allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
-        allow update: if isSignedIn() && (isStaff() || (resource.data.userId == request.auth.uid && request.resource.data.status == resource.data.status));
-        allow delete: if isSignedIn() && isStaff();
       }
     }
   }
