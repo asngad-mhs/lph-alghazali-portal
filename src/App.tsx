@@ -527,24 +527,6 @@ Mengatur tata cara operasional untuk pendaftaran sertifikasi halal reguler:
 - Penerbitan Laporan Hasil Pemeriksaan (LHP) pasca audit lapangan.`
   },
   {
-    id: 'per-bpom-22-2018',
-    nomor: 'Peraturan BPOM Nomor 22 Tahun 2018',
-    kategori: 'Peraturan BPOM',
-    tentang: 'Label Halal pada Pangan Olahan',
-    deskripsi: 'Aturan BPOM yang merincikan tata cara pencantuman status, logo, dan tulisan halal pada media kemasan pangan olahan yang diedarkan secara komersil.',
-    tahun: '2018',
-    referensiUrl: 'https://bpjph.halal.go.id/',
-    pasalPenting: [
-      { pasal: 'Pencantuman Logo', isi: 'Pelaku usaha wajib mencantumkan logo halal Indonesia pada permukaan label pangan yang paling mudah dilihat konsumen setelah memperoleh sertifikat halal.' },
-      { pasal: 'Larangan Klaim', isi: 'Dilarang mencantumkan logo atau klaim halal sepihak tanpa adanya sertifikat halal dari BPJPH.' }
-    ],
-    isiLengkap: `PERATURAN BADAN PENGAWAS OBAT DAN MAKANAN NOMOR 22 TAHUN 2018 TENTANG PEDOMAN LABEL PANGAN OLAHAN TERKAIT LOGO HALAL
-
-Mengatur standarisasi label jaminan kehalalan produk:
-- Kewajiban pencantuman penandaan halal yang sah bagi produk pangan yang telah mengantongi Sertifikat Halal.
-- Sanksi persuasif hingga administratif bagi pelaku usaha pangan olahan bermasalah.`
-  },
-  {
     id: 'sni-99001-2022',
     nomor: 'SNI 99001:2022',
     kategori: 'SNI',
