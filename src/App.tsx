@@ -102,8 +102,9 @@ interface FirestoreErrorInfo {
 }
 
 function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null) {
+  const errorMessage = error instanceof Error ? error.message : String(error);
   const errInfo: FirestoreErrorInfo = {
-    error: error instanceof Error ? error.message : String(error),
+    error: errorMessage,
     authInfo: {
       userId: auth.currentUser?.uid,
       email: auth.currentUser?.email,
@@ -119,7 +120,9 @@ function handleFirestoreError(error: unknown, operationType: OperationType, path
     path
   };
   console.error('Firestore Error: ', JSON.stringify(errInfo));
-  // If we catch a permission error here, we should probably set an error state instead of crashing.
+  
+  // Alert the user so they know it didn't actually save/load correctly
+  alert(`Gagal ${operationType === OperationType.CREATE ? 'menambah' : operationType === OperationType.UPDATE ? 'memperbarui' : operationType === OperationType.DELETE ? 'menghapus' : 'memuat'} data. ${errorMessage.includes('permission-denied') ? 'Anda tidak memiliki izin yang cukup.' : errorMessage}`);
 }
 
 import firebaseConfig from '../firebase-applet-config.json';
@@ -1048,13 +1051,21 @@ export default function LPHApp() {
       const unsubscribeRegulasi = onSnapshot(regulasiRef, (snapshot) => {
         try {
           const rData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as any[];
-          // If admin has managed items in Firestore, use them. 
-          // Otherwise, fall back to default deprecated data if Firestore is empty.
-          if (rData.length > 0) {
-            setRegulasiList(rData);
-          } else {
-            setRegulasiList(DEPRECATED_REGULASI_DATA);
+          
+          // Combine Firestore data with local DEPRECATED_REGULASI_DATA
+          // Items from Firestore (rData) take precedence
+          const mergedList = [...rData];
+          for (const localReg of DEPRECATED_REGULASI_DATA) {
+            // Check if this item (by ID or nomor) is already in the list
+            if (!mergedList.some((item) => item.id === localReg.id || item.nomor === localReg.nomor)) {
+              mergedList.push(localReg);
+            }
           }
+          
+          // Sort merged list by createdAt (newest first)
+          mergedList.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+          
+          setRegulasiList(mergedList);
         } catch (err) {
           console.error("Error mapping regulasi snapshot:", err);
           setRegulasiList(DEPRECATED_REGULASI_DATA);
@@ -7222,9 +7233,9 @@ function AdminRegulasi({ data = [], addData, updateData, deleteData }: any) {
       return;
     }
     
-    // Check filesize: limit to 5MB
-    if (file.size > 5 * 1024 * 1024) {
-      alert('Ukuran file terlalu besar! Maksimal ukuran file adalah 5 MB.');
+    // Check filesize: limit to 700KB to ensure Base64 fits within Firestore's 1MB document limit
+    if (file.size > 700 * 1024) {
+      alert('Ukuran file terlalu besar! Maksimal ukuran file adalah 700 KB untuk memastikan sinkronisasi cloud berjalan lancar.');
       return;
     }
 
@@ -7543,7 +7554,7 @@ function AdminRegulasi({ data = [], addData, updateData, deleteData }: any) {
                 {/* UPLOAD FILE LAMPIRAN (PDF, EXCEL, GAMBAR) */}
                 <div className="border border-gray-200 rounded-lg p-4 bg-gray-50/55 space-y-3">
                   <label className="block text-sm font-bold text-gray-800">Lampiran Dokumen Tambahan (PDF/Excel/Gambar)</label>
-                  <p className="text-xs text-gray-500">Unggah salinan resmi regulasi ini dalam format PDF, Excel, atau Gambar jika ada.</p>
+                  <p className="text-xs text-gray-500">Unggah salinan resmi regulasi ini dalam format PDF, Excel, atau Gambar jika ada. Maksimal 700KB.</p>
                   
                   {formData.fileData ? (
                     <div className="flex items-center justify-between p-3 bg-white border border-emerald-200 rounded-lg shadow-xs">
@@ -7635,9 +7646,9 @@ function AdminDokumen({ data = [], addData, updateData, deleteData }: any) {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Check size (max 5MB for base64 efficiency)
-    if (file.size > 5 * 1024 * 1024) {
-      alert("Ukuran file terlalu besar! Maksimal 5MB untuk sinkronisasi cloud.");
+    // Check size (max 700KB to ensure it fits in Firestore's 1MB limit when base64 encoded)
+    if (file.size > 700 * 1024) {
+      alert("Ukuran file terlalu besar! Maksimal 700 KB untuk memastikan sinkronisasi cloud berjalan lancar.");
       return;
     }
 
@@ -7814,7 +7825,7 @@ function AdminDokumen({ data = [], addData, updateData, deleteData }: any) {
                   ) : (
                     <>
                       <p className="text-sm font-medium text-gray-700">Klik atau seret file ke sini</p>
-                      <p className="text-xs text-gray-500 mt-1">Maksimal ukuran file: 5 MB</p>
+                      <p className="text-xs text-gray-500 mt-1">Maksimal ukuran file: 700 KB</p>
                     </>
                   )}
                 </div>
