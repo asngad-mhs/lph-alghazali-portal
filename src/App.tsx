@@ -334,6 +334,28 @@ Menetapkan aturan teknis terstruktur mengenai:
 - Validitas penugasan auditor halal di lokasi usaha.`
   },
   {
+    id: 'bpom-11-2019',
+    nomor: 'Peraturan BPOM UU.No. 11 Tahun 2019',
+    kategori: 'Peraturan BPOM',
+    tentang: 'Penyelenggaraan dan Pengawasan Pangan dan Obat',
+    deskripsi: 'Ketentuan Peraturan BPOM UU.No. 11 Tahun 2019 terkait penyelenggaraan dan pengawasan produk pangan dan obat.',
+    tahun: '2019',
+    referensiUrl: 'https://bpom.go.id/',
+    pasalPenting: [],
+    isiLengkap: `Peraturan BPOM UU.No. 11 Tahun 2019`
+  },
+  {
+    id: 'bpnas-12-2025',
+    nomor: 'Peraturan BPNAS No.12 Tahun 2025',
+    kategori: 'Peraturan BPNAS',
+    tentang: 'Pedoman Standardisasi Nasional',
+    deskripsi: 'Peraturan BPNAS No.12 Tahun 2025 mengenai standar dan panduan BPNAS.',
+    tahun: '2025',
+    referensiUrl: 'https://bpnas.go.id/',
+    pasalPenting: [],
+    isiLengkap: `Peraturan BPNAS No.12 Tahun 2025/ Peraturan BPNAS`
+  },
+  {
     id: 'bpom-20-2021',
     nomor: 'Peraturan BPOM Nomor 20 Tahun 2021',
     kategori: 'Peraturan BPOM',
@@ -2105,6 +2127,16 @@ SHA-256 Verified Secure Archive File`;
                   <button 
                     onClick={() => {
                       setLandingSubView('regulasi');
+                      setSelectedRegulasiCategory('Peraturan BPNAS');
+                      setActiveDoc(null);
+                    }} 
+                    className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50 cursor-pointer"
+                  >
+                    <ShieldCheck className="w-4 h-4 mr-2 text-emerald-600" /> Peraturan BPNAS
+                  </button>
+                  <button 
+                    onClick={() => {
+                      setLandingSubView('regulasi');
                       setSelectedRegulasiCategory('SNI');
                       setActiveDoc(null);
                     }} 
@@ -2263,6 +2295,17 @@ SHA-256 Verified Secure Archive File`;
                   className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600 flex items-center"
                 >
                   Peraturan BPOM
+                </button>
+                <button 
+                  onClick={() => {
+                    setLandingSubView('regulasi');
+                    setSelectedRegulasiCategory('Peraturan BPNAS');
+                    setActiveDoc(null);
+                    setIsMobileMenuOpen(false);
+                  }} 
+                  className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600 flex items-center"
+                >
+                  Peraturan BPNAS
                 </button>
                 <button 
                   onClick={() => {
@@ -7331,6 +7374,7 @@ function AdminRegulasi({ data = [], addData, updateData, deleteData }: any) {
     { label: 'Keputusan Menteri Agama', display: 'Keputusan Menteri Agama' },
     { label: 'Keputusan Kepala BPJPH', display: 'Keputusan Kepala BPJPH' },
     { label: 'Peraturan BPOM', display: 'Peraturan BPOM' },
+    { label: 'Peraturan BPNAS', display: 'Peraturan BPNAS' },
     { label: 'SNI', display: 'Standar Nasional (SNI)' },
     { label: 'Fatwa MUI', display: 'Fatwa MUI' },
     { label: 'Lainnya', display: 'Lainnya' }
@@ -7474,6 +7518,7 @@ function AdminRegulasi({ data = [], addData, updateData, deleteData }: any) {
                       <option value="Keputusan Menteri Agama">Keputusan Menteri Agama</option>
                       <option value="Keputusan Kepala BPJPH">Keputusan Kepala BPJPH</option>
                       <option value="Peraturan BPOM">Peraturan BPOM</option>
+                      <option value="Peraturan BPNAS">Peraturan BPNAS</option>
                       <option value="SNI">Standar Nasional (SNI)</option>
                       <option value="Fatwa MUI">Fatwa MUI</option>
                       <option value="Lainnya">Lainnya</option>
