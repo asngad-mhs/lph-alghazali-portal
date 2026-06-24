@@ -1065,14 +1065,12 @@ export default function LPHApp() {
         try {
           const rData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as any[];
           
-          // If Firestore has data, it becomes the source of truth (enabling deletions)
-          // If Firestore is empty, we fall back to defaults
-          let finalData = [];
-          if (rData.length > 0) {
-            finalData = rData;
-          } else {
-            finalData = DEPRECATED_REGULASI_DATA;
-          }
+          // Merge Firestore data with hardcoded data to ensure new hardcoded items are visible.
+          // Firestore data takes precedence if there's an ID conflict.
+          const firestoreIds = new Set(rData.map(item => item.id));
+          const missingHardcoded = DEPRECATED_REGULASI_DATA.filter(item => !firestoreIds.has(item.id));
+          
+          let finalData = [...rData, ...missingHardcoded];
           
           // Sort list by createdAt (newest first)
           finalData.sort((a: any, b: any) => (b.createdAt || 0) - (a.createdAt || 0));
@@ -2127,16 +2125,6 @@ SHA-256 Verified Secure Archive File`;
                   <button 
                     onClick={() => {
                       setLandingSubView('regulasi');
-                      setSelectedRegulasiCategory('Peraturan BPNAS');
-                      setActiveDoc(null);
-                    }} 
-                    className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 flex items-center border-b border-gray-50 cursor-pointer"
-                  >
-                    <ShieldCheck className="w-4 h-4 mr-2 text-emerald-600" /> Peraturan BPNAS
-                  </button>
-                  <button 
-                    onClick={() => {
-                      setLandingSubView('regulasi');
                       setSelectedRegulasiCategory('SNI');
                       setActiveDoc(null);
                     }} 
@@ -2295,17 +2283,6 @@ SHA-256 Verified Secure Archive File`;
                   className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600 flex items-center"
                 >
                   Peraturan BPOM
-                </button>
-                <button 
-                  onClick={() => {
-                    setLandingSubView('regulasi');
-                    setSelectedRegulasiCategory('Peraturan BPNAS');
-                    setActiveDoc(null);
-                    setIsMobileMenuOpen(false);
-                  }} 
-                  className="w-full text-left py-1 text-sm text-gray-600 hover:text-emerald-600 flex items-center"
-                >
-                  Peraturan BPNAS
                 </button>
                 <button 
                   onClick={() => {
