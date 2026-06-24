@@ -101,8 +101,9 @@ interface FirestoreErrorInfo {
   }
 }
 
-function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null) {
+function handleFirestoreError(error: any, operationType: OperationType, path: string | null) {
   const errorMessage = error instanceof Error ? error.message : String(error);
+  const errorCode = error?.code || '';
   const errInfo: FirestoreErrorInfo = {
     error: errorMessage,
     authInfo: {
@@ -121,14 +122,16 @@ function handleFirestoreError(error: unknown, operationType: OperationType, path
   };
   console.error('Firestore Error: ', JSON.stringify(errInfo));
   
+  const isPermissionError = errorMessage.toLowerCase().includes('permission') || errorCode === 'permission-denied';
+
   // Don't show alert for permission-denied if the user is not logged in (likely public visitor)
-  if (errorMessage.includes('permission-denied') && !auth.currentUser) {
+  if (isPermissionError && !auth.currentUser) {
     return;
   }
 
   // Alert the user so they know it didn't actually save/load correctly
   const pathInfo = path ? ` (Path: ${path})` : '';
-  alert(`Gagal ${operationType === OperationType.CREATE ? 'menambah' : operationType === OperationType.UPDATE ? 'memperbarui' : operationType === OperationType.DELETE ? 'menghapus' : 'memuat'} data.${pathInfo} ${errorMessage.includes('permission-denied') ? 'Anda tidak memiliki izin yang cukup.' : errorMessage}`);
+  alert(`Gagal ${operationType === OperationType.CREATE ? 'menambah' : operationType === OperationType.UPDATE ? 'memperbarui' : operationType === OperationType.DELETE ? 'menghapus' : 'memuat'} data.${pathInfo} ${isPermissionError ? 'Anda tidak memiliki izin yang cukup.' : errorMessage}`);
 }
 
 import firebaseConfig from '../firebase-applet-config.json';

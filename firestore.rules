@@ -98,43 +98,38 @@ service cloud.firestore {
     // 2. Artifacts & Public Data
     match /artifacts/{appId} {
       allow read: if true;
+    }
+    
+    // Public news and articles
+    match /artifacts/{appId}/public/data/berita/{docId} {
+      allow read: if true;
+      allow write: if isSignedIn() && isStaff();
+    }
 
-      // Ensure intermediate paths are accessible if needed
-      match /public/data {
-        allow read: if true;
-      }
+    // Public regulations
+    match /artifacts/{appId}/public/data/regulasi/{docId} {
+      allow read: if true;
+      allow write: if isSignedIn() && isStaff();
+    }
 
-      // Public news and articles
-      match /public/data/berita/{docId} {
-        allow read: if true;
-        allow write: if isSignedIn() && isStaff();
-      }
+    // Public documents
+    match /artifacts/{appId}/public/data/dokumen/{docId} {
+      allow read: if true;
+      allow write: if isSignedIn() && isStaff();
+    }
 
-      // Public regulations
-      match /public/data/regulasi/{docId} {
-        allow read: if true;
-        allow write: if isSignedIn() && isStaff();
-      }
+    // Applications with private access logic
+    match /artifacts/{appId}/public/data/pengajuan_halal/{pengajuanId} {
+      allow read: if isSignedIn() && (isStaff() || resource.data.userId == request.auth.uid);
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update: if isSignedIn() && (isStaff() || (resource.data.userId == request.auth.uid && request.resource.data.status == resource.data.status));
+      allow delete: if isSignedIn() && isStaff();
+    }
 
-      // Public documents
-      match /public/data/dokumen/{docId} {
-        allow read: if true;
-        allow write: if isSignedIn() && isStaff();
-      }
-
-      // Applications with private access logic
-      match /public/data/pengajuan_halal/{pengajuanId} {
-        allow read: if isSignedIn() && (isStaff() || resource.data.userId == request.auth.uid);
-        allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
-        allow update: if isSignedIn() && (isStaff() || (resource.data.userId == request.auth.uid && request.resource.data.status == resource.data.status));
-        allow delete: if isSignedIn() && isStaff();
-      }
-
-      // Public system settings
-      match /public/system_settings {
-        allow read: if true;
-        allow write: if isSignedIn() && isStaff();
-      }
+    // Public system settings
+    match /artifacts/{appId}/public/system_settings {
+      allow read: if true;
+      allow write: if isSignedIn() && isStaff();
     }
   }
 }
