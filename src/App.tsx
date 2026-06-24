@@ -347,7 +347,7 @@ Menetapkan aturan teknis terstruktur mengenai:
   {
     id: 'bpnas-12-2025',
     nomor: 'Peraturan BPNAS No.12 Tahun 2025',
-    kategori: 'Peraturan BPNAS',
+    kategori: 'Peraturan BPOM',
     tentang: 'Pedoman Standardisasi Nasional',
     deskripsi: 'Peraturan BPNAS No.12 Tahun 2025 mengenai standar dan panduan BPNAS.',
     tahun: '2025',
