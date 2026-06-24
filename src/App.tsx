@@ -1900,30 +1900,30 @@ SHA-256 Verified Secure Archive File`;
     }
   };
 
+  const fallbacks = [
+    "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=1200", // Lab/Analytical testing/Precision
+    "https://images.unsplash.com/photo-1519452635265-7b1fbfd1e4e0?auto=format&fit=crop&q=80&w=1200", // Study/Academic/Islamic Info
+    "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?auto=format&fit=crop&q=80&w=1200"  // Success/Collaboration/Teamwork
+  ];
+  const fallbackTitles = [
+    "Infrastruktur Cloud LPH Al-Ghazali Aktif",
+    "Edukasi Sertifikasi Halal Digital",
+    "Sambut Tim Auditor Berintegritas"
+  ];
+  const fallbackContents = [
+    "Infrastruktur Cloud LPH Al-Ghazali aktif penuh 24 jam untuk melayani verifikasi dokumen digital.",
+    "Mendukung program akselerasi sertifikasi halal dari pemerintah untuk UMK Indonesia.",
+    "Tim auditor halal profesional BNSP siap membantu kepatuhan proses jaminan produk halal Anda."
+  ];
+  const fallbackCategories = [
+    "Teknologi",
+    "Edukasi",
+    "Layanan"
+  ];
+
   const currentHeroNews = (beritaList || [])
     .slice(0, 3)
     .map((b: any, index: number) => {
-      const fallbacks = [
-        "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=1200", // Lab/Analytical testing/Precision
-        "https://images.unsplash.com/photo-1519452635265-7b1fbfd1e4e0?auto=format&fit=crop&q=80&w=1200", // Study/Academic/Islamic Info
-        "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?auto=format&fit=crop&q=80&w=1200"  // Success/Collaboration/Teamwork
-      ];
-      const fallbackTitles = [
-        "Infrastruktur Cloud LPH Al-Ghazali Aktif",
-        "Edukasi Sertifikasi Halal Digital",
-        "Sambut Tim Auditor Berintegritas"
-      ];
-      const fallbackContents = [
-        "Infrastruktur Cloud LPH Al-Ghazali aktif penuh 24 jam untuk melayani verifikasi dokumen digital.",
-        "Mendukung program akselerasi sertifikasi halal dari pemerintah untuk UMK Indonesia.",
-        "Tim auditor halal profesional BNSP siap membantu kepatuhan proses jaminan produk halal Anda."
-      ];
-      const fallbackCategories = [
-        "Teknologi",
-        "Edukasi",
-        "Layanan"
-      ];
-
       return {
         id: b.id || `mock-${index}`,
         title: b.title || fallbackTitles[index],
@@ -1935,6 +1935,18 @@ SHA-256 Verified Secure Archive File`;
           : fallbacks[index]
       };
     });
+
+  while (currentHeroNews.length < 3) {
+    const index = currentHeroNews.length;
+    currentHeroNews.push({
+      id: `mock-${index}`,
+      title: fallbackTitles[index],
+      content: fallbackContents[index],
+      category: fallbackCategories[index],
+      createdAt: Date.now() - index * 86400000,
+      imageSrc: fallbacks[index]
+    });
+  }
 
   return (
     <div className="flex flex-col min-h-screen scroll-smooth" style={{ scrollPaddingTop: '160px' }}>
