@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInAnonymously, onAuthStateChanged, signOut, updateProfile, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail } from 'firebase/auth';
 import { getFirestore, initializeFirestore, collection, onSnapshot, getDoc, addDoc, updateDoc, doc, serverTimestamp, deleteDoc, setDoc, query, where } from 'firebase/firestore';
-import { Leaf, Home, FileText, LogOut, PlusCircle, Settings, CheckCircle, Clock, Search, Briefcase, FileSignature, UploadCloud, ArrowLeft, ArrowRight, ShieldCheck, Zap, MonitorSmartphone, UserCheck, Newspaper, Edit, Trash2, X, Image as ImageIcon, Route, Coins, ChevronDown, ChevronRight, Calculator, Receipt, CalendarDays, Activity, Video, Link, MapPin, Phone, Mail, Facebook, Twitter, Instagram, Linkedin, History, Target, Award, Network, Users, BookOpen, Handshake, Menu, Scale, Landmark, CheckCircle2, FlaskConical, FileEdit, Globe, Key, Download, UserPlus, Send, Info } from 'lucide-react';
+import { Leaf, Home, FileText, LogOut, PlusCircle, Settings, CheckCircle, Clock, Search, Briefcase, FileSignature, UploadCloud, ArrowLeft, ArrowRight, ShieldCheck, Zap, MonitorSmartphone, UserCheck, Newspaper, Edit, Trash2, X, Image as ImageIcon, Route, Coins, ChevronDown, ChevronRight, Calculator, Receipt, CalendarDays, Activity, Video, Link, MapPin, Phone, Mail, Facebook, Twitter, Instagram, Linkedin, History, Target, Award, Network, Users, BookOpen, Handshake, Menu, Scale, Landmark, CheckCircle2, FlaskConical, FileEdit, Globe, Key, Download, UserPlus, Send, Info, Archive } from 'lucide-react';
 import CryptoJS from 'crypto-js';
 import { jsPDF } from 'jspdf';
 import RegulasiView from './components/RegulasiView';
@@ -857,6 +857,7 @@ export default function LPHApp() {
   const [pengajuanList, setPengajuanList] = useState<any[]>([]);
   const [beritaList, setBeritaList] = useState<any[]>([]);
   const [regulasiList, setRegulasiList] = useState<any[]>([]);
+  const [dokumenList, setDokumenList] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // Connection Test - Removed to avoid potential race conditions and SDK assertion failures
@@ -1065,6 +1066,24 @@ export default function LPHApp() {
 
       return () => {
         unsubscribeRegulasi();
+      };
+    }
+  }, []);
+
+  // Fetch Dokumen (publicly readable)
+  useEffect(() => {
+    if (firebaseConfig.projectId !== 'mock-project') {
+      const dokumenRef = collection(db, 'artifacts', currentAppId, 'public', 'data', 'dokumen');
+      const unsubscribeDokumen = onSnapshot(dokumenRef, (snapshot) => {
+        const dData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as any[];
+        dData.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+        setDokumenList(dData);
+      }, (error) => {
+        handleFirestoreError(error, OperationType.GET, `artifacts/${currentAppId}/public/data/dokumen`);
+      });
+
+      return () => {
+        unsubscribeDokumen();
       };
     }
   }, []);
@@ -1315,6 +1334,52 @@ export default function LPHApp() {
     }
   };
 
+  // --- CRUD DOKUMEN ACTIONS ---
+  const handleAddDokumen = async (formData: any) => {
+    if (!user) return;
+    try {
+      if (firebaseConfig.projectId !== 'mock-project') {
+        const docId = Math.random().toString(36).substr(2, 9);
+        const docRef = doc(db, 'artifacts', currentAppId, 'public', 'data', 'dokumen', docId);
+        await setDoc(docRef, { ...formData, id: docId, createdAt: Date.now(), author: user.displayName || user.email });
+      } else {
+        setDokumenList([{ ...formData, id: Math.random().toString(36).substr(2, 9), createdAt: Date.now() }, ...dokumenList]);
+      }
+    } catch (error) {
+      handleFirestoreError(error, OperationType.CREATE, `artifacts/${currentAppId}/public/data/dokumen`);
+    }
+  };
+
+  const handleUpdateDokumen = async (id: string, formData: any) => {
+    if (!user) return;
+    try {
+      if (firebaseConfig.projectId !== 'mock-project') {
+        const docRef = doc(db, 'artifacts', currentAppId, 'public', 'data', 'dokumen', id);
+        await updateDoc(docRef, { ...formData, updatedAt: Date.now() });
+      } else {
+        setDokumenList(dokumenList.map(d => d.id === id ? { ...d, ...formData, updatedAt: Date.now() } : d));
+      }
+    } catch (error) {
+      handleFirestoreError(error, OperationType.UPDATE, `artifacts/${currentAppId}/public/data/dokumen/${id}`);
+    }
+  };
+
+  const handleDeleteDokumen = async (id: string) => {
+    if (!user) return;
+    if (window.confirm("Apakah Anda yakin ingin menghapus dokumen ini?")) {
+      try {
+        if (firebaseConfig.projectId !== 'mock-project') {
+          const docRef = doc(db, 'artifacts', currentAppId, 'public', 'data', 'dokumen', id);
+          await deleteDoc(docRef);
+        } else {
+          setDokumenList(dokumenList.filter(d => d.id !== id));
+        }
+      } catch (error) {
+        handleFirestoreError(error, OperationType.DELETE, `artifacts/${currentAppId}/public/data/dokumen/${id}`);
+      }
+    }
+  };
+
   const handleLogout = () => {
     setCurrentView('landing');
   };
@@ -1417,6 +1482,12 @@ export default function LPHApp() {
           <AdminRegulasi data={regulasiList} addData={handleAddRegulasi} updateData={handleUpdateRegulasi} deleteData={handleDeleteRegulasi} />
         </DashboardLayout>
       )}
+
+      {currentView === 'admin-dokumen' && (
+        <DashboardLayout role={userRole} navigateTo={navigateTo} logout={handleLogout} currentView={currentView}>
+          <AdminDokumen data={dokumenList} addData={handleAddDokumen} updateData={handleUpdateDokumen} deleteData={handleDeleteDokumen} />
+        </DashboardLayout>
+      )}
     </div>
   );
 }
@@ -1425,7 +1496,7 @@ export default function LPHApp() {
 // VIEW COMPONENTS
 // ==========================================
 
-function LandingView({ navigateTo, beritaList, regulasiList: passedRegulasiList, user, userRole, db, currentAppId }: any) {
+function LandingView({ navigateTo, beritaList, regulasiList: passedRegulasiList, dokumenList, user, userRole, db, currentAppId }: any) {
   const [newsCategoryFilter, setNewsCategoryFilter] = useState('Semua');
   const [landingSubView, setLandingSubView] = useState<'home' | 'regulasi'>('home');
   const [selectedRegulasiCategory, setSelectedRegulasiCategory] = useState<string>('Semua');
@@ -1434,6 +1505,7 @@ function LandingView({ navigateTo, beritaList, regulasiList: passedRegulasiList,
   const [settings, setSettings] = useState<any>(null);
   const [activeHeroNewsSlide, setActiveHeroNewsSlide] = useState(0);
   const [selectedBeritaDetail, setSelectedBeritaDetail] = useState<any>(null);
+  const [selectedDokumenDetail, setSelectedDokumenDetail] = useState<any>(null);
 
   const regulasiList = passedRegulasiList || DEPRECATED_REGULASI_DATA;
 
@@ -3474,6 +3546,76 @@ SHA-256 Verified Secure Archive File`;
       </section>
 
       {/* Footer */}
+      {/* Pusat Dokumen & Laporan Section */}
+      <section id="dokumen" className="py-24 bg-gray-50 border-y border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 tracking-tight">Pusat Dokumen & Laporan Publik</h2>
+                <p className="text-gray-500 max-w-2xl mx-auto text-lg leading-relaxed">
+                    Akses transparan terhadap laporan kegiatan, arsip legalitas, dan panduan edukasi resmi dari LPH Al-Ghazali.
+                </p>
+                <div className="mt-6 flex justify-center">
+                    <div className="h-1 w-20 bg-emerald-600 rounded-full"></div>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {(dokumenList || []).length > 0 ? (
+                    dokumenList.map((docObj: any) => (
+                        <div key={docObj.id} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group relative overflow-hidden">
+                            <div className="absolute top-0 left-0 w-1.5 h-full bg-emerald-500 transform -translate-x-full group-hover:translate-x-0 transition-transform"></div>
+                            <div className="mb-4 flex justify-between items-start">
+                                <div className="p-3 bg-emerald-50 rounded-xl group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                                    <FileText className="w-6 h-6" />
+                                </div>
+                                <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">
+                                    {docObj.category}
+                                </span>
+                            </div>
+                            <h3 className="font-bold text-gray-900 mb-2 line-clamp-2 leading-snug group-hover:text-emerald-700 transition-colors">
+                                {docObj.title}
+                            </h3>
+                            <p className="text-xs text-gray-500 mb-4 line-clamp-2">
+                                {docObj.description || "Dokumen resmi LPH Al-Ghazali tersedia untuk publik."}
+                            </p>
+                            <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-50">
+                                <div className="text-[10px] text-gray-400 font-medium">
+                                    {docObj.fileSize} • {new Date(docObj.createdAt).toLocaleDateString('id-ID')}
+                                </div>
+                                <button 
+                                    onClick={() => setSelectedDokumenDetail(docObj)}
+                                    className="text-emerald-600 hover:text-emerald-800 text-xs font-bold flex items-center group-hover:gap-1.5 transition-all"
+                                >
+                                    Buka <ArrowRight className="w-3 h-3 ml-1" />
+                                </button>
+                            </div>
+                        </div>
+                    ))
+                ) : (
+                    <div className="col-span-full py-20 text-center bg-white rounded-3xl border border-dashed border-gray-200">
+                        <Archive className="w-16 h-16 text-gray-200 mx-auto mb-4" />
+                        <h4 className="text-lg font-bold text-gray-400">Arsip Masih Kosong</h4>
+                        <p className="text-sm text-gray-400">Belum ada dokumen publik yang diunggah oleh Admin saat ini.</p>
+                    </div>
+                )}
+            </div>
+
+            {/* CTA for Admin Upload Notice */}
+            <div className="mt-16 p-6 bg-emerald-950 rounded-2xl text-white flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden relative">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
+                <div className="relative z-10">
+                    <h4 className="text-xl font-bold mb-1">Butuh Laporan atau Dokumen Lain?</h4>
+                    <p className="text-emerald-100/70 text-sm">Setiap perubahan dokumen oleh Admin Pusat akan langsung terupdate di halaman ini.</p>
+                </div>
+                <div className="flex gap-4 relative z-10">
+                    <a href="mailto:lphalghazali@gmail.com" className="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-white rounded-xl font-bold text-sm transition-all shadow-lg shadow-emerald-900/20">
+                        Hubungi Admin
+                    </a>
+                </div>
+            </div>
+        </div>
+      </section>
+
       <footer className="bg-gray-900 border-t border-gray-800 pt-16 pb-8 text-gray-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
@@ -5062,6 +5204,74 @@ SHA-256 Verified Secure Archive File`;
           </div>
         </div>
       )}
+
+      {/* Modal Detail Dokumen / Preview */}
+      {selectedDokumenDetail && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl flex flex-col max-h-[90vh]">
+            <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50 shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg">
+                    <FileText className="w-5 h-5" />
+                </div>
+                <div>
+                    <h3 className="font-bold text-gray-900 text-base leading-none">{selectedDokumenDetail.title}</h3>
+                    <p className="text-[10px] text-gray-500 mt-1 uppercase font-bold tracking-wider">{selectedDokumenDetail.category} • {selectedDokumenDetail.fileSize}</p>
+                </div>
+              </div>
+              <button onClick={() => setSelectedDokumenDetail(null)} className="p-2 bg-gray-100 hover:bg-gray-200 text-gray-500 rounded-xl transition-colors">
+                  <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="p-0 grow overflow-hidden bg-gray-200 flex flex-col">
+                {selectedDokumenDetail.fileType?.includes('pdf') ? (
+                    <iframe 
+                        src={`${selectedDokumenDetail.fileData}#toolbar=0`} 
+                        title={selectedDokumenDetail.title}
+                        className="w-full h-full border-none"
+                    />
+                ) : selectedDokumenDetail.fileType?.includes('image') ? (
+                    <div className="w-full h-full overflow-auto flex items-center justify-center p-4">
+                        <img src={selectedDokumenDetail.fileData} alt={selectedDokumenDetail.title} className="max-w-full h-auto shadow-lg rounded" />
+                    </div>
+                ) : (
+                    <div className="w-full h-full flex flex-col items-center justify-center bg-white p-10 text-center">
+                        <div className="p-6 bg-amber-50 rounded-full mb-4">
+                            <Download className="w-12 h-12 text-amber-600" />
+                        </div>
+                        <h4 className="text-xl font-bold text-gray-900 mb-2">Pratinjau Tidak Tersedia</h4>
+                        <p className="text-gray-500 max-w-md mb-8">Dokumen ini merupakan file format {selectedDokumenDetail.fileName?.split('.').pop()?.toUpperCase()} yang perlu diunduh untuk melihat isinya.</p>
+                        <a 
+                            href={selectedDokumenDetail.fileData} 
+                            download={selectedDokumenDetail.fileName}
+                            className="px-8 py-3 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-100 flex items-center"
+                        >
+                            <Download className="w-5 h-5 mr-2" />
+                            Unduh Berkas Sekarang
+                        </a>
+                    </div>
+                )}
+            </div>
+
+            <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4 shrink-0">
+                <div className="text-xs text-gray-500 flex items-center">
+                    <Info className="w-3 h-3 mr-1.5" /> Publikasi resmi oleh LPH Al-Ghazali pada {new Date(selectedDokumenDetail.createdAt).toLocaleString('id-ID')}
+                </div>
+                <div className="flex gap-3 w-full sm:w-auto">
+                    <button onClick={() => setSelectedDokumenDetail(null)} className="flex-1 sm:flex-none px-6 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-white transition-colors">Tutup</button>
+                    <a 
+                        href={selectedDokumenDetail.fileData} 
+                        download={selectedDokumenDetail.fileName}
+                        className="flex-1 sm:flex-none px-6 py-2 bg-emerald-600 text-white rounded-lg text-sm font-bold hover:bg-emerald-700 transition-all text-center flex items-center justify-center"
+                    >
+                        <Download className="w-4 h-4 mr-2" /> Simpan Ke Perangkat
+                    </a>
+                </div>
+            </div>
+          </div>
+        </div>
+      )}
         </>
       )}
     </div>
@@ -5556,6 +5766,12 @@ function DashboardLayout({ children, role, navigateTo, logout, currentView }: an
           {role === 'admin' && (
             <button onClick={() => { navigateTo('admin-regulasi'); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'admin-regulasi' ? (isInternal ? 'bg-emerald-600 text-white font-medium shadow-md' : 'bg-emerald-100') : (isInternal ? 'hover:bg-slate-800 hover:text-white' : 'hover:bg-emerald-50')}`}>
               <Scale className="w-5 h-5 mr-3" /> Manajemen Regulasi
+            </button>
+          )}
+
+          {(role === 'admin' || role === 'editor') && (
+            <button onClick={() => { navigateTo('admin-dokumen'); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'admin-dokumen' ? (isInternal ? 'bg-emerald-600 text-white font-medium shadow-md' : 'bg-emerald-100') : (isInternal ? 'hover:bg-slate-800 hover:text-white' : 'hover:bg-emerald-50')}`}>
+              <FileText className="w-5 h-5 mr-3" /> Manajemen Berkas
             </button>
           )}
 
@@ -7387,6 +7603,228 @@ function AdminRegulasi({ data = [], addData, updateData, deleteData }: any) {
                 <button type="button" onClick={closeModal} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50">Batal</button>
                 <button type="submit" disabled={isLoading} className="px-5 py-2 text-sm font-medium text-white bg-emerald-600 border border-transparent rounded-md shadow-sm hover:bg-emerald-700 disabled:opacity-75 flex items-center">
                   {isLoading ? 'Menyimpan...' : 'Simpan Regulasi'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function AdminDokumen({ data = [], addData, updateData, deleteData }: any) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editId, setEditId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const initialFormState = {
+    title: '',
+    category: 'Laporan',
+    description: '',
+    fileData: '',
+    fileName: '',
+    fileType: '',
+    fileSize: ''
+  };
+
+  const [formData, setFormData] = useState(initialFormState);
+
+  const handleFileChange = (e: any) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Check size (max 5MB for base64 efficiency)
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Ukuran file terlalu besar! Maksimal 5MB untuk sinkronisasi cloud.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      setFormData({
+        ...formData,
+        fileData: event.target?.result as string,
+        fileName: file.name,
+        fileType: file.type,
+        fileSize: (file.size / 1024).toFixed(1) + ' KB'
+      });
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const openModal = (docObj: any = null) => {
+    if (docObj) {
+      setEditId(docObj.id);
+      setFormData({
+        title: docObj.title || '',
+        category: docObj.category || 'Laporan',
+        description: docObj.description || '',
+        fileData: docObj.fileData || '',
+        fileName: docObj.fileName || '',
+        fileType: docObj.fileType || '',
+        fileSize: docObj.fileSize || ''
+      });
+    } else {
+      setEditId(null);
+      setFormData(initialFormState);
+    }
+    setIsModalOpen(true);
+  };
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      if (editId) {
+        await updateData(editId, formData);
+      } else {
+        await addData(formData);
+      }
+      setIsModalOpen(false);
+      setFormData(initialFormState);
+      setEditId(null);
+    } catch (err) {
+      console.error(err);
+      alert("Gagal memproses dokumen.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const filteredData = data.filter((d: any) => 
+    d.title?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    d.category?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">Pusat Manajemen Berkas</h2>
+          <p className="text-sm text-gray-500 mt-1">Kelola arsip, laporan giat, dan dokumen publik LPH Al-Ghazali.</p>
+        </div>
+        <button onClick={() => openModal()} className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-lg font-medium shadow-md transition-colors flex items-center shrink-0">
+          <PlusCircle className="w-5 h-5 mr-2" /> Unggah Berkas Baru
+        </button>
+      </div>
+
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div className="p-4 border-b border-gray-200 bg-gray-50 flex gap-4">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <input 
+              type="text" 
+              placeholder="Cari judul atau kategori dokumen..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-emerald-500 focus:border-emerald-500"
+            />
+          </div>
+        </div>
+        
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-white">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Judul Berkas</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Kategori</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Metadata</th>
+                <th className="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase">Aksi</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {filteredData.map((docObj: any) => (
+                <tr key={docObj.id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4">
+                    <div className="flex items-center">
+                      <div className="p-2 bg-emerald-50 rounded-lg mr-3">
+                        <FileText className="w-5 h-5 text-emerald-600" />
+                      </div>
+                      <div>
+                        <div className="text-sm font-bold text-gray-900">{docObj.title}</div>
+                        <div className="text-xs text-gray-500 truncate max-w-xs">{docObj.fileName}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-200">
+                      {docObj.category}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="text-xs text-gray-500">Ukuran: {docObj.fileSize}</div>
+                    <div className="text-xs text-gray-400">Dibuat: {new Date(docObj.createdAt).toLocaleDateString('id-ID')}</div>
+                  </td>
+                  <td className="px-6 py-4 text-right space-x-2">
+                    <button onClick={() => openModal(docObj)} className="text-emerald-600 hover:text-emerald-800 text-xs font-bold uppercase tracking-wider">Edit</button>
+                    <button onClick={() => deleteData(docObj.id)} className="text-red-600 hover:text-red-800 text-xs font-bold uppercase tracking-wider">Hapus</button>
+                  </td>
+                </tr>
+              ))}
+              {filteredData.length === 0 && (
+                <tr>
+                  <td colSpan={4} className="px-6 py-10 text-center text-gray-500">
+                    Belum ada dokumen yang diunggah.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50 shrink-0">
+              <h3 className="font-bold text-gray-900">{editId ? 'Perbarui Berkas' : 'Unggah Berkas Baru'}</h3>
+              <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600"><X className="w-5 h-5"/></button>
+            </div>
+            
+            <form onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto grow">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">Judul Dokumen / Berkas <span className="text-red-500">*</span></label>
+                <input type="text" required value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all" placeholder="Contoh: Laporan Giat Publik 2024" />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">Kategori Berkas <span className="text-red-500">*</span></label>
+                <select value={formData.category} onChange={(e) => setFormData({...formData, category: e.target.value})} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none bg-white">
+                  <option value="Laporan">Laporan Kegiatan</option>
+                  <option value="Arsip">Arsip & Legalitas</option>
+                  <option value="Panduan">Panduan & Edukasi</option>
+                  <option value="Lainnya">Lainnya</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">Deskripsi Singkat</label>
+                <textarea rows={3} value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none" placeholder="Berikan keterangan singkat tentang dokumen ini..."></textarea>
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-sm font-semibold text-gray-700">Pilih Berkas (PDF, Excel, Gambar) <span className="text-red-500">*</span></label>
+                <div className="relative border-2 border-dashed border-gray-300 rounded-xl p-6 hover:border-emerald-500 transition-all bg-gray-50/50 group text-center cursor-pointer">
+                  <input type="file" required={!editId} onChange={handleFileChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                  <UploadCloud className="w-10 h-10 mx-auto text-gray-400 group-hover:text-emerald-500 mb-2 transition-colors" />
+                  {formData.fileName ? (
+                    <div className="text-sm font-bold text-emerald-700">{formData.fileName} <span className="text-gray-400 font-normal">({formData.fileSize})</span></div>
+                  ) : (
+                    <>
+                      <p className="text-sm font-medium text-gray-700">Klik atau seret file ke sini</p>
+                      <p className="text-xs text-gray-500 mt-1">Maksimal ukuran file: 5 MB</p>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              <div className="pt-4 flex justify-end gap-3 shrink-0">
+                <button type="button" onClick={() => setIsModalOpen(false)} className="px-5 py-2 text-sm font-medium text-gray-600 hover:text-gray-800 transition-colors">Batal</button>
+                <button type="submit" disabled={isLoading} className="px-8 py-2.5 bg-emerald-600 text-white rounded-lg font-bold shadow-lg shadow-emerald-200 hover:bg-emerald-700 disabled:opacity-70 transition-all flex items-center justify-center">
+                  {isLoading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2"></div> : <CheckCircle className="w-5 h-5 mr-2" />}
+                  {editId ? 'Simpan Perubahan' : 'Mulai Unggah Berkas'}
                 </button>
               </div>
             </form>
