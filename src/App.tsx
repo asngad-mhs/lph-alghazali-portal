@@ -334,26 +334,42 @@ Menetapkan aturan teknis terstruktur mengenai:
 - Validitas penugasan auditor halal di lokasi usaha.`
   },
   {
-    id: 'bpom-11-2019',
+    id: 'bpom-11-2019-v2',
     nomor: 'Peraturan BPOM UU.No. 11 Tahun 2019',
     kategori: 'Peraturan BPOM',
     tentang: 'Penyelenggaraan dan Pengawasan Pangan dan Obat',
     deskripsi: 'Ketentuan Peraturan BPOM UU.No. 11 Tahun 2019 terkait penyelenggaraan dan pengawasan produk pangan dan obat.',
     tahun: '2019',
     referensiUrl: 'https://bpom.go.id/',
-    pasalPenting: [],
-    isiLengkap: `Peraturan BPOM UU.No. 11 Tahun 2019`
+    pasalPenting: [
+      { pasal: 'Penyelenggaraan', isi: 'Mengatur standar penyelenggaraan produk pangan dan obat.' },
+      { pasal: 'Pengawasan', isi: 'Mekanisme pengawasan oleh Badan POM terhadap peredaran produk.' }
+    ],
+    isiLengkap: `PERATURAN BPOM UU.NO. 11 TAHUN 2019 TENTANG PENYELENGGARAAN DAN PENGAWASAN PANGAN DAN OBAT
+
+Mengatur ketentuan pengawasan produk pangan dan obat:
+- Tata cara penyelenggaraan produksi yang baik dan benar.
+- Kewenangan pengawasan oleh instansi terkait.
+- Perlindungan konsumen terhadap produk yang tidak memenuhi standar.`
   },
   {
-    id: 'bpnas-12-2025',
+    id: 'bpnas-12-2025-v2',
     nomor: 'Peraturan BPNAS No.12 Tahun 2025',
     kategori: 'Peraturan BPOM',
     tentang: 'Pedoman Standardisasi Nasional',
     deskripsi: 'Peraturan BPNAS No.12 Tahun 2025 mengenai standar dan panduan BPNAS.',
     tahun: '2025',
     referensiUrl: 'https://bpnas.go.id/',
-    pasalPenting: [],
-    isiLengkap: `Peraturan BPNAS No.12 Tahun 2025/ Peraturan BPNAS`
+    pasalPenting: [
+      { pasal: 'Pedoman Umum', isi: 'Menetapkan standar dan panduan BPNAS untuk mutu dan keamanan.' },
+      { pasal: 'Pengawasan', isi: 'Mekanisme pengawasan dilakukan secara berkala.' }
+    ],
+    isiLengkap: `PERATURAN BPNAS NO.12 TAHUN 2025 TENTANG PEDOMAN STANDARDISASI NASIONAL
+
+Mengatur ketentuan standar mutu:
+- Kewajiban pemenuhan standar bagi seluruh pelaku industri.
+- Prosedur sertifikasi dan pengawasan berkala.
+- Sanksi bagi pelanggar ketentuan standardisasi.`
   },
   {
     id: 'bpom-20-2021',
