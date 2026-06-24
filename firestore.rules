@@ -50,24 +50,41 @@ service cloud.firestore {
 
     // Specific roles checking
     function isAdmin() {
-      return isSignedIn() && (isEmailAdmin() || (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'));
+      return isSignedIn() && (
+        request.auth.token.email.toLowerCase() == 'asngad@mhs.unugha.ac.id' ||
+        request.auth.token.email.toLowerCase() == 'admin@lphalghazali.com' ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
+      );
     }
 
     function isAuditor() {
-      return isSignedIn() && (isEmailAuditor() || (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'auditor'));
+      return isSignedIn() && (
+        request.auth.token.email.toLowerCase() == 'auditor@lphalghazali.com' ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'auditor')
+      );
     }
 
     function isEditor() {
-      return isSignedIn() && (isEmailEditor() || (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'editor'));
+      return isSignedIn() && (
+        request.auth.token.email.toLowerCase() == 'editor@lphalghazali.com' ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'editor')
+      );
     }
 
     function isStaf() {
-      return isSignedIn() && (isEmailStaf() || (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'staf'));
+      return isSignedIn() && (
+        request.auth.token.email.toLowerCase() == 'staf@lphalghazali.com' ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'staf')
+      );
     }
 
     // Global staff check (fits duty functions)
     function isStaff() {
-      return isAdmin() || isAuditor() || isEditor() || isStaf();
+      return isSignedIn() && (isAdmin() || isAuditor() || isEditor() || isStaf());
     }
 
     // --- Collection Matches ---
@@ -82,21 +99,30 @@ service cloud.firestore {
     match /artifacts/{appId} {
       allow read: if true;
 
-      // Public data nested structure
-      match /public/data/{collectionName}/{docId} {
-        // Allow public read for news, regulations, and documents
-        allow read: if collectionName in ['berita', 'regulasi', 'dokumen'] || 
-                     (collectionName == 'pengajuan_halal' && isSignedIn() && (isStaff() || (resource != null && resource.data.userId == request.auth.uid)));
-        
-        // Write access for staff
+      // Public news and articles
+      match /public/data/berita/{docId} {
+        allow read: if true;
         allow write: if isSignedIn() && isStaff();
-        
-        // Special logic for creating pengajuan (users can create their own)
-        allow create: if collectionName == 'pengajuan_halal' && isSignedIn() && request.resource.data.userId == request.auth.uid;
-        
-        // Special logic for updating pengajuan (users can update their own if status doesn't change)
-        allow update: if collectionName == 'pengajuan_halal' && isSignedIn() && 
-                        (isStaff() || (resource.data.userId == request.auth.uid && request.resource.data.status == resource.data.status));
+      }
+
+      // Public regulations
+      match /public/data/regulasi/{docId} {
+        allow read: if true;
+        allow write: if isSignedIn() && isStaff();
+      }
+
+      // Public documents
+      match /public/data/dokumen/{docId} {
+        allow read: if true;
+        allow write: if isSignedIn() && isStaff();
+      }
+
+      // Applications with private access logic
+      match /public/data/pengajuan_halal/{pengajuanId} {
+        allow read: if isSignedIn() && (isStaff() || resource.data.userId == request.auth.uid);
+        allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+        allow update: if isSignedIn() && (isStaff() || (resource.data.userId == request.auth.uid && request.resource.data.status == resource.data.status));
+        allow delete: if isSignedIn() && isStaff();
       }
 
       // Public system settings

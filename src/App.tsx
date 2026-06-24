@@ -122,7 +122,8 @@ function handleFirestoreError(error: unknown, operationType: OperationType, path
   console.error('Firestore Error: ', JSON.stringify(errInfo));
   
   // Alert the user so they know it didn't actually save/load correctly
-  alert(`Gagal ${operationType === OperationType.CREATE ? 'menambah' : operationType === OperationType.UPDATE ? 'memperbarui' : operationType === OperationType.DELETE ? 'menghapus' : 'memuat'} data. ${errorMessage.includes('permission-denied') ? 'Anda tidak memiliki izin yang cukup.' : errorMessage}`);
+  const pathInfo = path ? ` (Path: ${path})` : '';
+  alert(`Gagal ${operationType === OperationType.CREATE ? 'menambah' : operationType === OperationType.UPDATE ? 'memperbarui' : operationType === OperationType.DELETE ? 'menghapus' : 'memuat'} data.${pathInfo} ${errorMessage.includes('permission-denied') ? 'Anda tidak memiliki izin yang cukup.' : errorMessage}`);
 }
 
 import firebaseConfig from '../firebase-applet-config.json';
