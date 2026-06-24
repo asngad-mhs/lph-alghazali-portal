@@ -1052,20 +1052,19 @@ export default function LPHApp() {
         try {
           const rData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as any[];
           
-          // Combine Firestore data with local DEPRECATED_REGULASI_DATA
-          // Items from Firestore (rData) take precedence
-          const mergedList = [...rData];
-          for (const localReg of DEPRECATED_REGULASI_DATA) {
-            // Check if this item (by ID or nomor) is already in the list
-            if (!mergedList.some((item) => item.id === localReg.id || item.nomor === localReg.nomor)) {
-              mergedList.push(localReg);
-            }
+          // If Firestore has data, it becomes the source of truth (enabling deletions)
+          // If Firestore is empty, we fall back to defaults
+          let finalData = [];
+          if (rData.length > 0) {
+            finalData = rData;
+          } else {
+            finalData = DEPRECATED_REGULASI_DATA;
           }
           
-          // Sort merged list by createdAt (newest first)
-          mergedList.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+          // Sort list by createdAt (newest first)
+          finalData.sort((a: any, b: any) => (b.createdAt || 0) - (a.createdAt || 0));
           
-          setRegulasiList(mergedList);
+          setRegulasiList(finalData);
         } catch (err) {
           console.error("Error mapping regulasi snapshot:", err);
           setRegulasiList(DEPRECATED_REGULASI_DATA);
@@ -5755,31 +5754,31 @@ function DashboardLayout({ children, role, navigateTo, logout, currentView }: an
             </button>
           )}
 
-          {(role === 'admin' || role === 'editor') && (
+          {(role === 'admin' || role === 'editor' || role === 'staf') && (
             <button onClick={() => { navigateTo('admin-berita'); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'admin-berita' ? (isInternal ? 'bg-emerald-600 text-white font-medium shadow-md' : 'bg-emerald-100') : (isInternal ? 'hover:bg-slate-800 hover:text-white' : 'hover:bg-emerald-50')}`}>
               <Newspaper className="w-5 h-5 mr-3" /> Publikasi & Berita
             </button>
           )}
 
-          {(role === 'admin' || role === 'editor') && (
+          {(role === 'admin' || role === 'editor' || role === 'staf') && (
             <button onClick={() => { navigateTo('admin-kegiatan'); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'admin-kegiatan' ? (isInternal ? 'bg-emerald-600 text-white font-medium shadow-md' : 'bg-emerald-100') : (isInternal ? 'hover:bg-slate-800 hover:text-white' : 'hover:bg-emerald-50')}`}>
               <Activity className="w-5 h-5 mr-3" /> Agenda Kegiatan
             </button>
           )}
 
-          {(role === 'admin' || role === 'staf') && (
+          {(role === 'admin' || role === 'staf' || role === 'editor') && (
             <button onClick={() => { navigateTo('admin-auditor'); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'admin-auditor' ? (isInternal ? 'bg-emerald-600 text-white font-medium shadow-md' : 'bg-emerald-100') : (isInternal ? 'hover:bg-slate-800 hover:text-white' : 'hover:bg-emerald-50')}`}>
               <Users className="w-5 h-5 mr-3" /> Data Auditor
             </button>
           )}
 
-          {role === 'admin' && (
+          {(role === 'admin' || role === 'staf' || role === 'editor') && (
             <button onClick={() => { navigateTo('admin-regulasi'); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'admin-regulasi' ? (isInternal ? 'bg-emerald-600 text-white font-medium shadow-md' : 'bg-emerald-100') : (isInternal ? 'hover:bg-slate-800 hover:text-white' : 'hover:bg-emerald-50')}`}>
               <Scale className="w-5 h-5 mr-3" /> Manajemen Regulasi
             </button>
           )}
 
-          {(role === 'admin' || role === 'editor') && (
+          {(role === 'admin' || role === 'editor' || role === 'staf') && (
             <button onClick={() => { navigateTo('admin-dokumen'); setIsSidebarOpen(false); }} className={`w-full flex items-center px-4 py-2.5 rounded-lg transition-colors ${currentView === 'admin-dokumen' ? (isInternal ? 'bg-emerald-600 text-white font-medium shadow-md' : 'bg-emerald-100') : (isInternal ? 'hover:bg-slate-800 hover:text-white' : 'hover:bg-emerald-50')}`}>
               <FileText className="w-5 h-5 mr-3" /> Manajemen Berkas
             </button>
