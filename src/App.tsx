@@ -4037,11 +4037,10 @@ SHA-256 Verified Secure Archive File`;
                                       
                                       <OrgCard 
                                         title="SDM Syariah" 
-                                        list={settings?.struktur?.sdmSyariah || ["H. Fatah Rosihan A., M.M.", "Syaefudin Zuhri, S.Ag."]} 
+                                        list={settings?.struktur?.sdmSyariah || ["Syaefudin Zuhri, S.Ag."]} 
                                         className="w-[155px] z-10 relative" 
                                         allowUpload={false}
                                         defaultImages={settings?.struktur?.images || {
-                                          "H. Fatah Rosihan A., M.M.": "/fatah.jpg",
                                           "Syaefudin Zuhri, S.Ag.": "/syaefudin.jpg"
                                         }}
                                       />
@@ -4460,11 +4459,10 @@ SHA-256 Verified Secure Archive File`;
                     <div className="flex flex-wrap gap-6 justify-center">
                         <OrgCard 
                           title="SDM Syariah" 
-                          list={settings?.struktur?.sdmSyariah || ["H. Fatah Rosihan A., M.M.", "Syaefudin Zuhri, S.Ag."]} 
+                          list={settings?.struktur?.sdmSyariah || ["Syaefudin Zuhri, S.Ag."]} 
                           className="w-full sm:w-[350px] z-10 relative" 
                           allowUpload={false} 
                           defaultImages={settings?.struktur?.images || {
-                            "H. Fatah Rosihan A., M.M.": "/fatah.jpg",
                             "Syaefudin Zuhri, S.Ag.": "/syaefudin.jpg"
                           }}
                         />
@@ -8116,9 +8114,8 @@ function AdminSettings({ role }: any) {
       noWa: '085802494252'
     },
     struktur: {
-      sdmSyariah: ["H. Fatah Rosihan A., M.M.", "Syaefudin Zuhri, S.Ag."],
+      sdmSyariah: ["Syaefudin Zuhri, S.Ag."],
       images: {
-        "H. Fatah Rosihan A., M.M.": "/fatah.jpg",
         "Syaefudin Zuhri, S.Ag.": "/syaefudin.jpg"
       }
     },
