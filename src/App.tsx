@@ -1248,7 +1248,7 @@ export default function LPHApp() {
     try {
       if (firebaseConfig.projectId !== 'mock-project') {
         const docRef = doc(db, 'artifacts', currentAppId, 'public', 'data', 'berita', id);
-        await updateDoc(docRef, { ...formData, updatedAt: Date.now() });
+        await setDoc(docRef, { ...formData, updatedAt: Date.now() }, { merge: true });
       } else {
         setBeritaList(beritaList.map(b => b.id === id ? { ...b, ...formData, updatedAt: Date.now() } : b));
       }
@@ -1319,7 +1319,7 @@ export default function LPHApp() {
     try {
       if (firebaseConfig.projectId !== 'mock-project') {
         const docRef = doc(db, 'artifacts', currentAppId, 'public', 'data', 'regulasi', id);
-        await updateDoc(docRef, { ...formData, updatedAt: Date.now() });
+        await setDoc(docRef, { ...formData, updatedAt: Date.now() }, { merge: true });
       } else {
         setRegulasiList(regulasiList.map(r => r.id === id ? { ...r, ...formData, updatedAt: Date.now() } : r));
       }
@@ -1375,7 +1375,7 @@ export default function LPHApp() {
     try {
       if (firebaseConfig.projectId !== 'mock-project') {
         const docRef = doc(db, 'artifacts', currentAppId, 'public', 'data', 'dokumen', id);
-        await updateDoc(docRef, { ...formData, updatedAt: Date.now() });
+        await setDoc(docRef, { ...formData, updatedAt: Date.now() }, { merge: true });
       } else {
         setDokumenList(dokumenList.map(d => d.id === id ? { ...d, ...formData, updatedAt: Date.now() } : d));
       }
