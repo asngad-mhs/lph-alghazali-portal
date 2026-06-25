@@ -1044,13 +1044,20 @@ export default function LPHApp() {
         try {
           const rData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as any[];
           
-          // Sort list by createdAt (newest first)
-          rData.sort((a: any, b: any) => (b.createdAt || 0) - (a.createdAt || 0));
+          // Merge Firestore data with hardcoded data to ensure new hardcoded items are visible.
+          // Firestore data takes precedence if there's an ID conflict.
+          const firestoreIds = new Set(rData.map(item => item.id));
+          const missingHardcoded = DEPRECATED_REGULASI_DATA.filter(item => !firestoreIds.has(item.id));
           
-          setRegulasiList(rData);
+          let finalData = [...rData, ...missingHardcoded];
+          
+          // Sort list by createdAt (newest first)
+          finalData.sort((a: any, b: any) => (b.createdAt || 0) - (a.createdAt || 0));
+          
+          setRegulasiList(finalData);
         } catch (err) {
           console.error("Error mapping regulasi snapshot:", err);
-          setRegulasiList([]);
+          setRegulasiList(DEPRECATED_REGULASI_DATA);
         }
       }, (error) => {
         handleFirestoreError(error, OperationType.GET, `artifacts/${currentAppId}/public/data/regulasi`);
