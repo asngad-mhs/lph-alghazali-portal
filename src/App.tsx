@@ -146,7 +146,7 @@ export const db = initializeFirestore(app, {
 setLogLevel('silent');
 
 // @ts-ignore
-const currentAppId = 'e2d7b2e1-3b36-493f-92cd-2c46df07b2dc';
+const currentAppId = typeof __app_id !== 'undefined' ? __app_id : 'e2d7b2e1-3b36-493f-92cd-2c46df07b2dc';
 
 const REKAP_REGULASI_DATA: any[] = [];
 const DEPRECATED_REGULASI_DATA = [
@@ -853,7 +853,7 @@ export default function LPHApp() {
   const [userRole, setUserRole] = useState('pu');
   const [pengajuanList, setPengajuanList] = useState<any[]>([]);
   const [beritaList, setBeritaList] = useState<any[]>([]);
-  const [regulasiList, setRegulasiList] = useState<any[]>([]);
+  const [regulasiList, setRegulasiList] = useState<any[]>(DEPRECATED_REGULASI_DATA);
   const [dokumenList, setDokumenList] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -1061,6 +1061,7 @@ export default function LPHApp() {
         }
       }, (error) => {
         handleFirestoreError(error, OperationType.GET, `artifacts/${currentAppId}/public/data/regulasi`);
+        setRegulasiList(DEPRECATED_REGULASI_DATA);
       });
 
       return () => {
