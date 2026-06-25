@@ -1025,12 +1025,7 @@ export default function LPHApp() {
         try {
           const rData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as any[];
           
-          // Merge Firestore data with hardcoded data to ensure new hardcoded items are visible.
-          // Firestore data takes precedence if there's an ID conflict.
-          const firestoreIds = new Set(rData.map(item => item.id));
-          const missingHardcoded = DEPRECATED_REGULASI_DATA.filter(item => !firestoreIds.has(item.id));
-          
-          let finalData = [...rData, ...missingHardcoded];
+          let finalData = rData;
           
           // Sort list by createdAt (newest first)
           finalData.sort((a: any, b: any) => (b.createdAt || 0) - (a.createdAt || 0));
@@ -1038,11 +1033,11 @@ export default function LPHApp() {
           setRegulasiList(finalData);
         } catch (err) {
           console.error("Error mapping regulasi snapshot:", err);
-          setRegulasiList(DEPRECATED_REGULASI_DATA);
+          setRegulasiList([]);
         }
       }, (error) => {
         handleFirestoreError(error, OperationType.GET, `artifacts/${currentAppId}/public/data/regulasi`);
-        setRegulasiList(DEPRECATED_REGULASI_DATA);
+        setRegulasiList([]);
       });
 
       return () => {
@@ -1496,11 +1491,12 @@ function LandingView({ navigateTo, beritaList, regulasiList: passedRegulasiList,
   // Auto slide for hero news images
   useEffect(() => {
     if (landingSubView !== 'home') return;
+    const maxSlides = Math.max(3, (beritaList || []).length);
     const interval = setInterval(() => {
-      setActiveHeroNewsSlide((prev) => (prev + 1) % 3);
+      setActiveHeroNewsSlide((prev) => (prev + 1) % maxSlides);
     }, 5000);
     return () => clearInterval(interval);
-  }, [landingSubView]);
+  }, [landingSubView, beritaList]);
 
   const handleDownloadRegulasi = (docObj: any) => {
     try {
@@ -1888,17 +1884,16 @@ SHA-256 Verified Secure Archive File`;
   ];
 
   const currentHeroNews = (beritaList || [])
-    .slice(0, 3)
     .map((b: any, index: number) => {
       return {
         id: b.id || `mock-${index}`,
-        title: b.title || fallbackTitles[index],
-        content: b.content || fallbackContents[index],
-        category: b.category || fallbackCategories[index],
+        title: b.title || fallbackTitles[index % fallbackTitles.length],
+        content: b.content || fallbackContents[index % fallbackContents.length],
+        category: b.category || fallbackCategories[index % fallbackCategories.length],
         createdAt: b.createdAt || (Date.now() - index * 86400000),
         imageSrc: (b.fileType && b.fileType.includes('image') && b.fileData)
           ? b.fileData
-          : fallbacks[index]
+          : fallbacks[index % fallbacks.length]
       };
     });
 
@@ -1906,11 +1901,11 @@ SHA-256 Verified Secure Archive File`;
     const index = currentHeroNews.length;
     currentHeroNews.push({
       id: `mock-${index}`,
-      title: fallbackTitles[index],
-      content: fallbackContents[index],
-      category: fallbackCategories[index],
+      title: fallbackTitles[index % fallbackTitles.length],
+      content: fallbackContents[index % fallbackContents.length],
+      category: fallbackCategories[index % fallbackCategories.length],
       createdAt: Date.now() - index * 86400000,
-      imageSrc: fallbacks[index]
+      imageSrc: fallbacks[index % fallbacks.length]
     });
   }
 
@@ -3129,7 +3124,7 @@ SHA-256 Verified Secure Archive File`;
                     });
 
                     return filtered && filtered.length > 0 ? (
-                        filtered.slice(0, 6).map((berita: any) => (
+                        filtered.map((berita: any) => (
                             <div key={berita.id} className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all group flex flex-col">
                             <div className="h-48 bg-gray-200 relative overflow-hidden flex items-center justify-center">
                                 {berita.fileType && berita.fileType.includes('image') && berita.fileData ? (
