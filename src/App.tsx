@@ -336,25 +336,6 @@ Menetapkan aturan teknis terstruktur mengenai:
 - Validitas penugasan auditor halal di lokasi usaha.`
   },
   {
-    id: 'bpnas-12-2025-v2',
-    nomor: 'Peraturan BPNAS No.12 Tahun 2025',
-    kategori: 'Peraturan BPOM',
-    tentang: 'Pedoman Standardisasi Nasional',
-    deskripsi: 'Peraturan BPNAS No.12 Tahun 2025 mengenai standar dan panduan BPNAS.',
-    tahun: '2025',
-    referensiUrl: 'https://bpnas.go.id/',
-    pasalPenting: [
-      { pasal: 'Pedoman Umum', isi: 'Menetapkan standar dan panduan BPNAS untuk mutu dan keamanan.' },
-      { pasal: 'Pengawasan', isi: 'Mekanisme pengawasan dilakukan secara berkala.' }
-    ],
-    isiLengkap: `PERATURAN BPNAS NO.12 TAHUN 2025 TENTANG PEDOMAN STANDARDISASI NASIONAL
-
-Mengatur ketentuan standar mutu:
-- Kewajiban pemenuhan standar bagi seluruh pelaku industri.
-- Prosedur sertifikasi dan pengawasan berkala.
-- Sanksi bagi pelanggar ketentuan standardisasi.`
-  },
-  {
     id: 'bpom-20-2021',
     nomor: 'Peraturan BPOM Nomor 20 Tahun 2021',
     kategori: 'Peraturan BPOM',
@@ -1410,6 +1391,7 @@ export default function LPHApp() {
           navigateTo={navigateTo} 
           beritaList={beritaList}
           regulasiList={regulasiList}
+          dokumenList={dokumenList}
           user={user}
           userRole={userRole}
           db={db}
@@ -1463,7 +1445,7 @@ export default function LPHApp() {
 
       {currentView === 'admin-kegiatan' && (
         <DashboardLayout role={userRole} navigateTo={navigateTo} logout={handleLogout} currentView={currentView}>
-          <AdminKegiatan addData={handleAddBerita} updateData={handleUpdateBerita} />
+          <AdminKegiatan data={beritaList} addData={handleAddBerita} updateData={handleUpdateBerita} deleteData={handleDeleteBerita} />
         </DashboardLayout>
       )}
 
@@ -7006,14 +6988,16 @@ function AdminBerita({ data, addData, updateData, deleteData }: any) {
     setEditId(null);
   };
 
+  const filteredBerita = data.filter((b: any) => b.category !== 'Kegiatan');
+
   // Menangani File Upload (Gambar, PDF, Video)
   const handleFileChange = (e: any) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Batasan ukuran file (10MB untuk demo)
-    if (file.size > 10 * 1024 * 1024) {
-      alert("Ukuran file terlalu besar! Maksimal 10MB.");
+    // Batasan ukuran file (700KB untuk memastikan sinkronisasi cloud lancar)
+    if (file.size > 700 * 1024) {
+      alert("Ukuran file terlalu besar! Maksimal 700KB.");
       return;
     }
 
@@ -7072,7 +7056,7 @@ function AdminBerita({ data, addData, updateData, deleteData }: any) {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {data.map((berita: any) => (
+              {filteredBerita.map((berita: any) => (
                 <tr key={berita.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4">
                     <div className="flex items-center">
@@ -7177,7 +7161,7 @@ function AdminBerita({ data, addData, updateData, deleteData }: any) {
                      <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-6 text-center bg-white cursor-pointer hover:bg-gray-50 transition">
                        <UploadCloud className="text-emerald-500 w-8 h-8 mb-2" />
                        <span className="text-sm font-medium text-gray-700">Klik untuk memilih file</span>
-                       <span className="text-xs text-gray-400 mt-1">Mendukung: PDF, JPG, PNG, GIF, SVG, WEBP (Maks 10MB)</span>
+                       <span className="text-xs text-gray-400 mt-1">Mendukung: PDF, JPG, PNG, GIF, SVG, WEBP (Maks 700KB)</span>
                        <input type="file" accept=".pdf,.jpg,.jpeg,.png,.gif,.svg,.webp" onChange={handleFileChange} className="hidden" />
                      </label>
                    )}
@@ -7960,8 +7944,12 @@ function AdminAuditor({ data }: any) {
   );
 }
 
-function AdminKegiatan({ addData, updateData }: any) {
-  const [formData, setFormData] = useState({
+function AdminKegiatan({ data = [], addData, updateData, deleteData }: any) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editId, setEditId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  const initialFormState = {
     title: '',
     category: 'Kegiatan',
     content: '',
@@ -7971,15 +7959,61 @@ function AdminKegiatan({ addData, updateData }: any) {
     fileName: '',
     fileType: '',
     fileData: ''
-  });
-  const [isLoading, setIsLoading] = useState(false);
+  };
+
+  const [formData, setFormData] = useState(initialFormState);
+
+  const filteredKegiatan = data.filter((b: any) => b.category === 'Kegiatan');
+
+  const openModal = (item: any = null) => {
+    if (item) {
+      setEditId(item.id);
+      
+      // Attempt to parse out fields from combinedContent
+      // This is a rough parse, assuming format hasn't changed.
+      let parsedStart = '';
+      let parsedLocation = '';
+      let parsedOrganizer = '';
+      let parsedContent = item.content || '';
+      
+      if (parsedContent.includes('**Tanggal:**')) {
+        const parts = parsedContent.split('\n');
+        parsedStart = parts[0]?.replace('**Tanggal:** ', '').trim() || '';
+        parsedLocation = parts[1]?.replace('**Lokasi/Platform:** ', '').trim() || '';
+        parsedOrganizer = parts[2]?.replace('**Penyelenggara:** ', '').trim() || '';
+        parsedContent = parts.slice(4).join('\n') || '';
+      }
+
+      setFormData({
+        title: item.title || '',
+        category: 'Kegiatan',
+        content: parsedContent,
+        startDate: parsedStart,
+        location: parsedLocation,
+        organizer: parsedOrganizer,
+        fileName: item.fileName || '',
+        fileType: item.fileType || '',
+        fileData: item.fileData || ''
+      });
+    } else {
+      setEditId(null);
+      setFormData(initialFormState);
+    }
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setFormData(initialFormState);
+    setEditId(null);
+  };
 
   const handleFileChange = (e: any) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    if (file.size > 10 * 1024 * 1024) {
-      alert("Ukuran file terlalu besar! Maksimal 10MB.");
+    if (file.size > 700 * 1024) {
+      alert("Ukuran file terlalu besar! Maksimal 700KB.");
       return;
     }
 
@@ -8003,12 +8037,7 @@ function AdminKegiatan({ addData, updateData }: any) {
     e.preventDefault();
     setIsLoading(true);
     
-    // Combine fields into content to fit existing data structure of Berita
-    const combinedContent = `**Tanggal:** ${formData.startDate}
-**Lokasi/Platform:** ${formData.location}
-**Penyelenggara:** ${formData.organizer}
-
-${formData.content}`;
+    const combinedContent = `**Tanggal:** ${formData.startDate}\n**Lokasi/Platform:** ${formData.location}\n**Penyelenggara:** ${formData.organizer}\n\n${formData.content}`;
 
     const submissionData = {
       title: formData.title,
@@ -8020,94 +8049,160 @@ ${formData.content}`;
     };
 
     setTimeout(async () => {
-      await addData(submissionData);
+      if (editId) {
+        await updateData(editId, submissionData);
+      } else {
+        await addData(submissionData);
+      }
       setIsLoading(false);
-      setFormData({
-        title: '',
-        category: 'Kegiatan',
-        content: '',
-        startDate: '',
-        location: '',
-        organizer: '',
-        fileName: '',
-        fileType: '',
-        fileData: ''
-      });
-      alert('Kegiatan berhasil dipublikasikan!');
+      closeModal();
     }, 800);
   };
 
   return (
-    <div className="max-w-4xl mx-auto pb-10">
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900 flex items-center">
-          <Activity className="w-6 h-6 mr-3 text-emerald-600" /> Form Kegiatan & Agenda
-        </h2>
-        <p className="text-gray-500 text-sm mt-1">Buat jadwal agenda dan kegiatan baru yang akan ditampilkan di portal publikasi.</p>
+    <div className="max-w-full relative">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 flex items-center">
+            <Activity className="w-6 h-6 mr-3 text-emerald-600" /> Manajemen Kegiatan & Agenda
+          </h2>
+          <p className="text-gray-500 text-sm mt-1">Kelola jadwal agenda dan kegiatan yang ditampilkan di portal publikasi.</p>
+        </div>
+        <button onClick={() => openModal()} className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-lg font-medium shadow-md transition-colors flex items-center">
+          <PlusCircle className="w-5 h-5 mr-2" /> Tambah Kegiatan
+        </button>
       </div>
 
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-        <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Nama Kegiatan <span className="text-red-500">*</span></label>
-              <input type="text" required value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})} className="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500" placeholder="Misal: Sosialisasi Jaminan Produk Halal 2024" />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Tanggal Pelaksanaan <span className="text-red-500">*</span></label>
-              <input type="datetime-local" required value={formData.startDate} onChange={(e) => setFormData({...formData, startDate: e.target.value})} className="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500" />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Lokasi / Platform <span className="text-red-500">*</span></label>
-              <input type="text" required value={formData.location} onChange={(e) => setFormData({...formData, location: e.target.value})} className="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500" placeholder="Misal: Aula Masjid Al-Ghazali atau Zoom" />
-            </div>
-
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Penyelenggara / Narasumber</label>
-              <input type="text" value={formData.organizer} onChange={(e) => setFormData({...formData, organizer: e.target.value})} className="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500" placeholder="Sebutkan Instansi / Narasumber" />
-            </div>
-
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Deskripsi & Rincian Acara <span className="text-red-500">*</span></label>
-              <textarea required rows={5} value={formData.content} onChange={(e) => setFormData({...formData, content: e.target.value})} className="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500" placeholder="Tulis rincian informasi kegiatan..."></textarea>
-            </div>
-
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Poster / Banner Kegiatan (Opsional)</label>
-              <div className="flex items-center space-x-4">
-                <div className="relative border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-emerald-500 transition-colors bg-gray-50 flex-1 text-center cursor-pointer overflow-hidden">
-                  <input type="file" onChange={handleFileChange} accept=".jpg,.jpeg,.png,.webp,.pdf" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
-                  <UploadCloud className="w-8 h-8 mx-auto text-gray-400 mb-2" />
-                  <span className="text-sm font-medium text-emerald-600">Pilih File Poster/Gambar</span>
-                  <p className="text-xs text-gray-500 mt-1">Maks: 10MB (JPG, PNG)</p>
-                </div>
-                {formData.fileData && (
-                  <div className="relative h-24 w-24 shrink-0 rounded-lg overflow-hidden border border-gray-200">
-                    {formData.fileType.includes('image') ? (
-                      <img src={formData.fileData} alt="Preview" className="h-full w-full object-cover" />
-                    ) : (
-                      <div className="h-full w-full bg-gray-100 flex items-center justify-center">
-                        <FileText className="text-emerald-500 w-8 h-8" />
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Kegiatan & Poster</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Kategori & Waktu</th>
+                <th className="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase">Aksi</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {filteredKegiatan.map((item: any) => (
+                <tr key={item.id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4">
+                    <div className="flex items-center">
+                      <div className="h-12 w-12 flex-shrink-0 bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center border border-gray-200">
+                        {item.fileType && item.fileType.includes('image') ? (
+                          <img src={item.fileData} alt="" className="h-full w-full object-cover" />
+                        ) : (
+                          <Activity className="text-gray-400 w-6 h-6" />
+                        )}
                       </div>
-                    )}
-                    <button type="button" onClick={removeFile} className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 shadow-sm">
-                      <X className="w-3 h-3" />
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div className="pt-6 border-t border-gray-200 flex justify-end">
-            <button type="submit" disabled={isLoading} className="bg-emerald-600 hover:bg-emerald-700 disabled:opacity-75 text-white px-6 py-3 rounded-lg font-bold shadow-md transition-colors flex items-center">
-              {isLoading ? 'Menyimpan...' : 'Simpan & Publikasikan Kegiatan'}
-            </button>
-          </div>
-        </form>
+                      <div className="ml-4">
+                        <div className="text-sm font-bold text-gray-900 line-clamp-1">{item.title}</div>
+                        <div className="text-xs text-gray-500 flex items-center mt-1">
+                           {item.fileName ? (
+                             <span className="truncate max-w-[200px] inline-block"><i className="fas fa-paperclip mr-1"></i> {item.fileName}</span>
+                           ) : "Tidak ada poster"}
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 mb-1">{item.category}</span>
+                    <div className="text-xs text-gray-500">{new Date(item.createdAt).toLocaleDateString('id-ID')}</div>
+                  </td>
+                  <td className="px-6 py-4 text-right text-sm font-medium">
+                    <button onClick={() => openModal(item)} className="text-blue-600 hover:text-blue-900 mr-4 bg-blue-50 p-2 rounded-md transition-colors"><Edit className="w-4 h-4" /></button>
+                    <button onClick={() => deleteData(item.id)} className="text-red-600 hover:text-red-900 bg-red-50 p-2 rounded-md transition-colors"><Trash2 className="w-4 h-4" /></button>
+                  </td>
+                </tr>
+              ))}
+              {filteredKegiatan.length === 0 && (
+                <tr>
+                  <td colSpan={3} className="px-6 py-8 text-center text-gray-500 text-sm">
+                    Belum ada kegiatan yang ditambahkan.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/75 backdrop-blur-sm">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-4xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="bg-gray-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center shrink-0">
+              <h3 className="text-lg font-bold text-gray-900 flex items-center">
+                <Activity className="w-5 h-5 text-emerald-600 mr-2" /> {editId ? 'Edit Kegiatan' : 'Tambah Kegiatan Baru'}
+              </h3>
+              <button type="button" onClick={closeModal} className="text-gray-400 hover:text-gray-600"><X className="w-5 h-5" /></button>
+            </div>
+            
+            <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
+              <div className="p-6 sm:p-8 space-y-6 overflow-y-auto flex-1">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Nama Kegiatan <span className="text-red-500">*</span></label>
+                    <input type="text" required value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})} className="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500" placeholder="Misal: Sosialisasi Jaminan Produk Halal 2024" />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Tanggal Pelaksanaan <span className="text-red-500">*</span></label>
+                    <input type="datetime-local" required value={formData.startDate} onChange={(e) => setFormData({...formData, startDate: e.target.value})} className="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500" />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Lokasi / Platform <span className="text-red-500">*</span></label>
+                    <input type="text" required value={formData.location} onChange={(e) => setFormData({...formData, location: e.target.value})} className="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500" placeholder="Misal: Aula Masjid Al-Ghazali atau Zoom" />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Penyelenggara / Narasumber</label>
+                    <input type="text" value={formData.organizer} onChange={(e) => setFormData({...formData, organizer: e.target.value})} className="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500" placeholder="Sebutkan Instansi / Narasumber" />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Deskripsi & Rincian Acara <span className="text-red-500">*</span></label>
+                    <textarea required rows={5} value={formData.content} onChange={(e) => setFormData({...formData, content: e.target.value})} className="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500" placeholder="Tulis rincian informasi kegiatan..."></textarea>
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Poster / Banner Kegiatan (Opsional)</label>
+                    <div className="flex items-center space-x-4">
+                      <div className="relative border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-emerald-500 transition-colors bg-gray-50 flex-1 text-center cursor-pointer overflow-hidden">
+                        <input type="file" onChange={handleFileChange} accept=".jpg,.jpeg,.png,.webp,.pdf" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                        <UploadCloud className="w-8 h-8 mx-auto text-gray-400 mb-2" />
+                        <span className="text-sm font-medium text-emerald-600">Pilih File Poster/Gambar</span>
+                        <p className="text-xs text-gray-500 mt-1">Maks: 700KB (JPG, PNG)</p>
+                      </div>
+                      {formData.fileData && (
+                        <div className="relative h-24 w-24 shrink-0 rounded-lg overflow-hidden border border-gray-200">
+                          {formData.fileType.includes('image') ? (
+                            <img src={formData.fileData} alt="Preview" className="h-full w-full object-cover" />
+                          ) : (
+                            <div className="h-full w-full bg-gray-100 flex items-center justify-center">
+                              <FileText className="text-emerald-500 w-8 h-8" />
+                            </div>
+                          )}
+                          <button type="button" onClick={removeFile} className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 shadow-sm">
+                            <X className="w-3 h-3" />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-gray-50 px-6 py-4 border-t border-gray-200 flex justify-end shrink-0">
+                <button type="button" onClick={closeModal} className="text-gray-700 bg-white hover:bg-gray-100 border border-gray-300 px-5 py-2.5 rounded-lg font-bold shadow-sm transition-colors mr-3">Batal</button>
+                <button type="submit" disabled={isLoading} className="bg-emerald-600 hover:bg-emerald-700 disabled:opacity-75 text-white px-6 py-2.5 rounded-lg font-bold shadow-md transition-colors flex items-center">
+                  {isLoading ? 'Menyimpan...' : 'Simpan & Publikasikan Kegiatan'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
