@@ -1038,28 +1038,19 @@ export default function LPHApp() {
 
   // Fetch Regulasi (publicly readable, no user required)
   useEffect(() => {
-    setRegulasiList(DEPRECATED_REGULASI_DATA);
-
     if (firebaseConfig.projectId !== 'mock-project') {
       const regulasiRef = collection(db, 'artifacts', currentAppId, 'public', 'data', 'regulasi');
       const unsubscribeRegulasi = onSnapshot(regulasiRef, (snapshot) => {
         try {
           const rData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as any[];
           
-          // Merge Firestore data with hardcoded data to ensure new hardcoded items are visible.
-          // Firestore data takes precedence if there's an ID conflict.
-          const firestoreIds = new Set(rData.map(item => item.id));
-          const missingHardcoded = DEPRECATED_REGULASI_DATA.filter(item => !firestoreIds.has(item.id));
-          
-          let finalData = [...rData, ...missingHardcoded];
-          
           // Sort list by createdAt (newest first)
-          finalData.sort((a: any, b: any) => (b.createdAt || 0) - (a.createdAt || 0));
+          rData.sort((a: any, b: any) => (b.createdAt || 0) - (a.createdAt || 0));
           
-          setRegulasiList(finalData);
+          setRegulasiList(rData);
         } catch (err) {
           console.error("Error mapping regulasi snapshot:", err);
-          setRegulasiList(DEPRECATED_REGULASI_DATA);
+          setRegulasiList([]);
         }
       }, (error) => {
         handleFirestoreError(error, OperationType.GET, `artifacts/${currentAppId}/public/data/regulasi`);
@@ -1068,6 +1059,8 @@ export default function LPHApp() {
       return () => {
         unsubscribeRegulasi();
       };
+    } else {
+      setRegulasiList(DEPRECATED_REGULASI_DATA);
     }
   }, []);
 
@@ -1508,7 +1501,7 @@ function LandingView({ navigateTo, beritaList, regulasiList: passedRegulasiList,
   const [selectedBeritaDetail, setSelectedBeritaDetail] = useState<any>(null);
   const [selectedDokumenDetail, setSelectedDokumenDetail] = useState<any>(null);
 
-  const regulasiList = passedRegulasiList || DEPRECATED_REGULASI_DATA;
+  const regulasiList = passedRegulasiList || [];
 
   // Auto slide for hero news images
   useEffect(() => {
