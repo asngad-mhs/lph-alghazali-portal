@@ -1053,6 +1053,7 @@ export default function LPHApp() {
     if (firebaseConfig.projectId !== 'mock-project') {
       const dokumenRef = collection(db, 'artifacts', currentAppId, 'public', 'data', 'dokumen');
       const unsubscribeDokumen = onSnapshot(dokumenRef, (snapshot) => {
+        console.log('Dokumen snapshot received, count:', snapshot.docs.length);
         const dData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as any[];
         dData.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
         setDokumenList(dData);
