@@ -1027,17 +1027,24 @@ export default function LPHApp() {
           
           let finalData = rData;
           
+          // Merge Firestore data with hardcoded data to ensure hardcoded items are still visible
+          // if not yet migrated to Firestore. Firestore data takes precedence.
+          const firestoreIds = new Set(rData.map(item => item.id));
+          const missingHardcoded = DEPRECATED_REGULASI_DATA.filter(item => !firestoreIds.has(item.id));
+          
+          finalData = [...rData, ...missingHardcoded];
+          
           // Sort list by createdAt (newest first)
           finalData.sort((a: any, b: any) => (b.createdAt || 0) - (a.createdAt || 0));
           
           setRegulasiList(finalData);
         } catch (err) {
           console.error("Error mapping regulasi snapshot:", err);
-          setRegulasiList([]);
+          setRegulasiList(DEPRECATED_REGULASI_DATA);
         }
       }, (error) => {
         handleFirestoreError(error, OperationType.GET, `artifacts/${currentAppId}/public/data/regulasi`);
-        setRegulasiList([]);
+        setRegulasiList(DEPRECATED_REGULASI_DATA);
       });
 
       return () => {
