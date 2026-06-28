@@ -335,27 +335,7 @@ Menetapkan aturan teknis terstruktur mengenai:
 - Standarisasi pelaporan hasil audit oleh LPH ke BPJPH Melalui Sihalal.
 - Validitas penugasan auditor halal di lokasi usaha.`
   },
-  {
-    id: 'bpom-20-2021',
-    nomor: 'Peraturan BPOM Nomor 20 Tahun 2021',
-    kategori: 'Peraturan BPOM',
-    tentang: 'Ketentuan Sanitasi dan Higiene dalam Labelisasi Kemasan Pangan Olahan Halal',
-    deskripsi: 'Menuntut kepatuhan industri pangan olahan dalam memisahkan fasilitas pengemasan produk halal dan non-halal secara higienis, menghindari kontaminasi silang.',
-    tahun: '2021',
-    referensiUrl: 'https://bpjph.halal.go.id/',
-    pasalPenting: [
-      { pasal: 'Pasal 3', isi: 'Industri pangan wajib menjamin kebersihan dan pemisahan peralatan produksi pangan halal.' },
-      { pasal: 'Pasal 9', isi: 'Larangan keras penggunaan peralatan secara bergantian dengan produk berbahan babi.' }
-    ],
-    isiLengkap: `PERATURAN BADAN PENGAWAS OBAT DAN MAKANAN NOMOR 20 TAHUN 2021 TENTANG KETENTUAN SANITASI DAN HIGIENE DALAM LABELISASI KEMASAN PANGAN OLAHAN HALAL
 
-Menimbang:
-Bahwa kesehatan masyarakat dan kepatuhan syariat menuntut pemisahan proses produksi pangan secara steril.
-
-BAB I: PEMISAHAN ALAT PROSES
-Pasal 3:
-Peralatan yang digunakan untuk mengolah pangan yang tidak halal dilarang keras dibersihkan atau disimpan bersamaan dengan penangan bahan baku pangan halal.`
-  },
   {
     id: 'bpom-13-2023',
     nomor: 'Peraturan BPOM Nomor 13 Tahun 2023',
