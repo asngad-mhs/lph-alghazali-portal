@@ -1489,12 +1489,44 @@ function LandingView({ navigateTo, beritaList, regulasiList: passedRegulasiList,
 
   const handleDownloadStruktur = async () => {
     const input = document.getElementById('struktur-organisasi-container');
-    if (!input) return;
+    const scrollContainer = document.getElementById('struktur-scroll-container');
+    if (!input || !scrollContainer) return;
+
+    // Hack to prevent cssRules SecurityError in html-to-image
+    const originalCssRules = Object.getOwnPropertyDescriptor(CSSStyleSheet.prototype, 'cssRules');
+    if (originalCssRules) {
+      Object.defineProperty(CSSStyleSheet.prototype, 'cssRules', {
+        get() {
+          try {
+            return originalCssRules.get.call(this);
+          } catch (e) {
+            return [];
+          }
+        },
+        configurable: true
+      });
+    }
+
+    // Save original styles to restore later
+    const originalInputStyle = input.style.cssText;
+    const originalScrollStyle = scrollContainer.style.cssText;
+
     try {
+      // Temporarily expand the containers to prevent clipping
+      const scrollWidth = scrollContainer.scrollWidth;
+      
+      input.style.width = `${scrollWidth + 100}px`;
+      input.style.maxWidth = 'none';
+      scrollContainer.style.overflow = 'visible';
+      scrollContainer.style.width = `${scrollWidth}px`;
+
       const imgData = await htmlToImage.toPng(input, { 
         quality: 1, 
         pixelRatio: 2,
         fontEmbedCSS: '',
+        backgroundColor: '#ffffff',
+        width: scrollWidth + 100,
+        height: input.scrollHeight + 50,
         filter: (node) => {
           if (node.tagName === 'LINK') {
             const href = (node as HTMLLinkElement).href;
@@ -1514,12 +1546,35 @@ function LandingView({ navigateTo, beritaList, regulasiList: passedRegulasiList,
         format: 'a4'
       });
       const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (img.height * pdfWidth) / img.width;
+      const pdfPageHeight = pdf.internal.pageSize.getHeight();
       
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      const imgHeightInPdf = (img.height * pdfWidth) / img.width;
+      
+      let heightLeft = imgHeightInPdf;
+      let position = 0;
+      
+      pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeightInPdf);
+      heightLeft -= pdfPageHeight;
+      
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeightInPdf;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeightInPdf);
+        heightLeft -= pdfPageHeight;
+      }
+      
       pdf.save('Struktur_Organisasi_LPH_Al_Ghazali.pdf');
     } catch (error) {
       console.error("Error generating PDF", error);
+    } finally {
+      // Restore original styles
+      input.style.cssText = originalInputStyle;
+      scrollContainer.style.cssText = originalScrollStyle;
+
+      // Restore cssRules
+      if (originalCssRules) {
+        Object.defineProperty(CSSStyleSheet.prototype, 'cssRules', originalCssRules);
+      }
     }
   };
 
@@ -4012,7 +4067,7 @@ SHA-256 Verified Secure Archive File`;
               </div>
 
               {/* Chart Container (Scrollable) */}
-              <div className="w-full overflow-x-auto pb-10 scrollbar-thin scrollbar-thumb-emerald-300 scrollbar-track-transparent">
+              <div id="struktur-scroll-container" className="w-full overflow-x-auto pb-10 scrollbar-thin scrollbar-thumb-emerald-300 scrollbar-track-transparent">
                   <div className="min-w-[850px] flex flex-col items-center pt-4">
                       
                       {/* Dewan Pembina */}
