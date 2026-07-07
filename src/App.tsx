@@ -5,6 +5,7 @@ import { getFirestore, initializeFirestore, collection, onSnapshot, getDoc, addD
 import { Leaf, Home, FileText, LogOut, PlusCircle, Settings, CheckCircle, Clock, Search, Briefcase, FileSignature, UploadCloud, ArrowLeft, ArrowRight, ShieldCheck, Zap, MonitorSmartphone, UserCheck, Newspaper, Edit, Trash2, X, Image as ImageIcon, Route, Coins, ChevronDown, ChevronRight, Calculator, Receipt, CalendarDays, Activity, Video, Link, MapPin, Phone, Mail, Facebook, Twitter, Instagram, Linkedin, History, Target, Award, Network, Users, BookOpen, Handshake, Menu, Scale, Landmark, CheckCircle2, FlaskConical, FileEdit, Globe, Key, Download, UserPlus, Send, Info, Archive } from 'lucide-react';
 import CryptoJS from 'crypto-js';
 import { jsPDF } from 'jspdf';
+import * as htmlToImage from 'html-to-image';
 import RegulasiView from './components/RegulasiView';
 
 const OrgCard = ({ title, name, list, className = "", noHover = false, allowUpload = false, defaultImages = {}, onImageChange }: any) => {
@@ -1485,6 +1486,42 @@ function LandingView({ navigateTo, beritaList, regulasiList: passedRegulasiList,
     }, 5000);
     return () => clearInterval(interval);
   }, [landingSubView, beritaList]);
+
+  const handleDownloadStruktur = async () => {
+    const input = document.getElementById('struktur-organisasi-container');
+    if (!input) return;
+    try {
+      const imgData = await htmlToImage.toPng(input, { 
+        quality: 1, 
+        pixelRatio: 2,
+        fontEmbedCSS: '',
+        filter: (node) => {
+          if (node.tagName === 'LINK') {
+            const href = (node as HTMLLinkElement).href;
+            if (href && href.includes('translate_http')) return false;
+          }
+          return true;
+        }
+      });
+      const img = new Image();
+      img.src = imgData;
+      await new Promise((resolve) => {
+        img.onload = resolve;
+      });
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'mm',
+        format: 'a4'
+      });
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (img.height * pdfWidth) / img.width;
+      
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save('Struktur_Organisasi_LPH_Al_Ghazali.pdf');
+    } catch (error) {
+      console.error("Error generating PDF", error);
+    }
+  };
 
   const handleDownloadRegulasi = (docObj: any) => {
     try {
@@ -3958,7 +3995,15 @@ SHA-256 Verified Secure Archive File`;
               <X className="w-5 h-5" />
             </button>
 
-            <div className="p-8 sm:p-14">
+            <button 
+              onClick={handleDownloadStruktur} 
+              className="absolute top-4 right-16 p-2 z-50 bg-emerald-100 rounded-full shadow-sm text-emerald-600 hover:text-emerald-800 hover:bg-emerald-200 transition-colors cursor-pointer flex items-center justify-center"
+              title="Download PDF"
+            >
+              <Download className="w-5 h-5" />
+            </button>
+
+            <div id="struktur-organisasi-container" className="p-8 sm:p-14 bg-white">
               {/* Header */}
               <div className="text-center mb-10 border-b-4 border-emerald-800 pb-8 flex flex-col items-center">
                   <Logo className="h-20 w-20 mb-4" />
