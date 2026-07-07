@@ -1520,13 +1520,18 @@ function LandingView({ navigateTo, beritaList, regulasiList: passedRegulasiList,
       scrollContainer.style.overflow = 'visible';
       scrollContainer.style.width = `${scrollWidth}px`;
 
-      const imgData = await htmlToImage.toPng(input, { 
+      // Wait a moment for DOM to apply styles and re-layout
+      await new Promise(r => setTimeout(r, 200));
+
+      const finalHeight = input.scrollHeight + 50;
+
+      const canvas = await htmlToImage.toCanvas(input, { 
         quality: 1, 
         pixelRatio: 2,
         fontEmbedCSS: '',
         backgroundColor: '#ffffff',
         width: scrollWidth + 100,
-        height: input.scrollHeight + 50,
+        height: finalHeight,
         filter: (node) => {
           if (node.tagName === 'LINK') {
             const href = (node as HTMLLinkElement).href;
@@ -1535,32 +1540,51 @@ function LandingView({ navigateTo, beritaList, regulasiList: passedRegulasiList,
           return true;
         }
       });
-      const img = new Image();
-      img.src = imgData;
-      await new Promise((resolve) => {
-        img.onload = resolve;
-      });
+      
       const pdf = new jsPDF({
         orientation: 'landscape',
         unit: 'mm',
         format: 'a4'
       });
+      
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfPageHeight = pdf.internal.pageSize.getHeight();
       
-      const imgHeightInPdf = (img.height * pdfWidth) / img.width;
+      const scale = pdfWidth / canvas.width;
+      const canvasPageHeight = pdfPageHeight / scale;
       
-      let heightLeft = imgHeightInPdf;
-      let position = 0;
+      let yOffset = 0;
+      let pageCount = 0;
       
-      pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeightInPdf);
-      heightLeft -= pdfPageHeight;
-      
-      while (heightLeft > 0) {
-        position = heightLeft - imgHeightInPdf;
-        pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeightInPdf);
-        heightLeft -= pdfPageHeight;
+      while (yOffset < canvas.height) {
+        if (pageCount > 0) {
+          pdf.addPage();
+        }
+        
+        const sliceHeight = Math.min(canvasPageHeight, canvas.height - yOffset);
+        
+        // Create a temporary canvas for this slice
+        const sliceCanvas = document.createElement('canvas');
+        sliceCanvas.width = canvas.width;
+        sliceCanvas.height = sliceHeight;
+        const ctx = sliceCanvas.getContext('2d');
+        if (ctx) {
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, sliceCanvas.width, sliceCanvas.height);
+          ctx.drawImage(
+            canvas, 
+            0, yOffset, canvas.width, sliceHeight, 
+            0, 0, canvas.width, sliceHeight
+          );
+        }
+        
+        const imgData = sliceCanvas.toDataURL('image/jpeg', 0.95);
+        const imgHeightInPdf = sliceHeight * scale;
+        
+        pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, imgHeightInPdf);
+        
+        yOffset += canvasPageHeight;
+        pageCount++;
       }
       
       pdf.save('Struktur_Organisasi_LPH_Al_Ghazali.pdf');
